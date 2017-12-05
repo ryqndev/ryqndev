@@ -1,0 +1,106 @@
+body{
+    margin: 0;
+    background-color: black;
+    color:white;
+}
+a{
+    font-size: 26px;
+    text-decoration: underline;
+}
+.bgimage{
+    background-image: url(../images/coverpicture.jpg);
+    background-position: 30% 50%;
+    background-size: cover;
+    height: 88vh;
+    border-bottom: solid 10px magenta;
+}
+.bgimage span{
+    font-size: 100px;
+    text-align: center;
+}
+.quote{
+    font-family: 'Roboto Slab', serif; 
+}
+.downArrow{
+    margin-left: 50%;
+    transform: translate(-50%, 0);
+}
+.about{
+    font-size: 32px;
+}
+.description{
+    margin-top: 50px;
+    font-size: 24px;
+}
+.description h1{
+    text-align: center;
+    font-size: 30px;
+    font-family: 'Roboto Slab', serif;
+}
+.borderl{
+    margin-left: -20px;
+    padding-left: 20px;
+    border-left: solid 5px orange;
+}
+.myProjects{
+    margin-top: 100px;
+    font-size: 48px;
+    text-align: center;
+    margin-bottom: 50px;
+}
+.projectBorder{
+    padding-bottom: 50px;
+    border-bottom: 5px solid orange;
+}
+.currentProjectImage{
+    height: 400px;
+    border-radius: 300px 20px 20px 20px;
+    background-image: url(../images/mainProject.jpg);
+    background-position: center;
+    background-size: cover;
+}
+.currentProject{
+    font-size: 18px;
+}
+.projectNames{
+    font-size: 20px;
+    text-align: center;
+    margin-top: 50px;
+    background-color: #ededed;
+    padding: 25px 10px 3px 10px;
+    border: 5px solid #c6c6c6;
+    border-radius: 20px;
+    box-shadow: 0 0 20px white;
+    color: black;
+}
+.fearFilter{
+    background-image: url(../images/fearFilter.png);
+}
+.stockValue{
+    background-image: url(../images/stockScraper.png);
+}
+.cssFrameworks{
+    background-image: url(../images/cssFrameworks.png);
+}
+.sequenceMemory{
+    background-image: url(../images/sequenceMemory.png);
+}
+.projectImage{
+    background-position: center;
+    background-size: cover;
+    height: 160px;
+    width: 160px;
+    border-radius: 80px;
+    margin: 0 auto;
+    border: 5px solid black;
+}
+.github{
+    border-top: 10px solid #380099;
+    margin-top: 100px;
+    text-align: center;
+    font-size: 24px;
+    color: lightgray;
+    padding-top: 15px;
+    padding-bottom: 15px;
+    background-color: #4c14ad;
+}
