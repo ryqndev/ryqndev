@@ -113,6 +113,6 @@ a{
         border-left: solid 5px orange;
     }
     .currentProject{
-        text-align: none;
+        text-align: left;
     }
 }
