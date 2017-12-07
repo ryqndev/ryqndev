@@ -6,6 +6,7 @@
         <title>
             Ryan Yang
         </title>
+        
         <!-- Global site tag (gtag.js) - Google Analytics -->
         <script async src="https://www.googletagmanager.com/gtag/js?id=UA-108710625-1"></script>
         <script>
@@ -14,6 +15,9 @@
           gtag('js', new Date());
           gtag('config', 'UA-108710625-1');
         </script>
+        
+        <!-- ============= JSON web info ============= -->
+        
         <script type="application/ld+json">
         {
             "@context": "http://ryanqyang.tech",
@@ -22,8 +26,16 @@
             "name": "Ryan Qiurui Yang",
         }
         </script>
+        
+        <!-- ============= Bootstrap Declarations ============= -->
+        
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/css/bootstrap.min.css" integrity="sha384-PsH8R72JQ3SOdhVi3uxftmaW6Vc51MKb0q5P2rRUpPvrszuE4W1povHYgTpBfshb" crossorigin="anonymous">
-        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+        <script src="https://code.jquery.com/jquery-3.1.1.slim.min.js" integrity="sha384-A7FZj7v+d/sdmMqp/nOQwliLvUsJfDHW+k9Omg/a/EheAdgtzNs3hpfag6Ed950n" crossorigin="anonymous"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.4.0/js/tether.min.js" integrity="sha384-DztdAPBWPRXSA/3eYEEUWrWCy7G5KFbe8fFjk5JAIxUYHKkDx6Qin1DkWx51bBrb" crossorigin="anonymous"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/js/bootstrap.min.js" integrity="sha384-vBWWzlZJ8ea9aCX4pEW3rVHjgjt7zpkNpZk+02D9phzyeVkE+jo0ieGizqPLForn" crossorigin="anonymous"></script>
+        
+        <!-- ============= CSS Declarations ============= -->
+        
         <link rel="stylesheet" type="text/css" href="css/default.css">
         <link href="https://fonts.googleapis.com/css?family=Roboto+Slab" rel="stylesheet"> 
     </head>
@@ -54,7 +66,7 @@
                 <div class="col-12 col-md-5 mr-auto">
                     <div class="about description borderl">
                         <h1>Skill Set</h1>
-                        <p>&emsp;I'm fluent in front-end developement and am capable of writing in HTML/CSS and JS. Furthermore, I am also capable of object-oriented programming, my most comfortable languages being Java and Swift. In terms of code development, I am experienced in using Git and will fit in any dev environment that uses this kind of code management.
+                        <p>&emsp;I'm capable of front-end development (HTML/CSS) as well as other web-related technologies such as Wordpress and JS. I'm also studying programming, being comfortable with Java and Swift (not strong in data structures but I will be taking classes soon). In terms of code development, I am proficient in Git and will be able to write code comfortably in any environment that utilizes it.
                         </p>
                     </div>
                 </div>
@@ -68,14 +80,22 @@
             </div>
             <div class="projectBorder">
                 <div class="row">
-                    <div class="col-lg-5 col-12 ml-auto">
+                    <div class="col-lg-8 col-12 ml-auto">
                         <div class="currentProjectImage"></div>
                     </div>
-                    <div class="col-lg-5 col-12 mr-auto">
+                    <div class="col-lg-4 col-12 mr-auto">
                         <div class="currentProject">
                             <h1>Brobot</h1>
+<<<<<<< HEAD
                             Find out more about the Brobot here:
                             <a href="https://ryabn.github.io/Brobot/"> Brobot </a>
+=======
+                            I made a robot!! The project is currently in progress! Check out:
+                            
+                            <a href="https://ryabn.github.io/Brobot/">https://ryabn.github.io/Brobot/</a>
+                            
+                            for more details!
+>>>>>>> cd153ece8adea5b131e95a9e3604147c9965a44f
                         </div>
                     </div>
                 </div>
@@ -85,31 +105,63 @@
                     <div class="projectNames">
                         <div class="fearFilter projectImage"></div>
                         <a href = "https://github.com/Ryabn/DubhacksProject">Fear Filter</a>
-                        <p>Fear Filter is a chrome extension that checks every single image that is displayed on your screen and utilizes Microsoft's Computer Vision to determine if the image triggers a user's phobia.</p>
+                        <br>
+                        <button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#fearFilter" aria-expanded="false" aria-controls="fearFilter">
+                        More info
+                        </button>
+                        <div class="collapse" id="fearFilter">
+                          <div class="card card-body">
+                            Fear Filter is a chrome extension that checks every single image that is displayed on your screen and utilizes Microsoft's Computer Vision to determine if the image triggers a user's phobia. 
+                          </div>
+                        </div>
                     </div>
                 </div>
                 <div class="col-lg-3 col-12">
                     <div class="projectNames">
                         <div class="stockValue projectImage"></div>
-                        <a href = "https://github.com/Ryabn/stockValueScraper">Stock Value Data Scraper</a>
-                        <p>
-                        Small python script that takes in the name of a company and outputs details of the company's stock value. (information is live and parses the NASDAQ website) 
-                        </p>
-                    </div>   
+                        <a href = "https://github.com/Ryabn/stockValueScraper">Stock Value Script</a>
+                        <br>
+                        
+                        <button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#stockValue" aria-expanded="false" aria-controls="stockValue">
+                        More info
+                        </button>
+                        <div class="collapse" id="stockValue">
+                          <div class="card card-body">
+                            Small python script that takes in the name of a company and outputs details of the company's stock value. (information is live and parses the NASDAQ website) 
+                          </div>
+                        </div>
+                    </div>
                 </div>
                 <div class="col-lg-3 col-12">
                     <div class="projectNames">
                         <div class="cssFrameworks projectImage"></div>
                         <a href = "https://github.com/Ryabn/CSSFrameworks">CSS Frameworks</a>
-                        <p>Basic understanding of front end development with emphasis on core frameworks such as Bootstrap 4.0.
-                        </p>
+                        <br>
+                        
+                        <button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#cssFrameworks" aria-expanded="false" aria-controls="cssFrameworks">
+                        More info
+                        </button>
+                        <div class="collapse" id="cssFrameworks">
+                          <div class="card card-body">
+                            Basic understanding of front end development with emphasis on core frameworks such as Bootstrap 4.0. 
+                          </div>
+                        </div>
                     </div>
                 </div>
                 <div class="col-lg-3 col-12 mr-lg-auto">
                     <div class="projectNames">
                         <div class="sequenceMemory projectImage"></div>
-                        <a href="https://github.com/Ryabn/SequenceMemoryGame">Sequence Memory Game</a>
-                        <p>Level-based iOS game that test the player's memory by demonstrating a pattern to which the user need to repeat in the exact same order.</p>
+                        <a href="https://github.com/Ryabn/SequenceMemoryGame">Memory Game</a>
+                        <br>
+                        
+                        <button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#sequenceMemory" aria-expanded="false" aria-controls="sequenceMemory">
+                        More info
+                        </button>
+                        <div class="collapse" id="sequenceMemory">
+                          <div class="card card-body">
+                            Level-based iOS game that test the player's memory by demonstrating a pattern to which the user need to repeat in the exact same order.
+                          </div>
+                        </div>
                     </div>
                 </div>
             </div>
