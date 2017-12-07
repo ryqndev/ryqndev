@@ -7,6 +7,9 @@ a{
     font-size: 26px;
     text-decoration: underline;
 }
+#projectMore{
+    
+}
 .bgimage{
     background-image: url(../images/coverpicture.jpg);
     background-position: 30% 50%;
@@ -43,7 +46,7 @@ a{
     border-left: solid 5px orange;
 }
 .myProjects{
-    margin-top: 100px;
+    margin-top: 50px;
     font-size: 48px;
     text-align: center;
     margin-bottom: 50px;
@@ -54,8 +57,8 @@ a{
 }
 .currentProjectImage{
     height: 400px;
-    border-radius: 300px 20px 20px 20px;
-    background-image: url(../images/mainProject.jpg);
+    border-radius: 150px 20px 20px 20px;
+    background-image: url(../images/mainProject.png);
     background-position: center;
     background-size: cover;
 }
