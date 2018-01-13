@@ -6,8 +6,6 @@
         <title>
             Ryan Yang
         </title>
-        
-        <!-- Global site tag (gtag.js) - Google Analytics -->
         <script async src="https://www.googletagmanager.com/gtag/js?id=UA-108710625-1"></script>
         <script>
           window.dataLayer = window.dataLayer || [];
@@ -15,9 +13,6 @@
           gtag('js', new Date());
           gtag('config', 'UA-108710625-1');
         </script>
-        
-        <!-- ============= JSON web info ============= -->
-        
         <script type="application/ld+json">
         {
             "@context": "http://ryanqyang.tech",
@@ -25,139 +20,77 @@
             "url": "http://ryanqyang.tech",
             "name": "Ryan Qiurui Yang",
         }
-        </script>
-        
-        <!-- ============= Bootstrap Declarations ============= -->
-        
+        </script>   
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/css/bootstrap.min.css" integrity="sha384-PsH8R72JQ3SOdhVi3uxftmaW6Vc51MKb0q5P2rRUpPvrszuE4W1povHYgTpBfshb" crossorigin="anonymous">
-        <script src="https://code.jquery.com/jquery-3.1.1.slim.min.js" integrity="sha384-A7FZj7v+d/sdmMqp/nOQwliLvUsJfDHW+k9Omg/a/EheAdgtzNs3hpfag6Ed950n" crossorigin="anonymous"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.4.0/js/tether.min.js" integrity="sha384-DztdAPBWPRXSA/3eYEEUWrWCy7G5KFbe8fFjk5JAIxUYHKkDx6Qin1DkWx51bBrb" crossorigin="anonymous"></script>
-        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/js/bootstrap.min.js" integrity="sha384-vBWWzlZJ8ea9aCX4pEW3rVHjgjt7zpkNpZk+02D9phzyeVkE+jo0ieGizqPLForn" crossorigin="anonymous"></script>
-        
-        <!-- ============= CSS Declarations ============= -->
-        
+        <link href="https://cdn.rawgit.com/michalsnik/aos/2.1.1/dist/aos.css" rel="stylesheet">
+        <script src="https://cdn.rawgit.com/michalsnik/aos/2.1.1/dist/aos.js"></script>
         <link rel="stylesheet" type="text/css" href="css/default.css">
-        <link href="https://fonts.googleapis.com/css?family=Roboto+Slab" rel="stylesheet"> 
+        <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet"> 
+        <link href="https://fonts.googleapis.com/css?family=Montserrat" rel="stylesheet"> 
+        <link href="https://fonts.googleapis.com/css?family=Quicksand" rel="stylesheet"> 
     </head>
-    
     <body>
+        <script>
+            AOS.init();
+        </script>
         <div class="bgimage">
-            <div class="container">
-                <div class="row">
-                    <div class="col-4">
-                        
-                    </div>
-                </div>
-            </div>
+            <div class="name"></div>
         </div>
         <div class="container">
             <div class="row">
                 <div class="col-12">
-                    <img class="downArrow" src="images/arrowDown.png"/>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-12 col-lg-5 mx-auto">
-                    <div class="about description">
-                        <h1>Who Am I?</h1>
-                        &emsp;I'm currently a first year student at Pasadena City College and I currently plan on becoming a CS major. Not only am I interested in computer science, but I am also attracted to engineering. On a more specific note, I'm interested in AI and that just happens to be where computer science and engineering meet! On my github, you'll find plently of projects that reflect that. 
-                    </div>
-                </div>
-                <div class="col-12 col-lg-5 mx-auto">
-                    <div class="about description borderl">
-                        <h1>Skill Set</h1>
-                        <p>&emsp;I'm capable of front-end development (HTML/CSS) as well as various web related technologies such as Bootstrap, Wordpress, and JS. I'm also comfortable object-oriented programming languages such as Java and Swift. In terms of code development, I am proficient in Git and can code comfortably in any environment that utilizes it.
-                        </p>
-                    </div>
+                    <h1>Check out my projects: </h1>
                 </div>
             </div>
             <div class="row">
                 <div class="col-12">
-                    <div class="myProjects">
-                        View My Projects:
+                    <div class="project1" data-aos="fade-right" data-aos-duration="1000" data-aos-offset="250">
                     </div>
                 </div>
             </div>
-            <div class="projectBorder">
+            <div class="project1Desc" data-aos="fade-down" data-aos-duration="1000" data-aos-offset="250">
                 <div class="row">
-                    <div class="col-lg-8 col-12 ml-auto">
-                        <div class="currentProjectImage"></div>
+                    <div class="col-7">
+                        <p class="project1Name">
+                            <img style="height: 40px" src="images/project1/icon.png">
+                            Rememory
+                        </p>
+                        <p>
+                        Test your memory with this quick level-based game. We'll show you a sequence of boxes and it's your job to remember them!
+                        </p>
                     </div>
-                    <div class="col-lg-4 col-12 mr-auto">
-                        <div class="currentProject">
-                            <h1>Brobot</h1>
-                            I made a robot!! The project is currently in progress! Check it out at 
-                            
-                            <a href="https://ryabn.github.io/Brobot/"> Brobot's Github Page </a>
-                            
-                            The general hardware part is finished and all that's left is the programming. I've finished calibrating the servo settings for some of the legs but not all of them yet. Will update them when done!
-                            
+                    <div class="col-5">
+                        <a href="https://play.google.com/store/apps/details?id=tech.ryanqyang.rememory&pcampaignid=MKT-Other-global-all-co-prtnr-py-PartBadge-Mar2515-1">
+                            <img class="googlePlay" alt="Get it on Google Play" align="right" src="images/logos/google-play-badge.png"/>
+                        </a>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-12">
+                        <div class="project1Images">
+                            <img style="height: 500px;" src="images/project1/screenshot2.png">
+                            <img style="height: 500px;" src="images/project1/screenshot1.png">
+                            <img style="height: 500px;" src="images/project1/screenshot3.png">
                         </div>
                     </div>
                 </div>
             </div>
+            
             <div class="row">
-                <div class="col-lg-3 col-8 mx-auto">
-                    <div class="projectNames">
-                        <div class="fearFilter projectImage"></div>
-                        <a href = "https://github.com/Ryabn/DubhacksProject">Fear Filter</a>
-                        <br>
-                        <button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#fearFilter" aria-expanded="false" aria-controls="fearFilter">
-                        More info
-                        </button>
-                        <div class="collapse" id="fearFilter">
-                          <div class="card card-body">
-                            Fear Filter is a chrome extension that checks every single image that is displayed on your screen and utilizes Microsoft's Computer Vision to determine if the image triggers a user's phobia. 
-                          </div>
-                        </div>
+                <div class="col-12">
+                    <div class="project2" data-aos="fade-left" data-aos-duration="1000" data-aos-offset="250">
                     </div>
                 </div>
-                <div class="col-lg-3 col-8 mx-auto">
-                    <div class="projectNames">
-                        <div class="stockValue projectImage"></div>
-                        <a href = "https://github.com/Ryabn/stockValueScraper">Stock Value Script</a>
-                        <br>
-                        
-                        <button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#stockValue" aria-expanded="false" aria-controls="stockValue">
-                        More info
-                        </button>
-                        <div class="collapse" id="stockValue">
-                          <div class="card card-body">
-                            Small python script that takes in the name of a company and outputs details of the company's stock value. (information is live and parses the NASDAQ website) 
-                          </div>
-                        </div>
+            </div>
+            <div class="project2Desc" data-aos="fade-down" data-aos-duration="1000" data-aos-offset="100">
+                <div class="row">
+                    <div class="col-7">
+                        <p class="project2Name">Brobot</p>
                     </div>
-                </div>
-                <div class="col-lg-3 col-8 mx-auto">
-                    <div class="projectNames">
-                        <div class="cssFrameworks projectImage"></div>
-                        <a href = "https://github.com/Ryabn/CSSFrameworks">CSS Frameworks</a>
-                        <br>
-                        
-                        <button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#cssFrameworks" aria-expanded="false" aria-controls="cssFrameworks">
-                        More info
-                        </button>
-                        <div class="collapse" id="cssFrameworks">
-                          <div class="card card-body">
-                            Basic understanding of front end development with emphasis on core frameworks such as Bootstrap 4.0. 
-                          </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-lg-3 col-8 mx-auto">
-                    <div class="projectNames">
-                        <div class="sequenceMemory projectImage"></div>
-                        <a href="https://github.com/Ryabn/SequenceMemoryGame">Memory Game</a>
-                        <br>
-                        
-                        <button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#sequenceMemory" aria-expanded="false" aria-controls="sequenceMemory">
-                        More info
-                        </button>
-                        <div class="collapse" id="sequenceMemory">
-                          <div class="card card-body">
-                            Level-based iOS game that test the player's memory by demonstrating a pattern to which the user need to repeat in the exact same order.
-                          </div>
-                        </div>
+                    <div class="col-5">
+                        <a href="https://ryabn.github.io/Brobot/">
+                            <img class="githubMark" alt="Check out the github page" align="right" src="images/logos/GitHub-Mark-Light-120px-plus.png"/>
+                        </a>
                     </div>
                 </div>
             </div>
