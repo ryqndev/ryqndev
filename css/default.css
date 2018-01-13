@@ -1,7 +1,7 @@
 body{
     margin: 0;
     background-color: black;
-    color:white;
+    color: white;
     font-family: 'Roboto', sans-serif;
 }
 h1{
@@ -28,15 +28,18 @@ h1{
     height: 300px;
 }
 .project1Desc{
-    padding: 40px;
+    padding: 3vw;
     font-size: 20px;
     background-color: #070707;
 }
 .project1Images{
     text-align: center;
 }
+.screenshots1{
+    width: 20vw;
+}
 .project2{
-    margin-top: 150px;
+    margin-top: 75px;
     background-image: url(../images/project2/brobotGraphic.jpg);
     background-position: center;
     background-size: cover;
@@ -47,7 +50,7 @@ h1{
     font-family: 'Quicksand', sans-serif;
 }
 .project2Desc{
-    padding: 40px;
+    padding: 3vw;
     font-size: 20px;
     background-color: #070707;
 }
