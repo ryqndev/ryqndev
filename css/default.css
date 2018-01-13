@@ -49,6 +49,7 @@ h1{
     background-image: url(../images/project2/brobotGraphic.jpg);
 }
 .project3{
+    margin-top: 75px;
     background-image: url(../images/project3/graphic.png);
     background-size: contain;
     background-repeat: no-repeat;
