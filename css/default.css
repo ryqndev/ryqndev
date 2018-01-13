@@ -6,7 +6,8 @@ body{
 }
 h1{
     text-align: center;
-    margin-bottom: 50px;
+    margin-bottom: 30px;
+    font-family: 'Comfortaa', cursive;
 }
 .bgimage{
     background-image: url(../images/profile/coverpicture.jpg);
@@ -16,43 +17,48 @@ h1{
     border-bottom: solid 15px #4c14ad;
     margin-bottom: 50px;
 }
-.project1Name{
-    font-size: 50px;
-    display: inline-block;
-    font-family: 'Montserrat', sans-serif;
+.about{
+    text-align: center;
+    font-size: 25px;
+    margin-bottom: 80px;
 }
-.project1{
-    background-image: url(../images/project1/untitled.svg);
+.projectHeader{    
     background-position: center;
     background-size: cover;
     height: 300px;
 }
-.project1Desc{
+.projectDescription{
     padding: 3vw;
     font-size: 20px;
     background-color: #070707;
+}
+.projectName{
+    font-size: 50px;
+}
+.project1Name{
+    font-family: 'Montserrat', sans-serif;
+}
+.project2Name{
+    font-family: 'Quicksand', sans-serif;
+}
+.project1{
+    background-image: url(../images/project1/untitled.svg);
+}
+.project2{
+    margin-top: 75px;
+    background-image: url(../images/project2/brobotGraphic.jpg);
+}
+.project3{
+    background-image: url(../images/project3/graphic.png);
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-color: #1e1e1e;
 }
 .project1Images{
     text-align: center;
 }
 .screenshots1{
     width: 20vw;
-}
-.project2{
-    margin-top: 75px;
-    background-image: url(../images/project2/brobotGraphic.jpg);
-    background-position: center;
-    background-size: cover;
-    height: 300px;
-}
-.project2Name{
-    font-size: 50px;
-    font-family: 'Quicksand', sans-serif;
-}
-.project2Desc{
-    padding: 3vw;
-    font-size: 20px;
-    background-color: #070707;
 }
 .googlePlay{
     height: 80px;
