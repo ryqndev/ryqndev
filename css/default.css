@@ -9,11 +9,14 @@ h1{
     margin-bottom: 30px;
     font-family: 'Comfortaa', cursive;
 }
-.bgimage{
+#bgimage{
     background-image: url(../images/profile/coverpicture.jpg);
     background-position: 45% 50%;
     background-size: cover;
     height: 88vh;
+    
+}
+.hero{
     border-bottom: solid 15px #4c14ad;
     margin-bottom: 50px;
 }
