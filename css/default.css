@@ -13,7 +13,7 @@ h1{
     background-image: url(../images/profile/coverpicture.jpg);
     background-position: 45% 50%;
     background-size: contain;
-    height: 88vh;
+    height: auto;
     
 }
 .hero{
