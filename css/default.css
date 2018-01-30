@@ -11,8 +11,8 @@ h1{
 }
 #bgimage{
     background-image: url(../images/profile/coverpicture.jpg);
-    background-position: 45% 50%;
-    background-size: contain;
+    background-position: 50% 50%;
+    background-size: cover;
     height: auto;
     
 }
