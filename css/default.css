@@ -9,6 +9,7 @@ h1{
     margin-bottom: 30px;
     font-family: 'Comfortaa', cursive;
 }
+
 #bgimage{
     background-image: url(../images/profile/coverpicture.jpg);
     background-position: 65% 50%;
@@ -16,6 +17,7 @@ h1{
     height: 88vh;
     
 }
+
 .resume{
     text-align: center;
     
@@ -29,6 +31,7 @@ h1{
     font-size: 25px;
     margin-bottom: 80px;
 }
+
 .projectHeader{    
     background-position: center;
     background-size: cover;
@@ -42,40 +45,46 @@ h1{
 .projectName{
     font-size: 50px;
 }
-.project1Name{
-    font-family: 'Montserrat', sans-serif;
-}
-.project2Name{
-    font-family: 'Quicksand', sans-serif;
-}
-.project1{
-    margin-top: 100px;
-    background-image: url(../images/project1/untitled.svg);
-}
-.project2{
+
+.bathroom-cash{
     margin-top: 75px;
-    background-image: url(../images/project2/brobotGraphic.jpg);
-}
-.project3{
-    margin-top: 75px;
-    background-image: url(../images/project3/graphic.png);
-    background-size: contain;
-    background-repeat: no-repeat;
-    background-color: #1e1e1e;
-}
-.project4{
-    margin-top: 75px;
-    background-image: url(../images/project4/feature.png);
+    background-image: url(../images/bathroom-cash/feature.png);
     background-size: cover;
     background-repeat: no-repeat;
     background-color: #1e1e1e;
 }
-.project1Images{
+
+.rememory{
+    margin-top: 100px;
+    background-image: url(../images/rememory/untitled.svg);
+}
+.rememory-name{
+    font-family: 'Montserrat', sans-serif;
+}
+
+.brobot{
+    margin-top: 75px;
+    background-image: url(../images/brobot/brobotGraphic.jpg);
+}
+.brobot-name{
+    font-family: 'Quicksand', sans-serif;
+}
+
+.stock-checker{
+    margin-top: 75px;
+    background-image: url(../images/stock-checker/graphic.png);
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-color: #1e1e1e;
+}
+
+.image-center{
     text-align: center;
 }
-.screenshots1{
+.image-size-25{
     width: 25%;
 }
+
 .googlePlay{
     height: 80px;
 }
