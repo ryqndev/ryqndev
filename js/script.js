@@ -1,6 +1,10 @@
 var bgImageList = ['coverpicture.jpg', 'coverpicture2.jpg', 'coverpicture3.jpg' ];
 var listIndex = 0, fadeEffect;
 
+function startAnim(){
+    document.getElementById('bgimage').style.opacity = 1;
+    setTimeout(bgSlide, 2000);
+}
 function bgSlide(){
     document.getElementById('bgimage').style.opacity = 1;
     fadeEffect = setInterval(fadeToBlack, 20);
