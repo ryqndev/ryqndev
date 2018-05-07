@@ -9,15 +9,40 @@ h1{
     margin-bottom: 30px;
     font-family: 'Comfortaa', cursive;
 }
-
+h2{
+    font-size: 22px;
+}
 #bgimage{
     background-image: url(../images/profile/coverpicture.jpg);
     background-position: 65% 50%;
     background-size: cover;
     height: 88vh;
-    
 }
+#github-repos{
+    padding: 50px;
+    width: 100vw;
+    text-align: center;
+}
+.github-repo{
+    display: inline-table;
+    height: 300px;
+    width: 250px;
+    text-align: center;
+    padding: 20px;
+    box-shadow: black 0 0 15px;
+    margin: 10px;
+    border-radius: 5px;
 
+}
+.git-repo-desc{
+    background-color: white;
+    color: black;
+    height: 160px;
+    border-radius: 5px;
+    padding: 20px;
+    font-size: 18px;
+    overflow-y: scroll;
+}
 .resume{
     text-align: center;
     
@@ -62,22 +87,6 @@ h1{
     font-family: 'Montserrat', sans-serif;
 }
 
-.brobot{
-    margin-top: 75px;
-    background-image: url(../images/brobot/brobotGraphic.jpg);
-}
-.brobot-name{
-    font-family: 'Quicksand', sans-serif;
-}
-
-.stock-checker{
-    margin-top: 75px;
-    background-image: url(../images/stock-checker/graphic.png);
-    background-size: contain;
-    background-repeat: no-repeat;
-    background-color: #1e1e1e;
-}
-
 .image-center{
     text-align: center;
 }
@@ -101,6 +110,7 @@ h1{
     padding-bottom: 15px;
     background-color: #4c14ad;
 }
+
 /*laptops and desktops*/
 @media (min-width: 992px){
 }

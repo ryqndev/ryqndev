@@ -36,10 +36,13 @@
         <link href="https://fonts.googleapis.com/css?family=Montserrat" rel="stylesheet"> 
         <link href="https://fonts.googleapis.com/css?family=Quicksand" rel="stylesheet"> 
         <link href="https://fonts.googleapis.com/css?family=Comfortaa" rel="stylesheet"> 
+        
+        <script src="js/templating.min.js"></script>
         <script src="js/script.js"></script>
+        <script src="js/displayGithubProjects.js"></script>
         <link rel="stylesheet" type="text/css" href="css/default.css">
     </head>
-    <body onload="startAnim();">
+    <body onload="startAnim(); getGithubUserData();">
         <script>
             AOS.init();
         </script>
@@ -61,7 +64,7 @@
             </div>
             <div class="row">
                 <div class="col-12">
-                    <h1>Check out my projects: </h1>
+                    <h1>Featured Projects: </h1>
                 </div>
             </div>
             <div>
@@ -141,51 +144,12 @@
                     </div>
                 </div>
             </div>
-            <div>
-                <div class="row">
-                    <div class="col-12">
-                        <div class="stock-checker projectHeader" data-aos="fade-left" data-aos-duration="1000" data-aos-offset="250">
-                        </div>
-                    </div>
-                </div>
-                <div class="projectDescription" data-aos="fade-down" data-aos-duration="1000" data-aos-offset="300">
-                    <div class="row">
-                        <div class="col-9">
-                            <p class="stock-checker-name projectName">
-                                Stock Checker for Smartwatches
-                            </p>
-                        </div>
-                        <div class="col-3">
-                            <a href="https://github.com/Ryabn/StockChecker">
-                                <img class="githubMark" alt="Check out the github page" align="right" src="images/logos/GitHub-Mark-Light-120px-plus.png"/>
-                            </a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div>
-                <div class="row">
-                    <div class="col-12">
-                        <div class="brobot projectHeader" data-aos="fade-right" data-aos-duration="1000" data-aos-offset="250">
-                        </div>
-                    </div>
-                </div>
-                <div class="projectDescription" data-aos="fade-down" data-aos-duration="1000" data-aos-offset="200">
-                    <div class="row">
-                        <div class="col-7">
-                            <p class="brobot-name projectName">
-                                Brobot
-                            </p>
-                        </div>
-                        <div class="col-5">
-                            <a href="https://ryabn.github.io/Brobot/">
-                                <img class="githubMark" alt="Check out the github page" align="right" src="images/logos/GitHub-Mark-Light-120px-plus.png"/>
-                            </a>
-                        </div>
-                    </div>
-                </div>
-            </div>
         </div>
+        <div id="github-repos">
+            
+            
+        </div>
+        
         <div class="github">
             <div class="container-fluid">
                 <div class="row">
