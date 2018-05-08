@@ -13,7 +13,6 @@ function getGithubUserData(){
         if(xhr.readyState === xhr.DONE){
             if(xhr.status === 200){
                 data = JSON.parse(xhr.responseText);
-                console.log(data);
                 createRepoCard();
 
             }
@@ -32,15 +31,31 @@ function openRepoInTab(url) {
 function extractRepoData(n){
     var projectInfo = {
         'projectID' : 'id' + n,
-        'name' : data[n]['name'],
+        'name' : reformatName(data[n]['name']),
         'desc' : data[n]['description'],
         'link' : "openRepoInTab('" + data[n]['svn_url'] + "');",
         'lang' : data[n]['language'],
         'date' : dateFormat(data[n]['created_at']),
         'updated' : dateFormat(data[n]['updated_at']),
-        'color': "hsl( " + Math.random() * 360 + ", 60%, 80%)"
+        'color': "hsl( " + parseInt(360/data.length) * n + ", 60%, 80%)"
     };
+    if(projectInfo.desc == null) {
+        projectInfo.desc = "No Description";
+    }
     displayRepoData(projectInfo);
+}
+function reformatName(title){
+    title = title.charAt(0).toUpperCase() + title.substring(1);
+    for(let i = 1; i < title.length; i++){
+        let c = title.charAt(i);
+        if(c == '-' || c == '_' || c == '.' ){
+            title = title = title.substring(0, i) + " " + title.substring(i + 1);
+        }else if( isNaN(c) && c == c.toUpperCase()){
+            title = title.substring(0, i) + " " + title.substring(i);
+            i++;
+        }
+    }
+    return title;
 }
 
 function dateFormat(date){
@@ -56,5 +71,4 @@ function dateFormat(date){
 
 function displayRepoData(projectInfo){
     templatingJS('githubProject.html', projectInfo, 'github-repos');
-    console.log("Sd");
 }
