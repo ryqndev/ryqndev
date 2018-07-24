@@ -15,10 +15,21 @@ h2{
     font-size: 22px;
 }
 #bgimage{
+    z-index: 2;
     background-image: url(../images/profile/coverpicture.jpg);
+}
+#bgimage2{
+    z-index: 1;
+    background-image: url(../images/profile/coverpicture2.jpg);
+}
+.bg-top{
+    position: absolute;
+    top: 0;
+    left: 0;
     background-position: 65% 50%;
     background-size: cover;
     height: 88vh;
+    width: 100%;
 }
 #github-repos{
     padding: 50px;
@@ -50,6 +61,7 @@ h2{
     
 }
 .hero{
+    margin-top: 88vh;
     border-bottom: solid 15px #4c14ad;
     margin-bottom: 50px;
 }

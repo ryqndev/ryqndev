@@ -7,7 +7,7 @@ function startAnim(){
 }
 function bgSlide(){
     document.getElementById('bgimage').style.opacity = 1;
-    fadeEffect = setInterval(fadeToBlack, 20);
+    fadeEffect = setInterval(fadeToImage2, 20);
 }
 function transitionImages(){
     if((listIndex+1) == bgImageList.length){
@@ -15,18 +15,21 @@ function transitionImages(){
     }else{
         listIndex++;
     }
-    document.getElementById('bgimage').style.backgroundImage = "url(./images/profile/" + bgImageList[listIndex] + ")";
+    let nextImg = "url(./images/profile/" + bgImageList[listIndex] + ")";
+    return nextImg;
 }
-function fadeToBlack(){
+function fadeToImage2(){
     var bgimagestyle = document.getElementById('bgimage').style;
     var iOpacityValue = bgimagestyle.opacity;
     iOpacityValue -= 0.03;
     bgimagestyle.opacity = iOpacityValue;
     if(iOpacityValue <= 0){
         clearInterval(fadeEffect);
-        transitionImages();
+        document.getElementById('bgimage').style.backgroundImage = transitionImages();
         document.getElementById('bgimage').style.opacity = 0;
-        showEffect = setInterval(fadeToImage, 30);
+        window.setTimeout(function(){
+            showEffect = setInterval(fadeToImage, 40);
+        }, 3000);
     }
 }
 function fadeToImage(){
@@ -36,8 +39,9 @@ function fadeToImage(){
     bgimagestyle2.opacity = iOpacityValue2;
     if(iOpacityValue2 >= 1){
         clearInterval(showEffect);
+        document.getElementById('bgimage2').style.backgroundImage = transitionImages();
         window.setTimeout(function() {
-            fadeEffect = setInterval(fadeToBlack, 30);
-        }, 2000);   
+            fadeEffect = setInterval(fadeToImage2, 40);
+        }, 3000);   
     }
 }
