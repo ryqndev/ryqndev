@@ -37,8 +37,10 @@ function extractRepoData(n){
         'lang' : data[n]['language'],
         'date' : dateFormat(data[n]['created_at']),
         'updated' : dateFormat(data[n]['updated_at']),
-        'color': "hsl( " + parseInt(360/data.length) * n + ", 60%, 80%)"
+        'color': "hsl( " + parseInt(360/data.length) * n + ", 60%, 80%)",
+        'lang': data[n]['language']=="C++"?"Cpp":data[n]['language']==null?"":data[n]['language']
     };
+    console.log(data[n]['language']==null?"":data[n]['language']);
     if(projectInfo.desc == null) {
         projectInfo.desc = "No Description";
     }
