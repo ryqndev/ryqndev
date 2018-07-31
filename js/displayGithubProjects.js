@@ -42,7 +42,9 @@ function extractRepoData(n){
     if(projectInfo.desc == null) {
         projectInfo.desc = "No Description";
     }
+    console.log(n+"this one");
     displayRepoData(projectInfo);
+    console.log(n+"this two\n");
 }
 function reformatName(title){
     title = title.charAt(0).toUpperCase() + title.substring(1);
@@ -60,11 +62,9 @@ function reformatName(title){
 
 function dateFormat(date){
     var monthNames = ["Jan. ", "Feb. ", "Mar. ", "Apr. ", "May. ", "June. ", "July. ", "Aug. ", "Sept. ", "Oct. ", "Nov. ", "Dec. "];
-    
     var year = date.substr(0,4);
     var month = monthNames[parseInt(date.substr(5,2))];
     var day = parseInt(date.substr(8,2));
-    
     //super duper sorry non americans that don't use the weird us way of displaying dates. i know we're weird but just like there are 12 inches in a foot, dates are month/day/year
     return month + day + " " + year;
 }
