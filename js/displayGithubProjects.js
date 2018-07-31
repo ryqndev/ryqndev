@@ -42,9 +42,7 @@ function extractRepoData(n){
     if(projectInfo.desc == null) {
         projectInfo.desc = "No Description";
     }
-    console.log(n+"this one");
     displayRepoData(projectInfo);
-    console.log(n+"this two\n");
 }
 function reformatName(title){
     title = title.charAt(0).toUpperCase() + title.substring(1);
