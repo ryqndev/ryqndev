@@ -39,7 +39,7 @@ function extractRepoData(n){
         'updated' : dateFormat(data[n]['updated_at']),
         'color': "hsl( " + parseInt(360/data.length) * n + ", 60%, 80%)",
         'lang': data[n]['language']=="C++"?"Cpp":data[n]['language']==null?"":data[n]['language']
-    };g
+    };
     if(projectInfo.desc == null) {
         projectInfo.desc = "No Description";
     }
