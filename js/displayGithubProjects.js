@@ -14,7 +14,6 @@ function getGithubUserData(){
             if(xhr.status === 200){
                 data = JSON.parse(xhr.responseText);
                 createRepoCard();
-
             }
         } 
     };
