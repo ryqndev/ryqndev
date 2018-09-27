@@ -68,5 +68,24 @@ function dateFormat(date){
 }
 
 function displayRepoData(projectInfo){
-    templatingJS('githubProject.html', projectInfo, 'github-repos');
+    // templatingJS('githubProject.html', projectInfo, 'github-repos');
+    let templateString = `
+    <style>
+    #${projectInfo.projectID}{
+        background-color: ${projectInfo.color};
+    }
+    </style>
+    <div class="github-repo" id="${projectInfo.projectID}" onclick="${projectInfo.link}">
+        <div class="${projectInfo.lang} langicon">
+        </div>
+        <p class="git-repo-desc">
+            <span>${projectInfo.name}</span>
+            <br>
+            ${projectInfo.desc}
+        </p>
+        <p class="date">
+            ${projectInfo.date}
+        </p>
+    </div>`;
+    document.getElementById("github-repos").insertAdjacentHTML('beforeend', templateString);
 }
