@@ -1,9 +1,7 @@
-
 <!DOCTYPE html>
-
-<html lang="en-US">
-    <head>
-        <meta charset="UTF-8">
+<html>
+<head>
+    <meta charset="UTF-8">
         <meta name="keywords" content="Ryan, Yang, Qiurui, Rememory, Brobot">
         <meta name="author" content="Ryan Q Yang">
         <meta property="og:url" content="http://ryanqyang.tech"/>
@@ -33,138 +31,12 @@
         <link href="https://cdn.rawgit.com/michalsnik/aos/2.1.1/dist/aos.css" rel="stylesheet">
         <script src="https://cdn.rawgit.com/michalsnik/aos/2.1.1/dist/aos.js"></script>
         <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet"> 
-        <link href="https://fonts.googleapis.com/css?family=Montserrat" rel="stylesheet"> 
-        <link href="https://fonts.googleapis.com/css?family=Quicksand" rel="stylesheet"> 
-        <link href="https://fonts.googleapis.com/css?family=Comfortaa" rel="stylesheet"> 
+        <link href="https://fonts.googleapis.com/css?family=Montserrat" rel="stylesheet">
         
-        <script src="js/templating.min.js"></script>
         <script src="js/script.js"></script>
-        <script src="js/displayGithubProjects.js"></script>
-        <link rel="stylesheet" type="text/css" href="css/default.css">
-    </head>
-    <body onload="startAnim(); getGithubUserData();">
-        <script>
-            AOS.init();
-        </script>
-            <div class="hero">
-                <div id="bgimage" class="bg-top">
-                    <div class="name"></div>      
-                </div>
-                <div id="bgimage2" class="bg-top"></div>
-            </div>
-        </div>
-        <div class="container borderTop">
-            <div class="row">
-                <div class="col-12">
-                    <h1>About Me</h1>
-                    <p class="about">
-                        First-year college student looking to make some really cool stuff.
-                        <br>
-                         <a class="resume" href="resume/ryan-yang-resume.pdf" download>Click here for my resume</a>
-                    </p>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-12">
-                    <h1>Featured Projects: </h1>
-                </div>
-            </div>
-            <div>
-                <div class="row">
-                    <div class="col-12">
-                        <div class="bathroom-cash projectHeader" data-aos="fade-left" data-aos-duration="1000" data-aos-offset="250">
-                        </div>
-                    </div>
-                </div>
-                <div class="projectDescription" data-aos="fade-down" data-aos-duration="1000" data-aos-offset="200">
-                    <div class="row">
-                        <div class="col-7">
-                            <p class="bathroom-cash-name projectName">
-                                <img style="height: 40px" src="images/bathroom-cash/logo.png">
-                                Bathroom Cash
-                            </p>
-                        </div>
-                        <div class="col-5">
-                            <a href="https://play.google.com/store/apps/details?id=tech.ryanqyang.BathroomCash">
-                                <img class="googlePlay" alt="Get it on Google Play" align="right" src="images/logos/google-play-badge.png"/>
-                            </a>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-12 col-lg-7">
-                            <p>
-                                Ever wonder how much money you're making while taking a dump during work? Well, wonder no more because this app takes care of just that oddly-specific problem!
-                            </p>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-12">
-                            <div class="image-center">
-                                <img class="image-size-25" src="images/bathroom-cash/screenshot2.png">
-                                <img class="image-size-25" src="images/bathroom-cash/screenshot1.png">
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div>
-                <div class="row">
-                    <div class="col-12">
-                        <div class="rememory projectHeader" data-aos="fade-right" data-aos-duration="1000" data-aos-offset="250">
-                        </div>
-                    </div>
-                </div>
-                <div class="projectDescription" data-aos="fade-down" data-aos-duration="1000" data-aos-offset="200">
-                    <div class="row">
-                        <div class="col-7">
-                            <p class="rememory-name projectName">
-                                <img style="height: 40px" src="images/rememory/icon.png">
-                                Rememory
-                            </p>
-                        </div>
-                        <div class="col-5">
-                            <a href="https://play.google.com/store/apps/details?id=tech.ryanqyang.rememory&pcampaignid=MKT-Other-global-all-co-prtnr-py-PartBadge-Mar2515-1">
-                                <img class="googlePlay" alt="Get it on Google Play" align="right" src="images/logos/google-play-badge.png"/>
-                            </a>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-12 col-lg-7">
-                            <p>
-                            Test your memory with this quick level-based game. We'll show you a sequence of boxes and it's your job to remember them!
-                            </p>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-12">
-                            <div class="image-center">
-                                <img class="image-size-25" src="images/rememory/screenshot2.png">
-                                <img class="image-size-25" src="images/rememory/screenshot1.png">
-                                <img class="image-size-25" src="images/rememory/screenshot3.png">
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-12">
-                    <h1>My Github Projects</h1>
-                </div>
-            </div>
-        </div>
-        <div id="github-repos">
-        </div>
-        <div class="github">
-            <div class="container-fluid">
-                <div class="row">
-                    <div class="col-md-6 col-12 mr-auto ml-auto">
-                            Find me on Github at:
-                            <a href="https://github.com/Ryabn"> Ryabn </a>
-                        <br>
-                            or email me at: qyang20@go.pasadena.edu
-                    </div>
-                </div>
-            </div>
-        </div>
-    </body>
+        <link rel="stylesheet" type="text/css" href="css/style.css">
+</head>
+<body>
+    
+</body>
 </html>
