@@ -26,6 +26,9 @@ body{
     opacity: 0;
     text-align: center;
 }
+#aboutme-page{
+    background-color: #151515;
+}
 #offluckas-page{
     background-image: url('../assets/offluckas.png');
     background-color: white;

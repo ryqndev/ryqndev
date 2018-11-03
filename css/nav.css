@@ -31,10 +31,15 @@ a{
     justify-self: center;
     transition: 500ms ease-in-out;
 }
+a span{
+    font-size: 18px;
+}
+.resume{
+    font-size: 18px !important;
+}
 .active>a{
     font-size: 60px;
     color: white;
-   /* animation: move 1s forwards both; */
 }
 
 @keyframes move{
