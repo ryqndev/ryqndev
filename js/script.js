@@ -1,11 +1,12 @@
 let isDisabled = false;
 const navProjects = {
-    'about': 0,
+    'aboutme': 0,
     'offluckas' : 1,
     'LITPCC': 2
 };
+const projectArray = ['aboutme', 'offluckas', 'LITPCC'];
 const navLinks = {
-    'about': "#aboutme",
+    'aboutme': "#aboutme",
     'offluckas' : "https://offluckas.studio",
     'LITPCC': "https://litpcc.com"
 }
@@ -66,4 +67,16 @@ function moveNav(page){
     }
     document.getElementById(page).classList.add('active');
     navActive = page;
+}
+
+function wheeled(e){
+    if(e.deltaY < 0){
+        if(navProjects[navActive] - 1 > -1){
+            router(projectArray[navProjects[navActive] - 1]);
+        }
+    }else{
+        if(navProjects[navActive] + 1 < 3){
+            router(projectArray[navProjects[navActive] + 1]);
+        }
+    }
 }
