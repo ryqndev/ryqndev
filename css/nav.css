@@ -1,0 +1,49 @@
+:root{
+    --nav-size: 200px;
+    --nav-move: -250px;
+}
+#nav{
+    position: fixed;
+    opacity: 0;
+    top: calc( 50vh - var(--nav-size)/2);
+    left: 20vw;
+    width: 80vw;
+    display: grid;
+    grid-template-columns: 1fr;
+    grid-template-rows: repeat( 3, var(--nav-size));
+    transition: 500ms ease-in-out;
+    animation: fade-in 1s 4s both;
+}
+#nav{
+    transform: translateY(var(--nav-move));
+}
+#nav>active>a{
+    font-size: 50px;
+}
+#nav>div{
+    align-self: center;
+}
+a{
+    color: grey;
+    text-decoration: none;
+    font-size: 40px;
+    width: 20vw;
+    justify-self: center;
+    transition: 500ms ease-in-out;
+}
+.active>a{
+    font-size: 60px;
+    color: white;
+   /* animation: move 1s forwards both; */
+}
+
+@keyframes move{
+    from{
+        font-size: 40px;
+        color: grey;
+    }
+    to{
+        font-size: 60px;
+        color: white;
+    }
+}
