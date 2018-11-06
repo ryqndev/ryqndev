@@ -15,7 +15,6 @@ body{
     width: 100vw;
 }
 .page{
-    background-size: contain;
     background-repeat: no-repeat;
     background-position: center;
 }
@@ -27,16 +26,22 @@ body{
     text-align: center;
 }
 #aboutme-page{
+    background-image: url('../assets/coverpicture.jpg');
+    background-size: cover;
     background-color: #151515;
+    visibility: hidden;
 }
 #offluckas-page{
     background-image: url('../assets/offluckas.png');
+    background-size: contain;
     background-color: white;
+    visibility: hidden;
 }
 #LITPCC-page{
     background-image: url('../assets/LITPCC.jpg');
+    background-size: cover;
     background-color: #151515;
-    background-size: cover !important;
+    visibility: hidden;
 }
 .fade{
     animation: fade-in 1s reverse both;

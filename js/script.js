@@ -1,4 +1,5 @@
 let isDisabled = false;
+let navSize = -250;
 const navProjects = {
     'aboutme': 0,
     'offluckas' : 1,
@@ -12,6 +13,9 @@ const navLinks = {
 }
 let navActive;
 function load(){
+    if(window.innerWidth < 768){
+        navSize = -150;
+    }
     document.getElementById('aboutme-page').style.visibility = 'hidden';
     document.getElementById('offluckas-page').style.visibility = 'hidden';
     document.getElementById('LITPCC-page').style.visibility = 'hidden';
@@ -56,7 +60,7 @@ function router(page){
         window.location = navLinks[page];
     }
 }
-const navSize = -200;
+
 function moveNav(page){
     if(navActive == null){
         document.documentElement.style.setProperty(`--nav-move`, navSize*(navProjects[page]) + 'px');
