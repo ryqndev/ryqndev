@@ -10,7 +10,7 @@
     width: 80vw;
     display: grid;
     grid-template-columns: 1fr;
-    grid-template-rows: repeat( 3, var(--nav-size));
+    grid-template-rows: repeat( 4, var(--nav-size));
     transition: 500ms ease-in-out;
     animation: fade-in 1s 4s both;
 }

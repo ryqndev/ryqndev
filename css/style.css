@@ -1,8 +1,12 @@
+
 body{
     background-color: #151515;
     font-family: 'Montserrat';
     margin: 0;
+    height: 100vh;
+    overflow: hidden;
     color: white;
+    overscroll-behavior-y: none;
 }
 .bg-dark{
     background-color: rgba(0, 0, 0, 0.6);
@@ -39,6 +43,12 @@ body{
 }
 #LITPCC-page{
     background-image: url('../assets/LITPCC.jpg');
+    background-size: cover;
+    background-color: #151515;
+    visibility: hidden;
+}
+#NewsAlligator-page{
+    background-image: url('../assets/newsalligator.png');
     background-size: cover;
     background-color: #151515;
     visibility: hidden;

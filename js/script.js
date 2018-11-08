@@ -3,13 +3,15 @@ let navSize = -250;
 const navProjects = {
     'aboutme': 0,
     'offluckas' : 1,
-    'LITPCC': 2
+    'LITPCC': 2,
+    'NewsAlligator': 3
 };
-const projectArray = ['aboutme', 'offluckas', 'LITPCC'];
+const projectArray = ['aboutme', 'offluckas', 'LITPCC', 'NewsAlligator'];
 const navLinks = {
     'aboutme': "#aboutme",
     'offluckas' : "https://offluckas.studio",
-    'LITPCC': "https://litpcc.com"
+    'LITPCC': "https://litpcc.com",
+    'NewsAlligator': "https://calhacks-2018.github.io/project/"
 }
 let navActive;
 function load(){
@@ -19,6 +21,7 @@ function load(){
     document.getElementById('aboutme-page').style.visibility = 'hidden';
     document.getElementById('offluckas-page').style.visibility = 'hidden';
     document.getElementById('LITPCC-page').style.visibility = 'hidden';
+    document.getElementById('NewsAlligator-page').style.visibility = 'hidden';
     setTimeout(function(){
         if(document.location.hash == ''){
             router('aboutme');
@@ -79,7 +82,7 @@ function wheeled(e){
             router(projectArray[navProjects[navActive] - 1]);
         }
     }else{
-        if(navProjects[navActive] + 1 < 3){
+        if(navProjects[navActive] + 1 < 4){
             router(projectArray[navProjects[navActive] + 1]);
         }
     }
