@@ -18,10 +18,10 @@ function load(){
     if(window.innerWidth < 768){
         navSize = -150;
     }
-    // document.getElementById('aboutme-page').style.visibility = 'hidden';
-    // document.getElementById('offluckas-page').style.visibility = 'hidden';
-    // document.getElementById('LITPCC-page').style.visibility = 'hidden';
-    // document.getElementById('NewsAlligator-page').style.visibility = 'hidden';
+    document.getElementById('aboutme-page').style.visibility = 'hidden';
+    document.getElementById('offluckas-page').style.visibility = 'hidden';
+    document.getElementById('LITPCC-page').style.visibility = 'hidden';
+    document.getElementById('NewsAlligator-page').style.visibility = 'hidden';
     setTimeout(function(){
         if(document.location.hash == ''){
             router('aboutme');
