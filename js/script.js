@@ -29,7 +29,7 @@ function load(){
         }else{
             router(document.location.hash.substr(1));
         }
-    }, 4000);
+    }, 3000);
     document.body.addEventListener("touchstart", swipeGestureStart, false);
     document.body.addEventListener("touchend", swipeGestureEnd, false);
 }
