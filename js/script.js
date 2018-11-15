@@ -1,5 +1,6 @@
 let isDisabled = false;
 let navSize = -250;
+let touchY;
 const navProjects = {
     'aboutme': 0,
     'offluckas' : 1,
@@ -29,6 +30,8 @@ function load(){
             router(document.location.hash.substr(1));
         }
     }, 4000);
+    document.body.addEventListener("touchstart", swipeGestureStart, false);
+    document.body.addEventListener("touchend", swipeGestureEnd, false);
 }
 function router(page){
     if(!document.getElementById(page).classList.contains('active')){
@@ -84,6 +87,33 @@ function wheeled(e){
     }else{
         if(navProjects[navActive] + 1 < 4){
             router(projectArray[navProjects[navActive] + 1]);
+        }
+    }
+}
+function keypress(e) {
+    var event = window.event ? window.event : e;
+    if(event.keyCode == 38 || event.keyCode == 37){
+        if(navProjects[navActive] - 1 > -1){
+            router(projectArray[navProjects[navActive] - 1]);
+        }
+    }else if(event.keyCode == 40 || event.keyCode == 39){
+        if(navProjects[navActive] + 1 < 4){
+            router(projectArray[navProjects[navActive] + 1]);
+        }
+    }
+}
+function swipeGestureStart(e){
+    touchY = e.changedTouches[0].pageY;
+}
+function swipeGestureEnd(e){
+    let change = touchY - e.changedTouches[0].pageY;
+    if(change > 0){
+        if(navProjects[navActive] + 1 < 4){
+            router(projectArray[navProjects[navActive] + 1]);
+        }
+    }else if(change < 0){
+        if(navProjects[navActive] - 1 > -1){
+            router(projectArray[navProjects[navActive] - 1]);
         }
     }
 }

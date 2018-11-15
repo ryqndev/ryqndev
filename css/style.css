@@ -25,6 +25,8 @@ body{
 #name-start{
     position: fixed;
     width: 100vw;
+    font-size: 35px;
+    top: calc(50vh - 30px);
     animation: 3s 250ms ease-in forwards name-show-small;
     opacity: 0;
     text-align: center;
@@ -36,7 +38,7 @@ body{
     visibility: hidden;
 }
 #offluckas-page{
-    background-image: url('../assets/offluckas.png');
+    background-image: url('../assets/offluckas-mobile.png');
     background-size: contain;
     background-color: white;
     visibility: hidden;
@@ -114,6 +116,9 @@ body{
         letter-spacing: 10px;
         font-size: 90px;
         top: calc(50vh - 90px);
+    }
+    #offluckas-page{
+        background-image: url('../assets/offluckas.png');
     }
 }
 @media (min-width: 768px) {
