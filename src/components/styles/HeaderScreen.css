@@ -1,146 +1,97 @@
-#header-top{
-    position: fixed;
-    top: 0;
-    left: 0;
+#header-bar{
     height: 5px;
+    background-color: #700070;
+    transition: ease-in-out 2000ms;
+    width: 0px;
+    max-width: calc(100% - 200px);
+    box-sizing: border-box;
+    margin: 0 auto;
+    box-shadow: 0 0 5px 3px #ff00ff;
+}
+#header-bar.loaded{
     background-color: #ff00ff;
-    transition: ease-in-out 4000ms;
-    box-shadow: 0 0 10px 3px #ff00ff;
-}
-#header-top::before{
-    content: "";
-    display: block;
-    width: 100vw;
-    box-shadow: 0 0 5px 2px #420dab;
-}
-.header-content--bar{
-    position: absolute;
-    width: 200px;
-    left: -80px;
-    border-radius: 2px;
-    border-right: 4px solid #ff00ff;
-    background-color: #151515; 
-    animation: 
-        header-animation-small 1.5s 200ms ease-in-out alternate 2 both,
-        slide-left 2s 1s reverse both;
 }
 .header-content--name{
-    font-family: 'Exo 2', sans-serif;
+    font-family: 'Red Hat Display', sans-serif;
     color: white;
-    font-size: 50px;
-    animation: slide-left-small 1s 1s ease-out both;
+    font-size: 40px;
+    font-weight: bold;
 }
 .header-content--position{
     color: #c079c0;
     font-size: 20px;
-    animation: slide-down 1.5s 2.7s ease-out both;
 }
 .header-content--wrapper{
     display: grid;
     height: 100vh;
     width: 100%;
+    background-color: #151515;
+    border-top-left-radius: 100%;
+    overflow: hidden;
     box-sizing: border-box;
-    opacity: 0;
     grid-template-columns: 1fr;
-    grid-template-rows: 75px 50px 30px;
-    padding: calc(50vh - 140px) 20px 0 20px;
+    grid-template-rows: 65px 50px 30px;
+    padding: calc(50vh - 100px) 20px 0 20px;
     text-align: center;
-    animation: fade 1s ease-in-out both;
-    transition: 500ms all;
+    user-select: none;
+    transition: 1s all;
 }
-.header-content--wrapper.loaded{
-    padding-top: 100px;
+.glitch{
+    letter-spacing: 3px;
+    position: relative;
 }
-
-.header-content--load-bar{
-    border-bottom: 2px solid white;
-}
-.header--load-icon{
-    animation: fade 1500ms 2200ms both;
-}
-.header--load-icon span{
-    transition: all 1s 200ms ease,
-        border-radius 500ms 1s;
-    background: #33FFCC;
-    height: 10px;
-    width: 10px;  
-    margin: 15px;
-    display: inline-block;
-    border-radius: 10px;
-    animation: wave 1.5s ease infinite;
-}  
-.header--load-icon.loaded span{
-    border-radius: 0;
-    width: 30px;
-    height: 8px;
-    margin: 0;
-    animation: none;
-}
-.header--load-icon.loaded span:nth-child(1){  
-    border-top-left-radius: 5px;
-    border-bottom-left-radius: 5px;
-}
-.header--load-icon.loaded span:nth-child(4){  
-    border-top-right-radius: 5px;
-    border-bottom-right-radius: 5px;
-}
-
-.header--load-icon span:nth-child(1){  animation-delay: 0; }
-.header--load-icon span:nth-child(2){  animation-delay: 100ms; }
-.header--load-icon span:nth-child(3){  animation-delay: 200ms; }
-.header--load-icon span:nth-child(4){  animation-delay: 300ms; }
-
 .glitch:after {
-    content: "Ryan Yang";
+    content: "RYAN YANG";
     position: absolute;
-    margin-left: -232px;
+    margin-left: -260px;
     text-align: center;
     text-shadow: -2px 0 red;
     color: white;
     background: #151515;
     overflow: hidden;
     clip: rect(0, 900px, 0, 0);
-    animation: noise-anim 3s 2.3s infinite ease;
+    font-weight: bold;
+    animation: noise-anim 4s infinite ease;
 }
 
 .glitch:before {
-    content: "Ryan Yang";
+    content: "RYAN YANG";
     position: absolute;
-    text-shadow: 2px 0 blue;
+    margin-left: 2px;
+    text-shadow: 3px 0 blue;
     color: white;
     background: #151515;
     overflow: hidden;
     clip: rect(0, 900px, 0, 0);
-    animation: noise-anim-2 3s 2.3s infinite ease;
+    font-weight: bold;
+    animation: noise-anim 4s infinite alternate-reverse ease;
 }
 
-
 @media (min-width: 600px){
+    #header-bar{
+        max-width: calc(100% - 300px);
+    }
     .glitch:after{
-        margin-left: -373px;
+        margin-left: -375px;
     }
     .header-content--name{
-        font-size: 80px;
-        animation: slide-left-small 1s 1.5s ease-out both;
+        font-size: 60px;
     }
     .header-content--position{
         font-size: 32px;
     }
     .header-content--wrapper{
-        grid-template-rows: 130px 80px 50px;
-    }
-    .header-content--bar{
-        width: 700px;
-        left: -500px;
-        animation: 
-            header-animation 1.5s ease-out 2 alternate both,
-            slide-left 1s 1500ms reverse both;
+        grid-template-rows: 90px 80px 50px;
     }
     .header--load-icon.loaded span{
         width: 85px;
     }
 }
 @media (min-width: 900px){
+    #header-bar{
+        max-width: 100%;
+        margin: 0;
+    }
     .glitch{
         display: relative;
     }
@@ -148,24 +99,16 @@
         margin-left: 0px;
         left: 148px;
     }
-    .header-content--bar{
-        width: 700px;
-        left: -500px;
-        animation: 
-            header-animation 1.5s ease-out 2 alternate both,
-            slide-left 1s 1500ms reverse both;
-    }
     .header-content--name{
-        font-size: 90px;
-        animation: slide-left-small 1s 1.3s ease-out both;
+        font-size: 80px;
     }
     .header-content--position{
         font-size: 35px;
     }
     .header-content--wrapper{
         text-align: left;
-        grid-template-rows: 140px 80px 50px;
-        padding: calc(50vh - 140px) 150px 0 150px;
+        grid-template-rows: 110px 80px 50px;
+        padding: calc(50vh - 100px) 150px 0 150px;
     }
     .header--load-icon.loaded span{
         width: 60px;

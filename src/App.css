@@ -1,9 +1,12 @@
 body{
     margin: 0;
     padding: 0;
-    background-color: #151515;
-    font-family: 'Josefin Sans', sans-serif;
+    background-color: #FFFFFF;
+    width: 100vw;
+    font-family: 'Roboto', sans-serif;
     overflow-y: scroll;
     overflow-x: hidden;
-    user-select: none;
+}
+.site-wrapper{
+    width: 100vw;
 }

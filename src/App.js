@@ -14,11 +14,10 @@ function App() {
     const headerRef = useRef(setheader);
     headerRef.current = setheader;
 
-    setTimeout(() => {  setProgress(100) }, 5000);
+    setTimeout(() => {  setProgress(100) }, 2000);
 
     let removeLoadScreen = () => {
         // setTimeout( () => { headerRef.current(true) }, 5000 );
-        
     }
 
     useEffect(() => {
@@ -29,7 +28,7 @@ function App() {
     return (
         <div className="site-wrapper">
             <HeaderScreen progress={progress} />
-            <BobaWatch />
+            {/* <BobaWatch /> */}
         </div>
     );
 }
