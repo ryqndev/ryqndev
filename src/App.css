@@ -4,9 +4,5 @@ body{
     background-color: #FFFFFF;
     width: 100vw;
     font-family: 'Roboto', sans-serif;
-    overflow-y: scroll;
     overflow-x: hidden;
-}
-.site-wrapper{
-    width: 100vw;
 }

@@ -1,15 +1,23 @@
 #header-bar{
-    height: 5px;
-    background-color: #700070;
-    transition: ease-in-out 2000ms;
-    width: 0px;
-    max-width: calc(100% - 200px);
+    height: 6px;
+    background-color: #6600bb;
+    background: no-repeat linear-gradient(#f0f, #f0f);
+    background-size: 0%;
+    transition: 2s background ease-in-out, width 200ms, 1s box-shadow 1.8s,
+     opacity 1.5s 3s;
+    width: 150px;
     box-sizing: border-box;
     margin: 0 auto;
-    box-shadow: 0 0 5px 3px #ff00ff;
+    border-radius: 3px;
+    box-shadow: 0 0 5px 2px #f0f;
 }
-#header-bar.loaded{
-    background-color: #ff00ff;
+#header-bar.ld{
+    box-shadow: 0 0 0px 0px #f0f;
+    opacity: 0;
+}
+.header-content--position.ld{
+    transition: transform 1.5s 3s;
+    transform: translateY(-30px);
 }
 .header-content--name{
     font-family: 'Red Hat Display', sans-serif;
@@ -19,22 +27,31 @@
 }
 .header-content--position{
     color: #c079c0;
-    font-size: 20px;
+    font-size: 18px;
+}
+.header-wrapper{
+    height: 100vh;
+}
+
+.header-wrapper.ld{
+    border-bottom-left-radius: 100%;
+    height: 0vh;
+    transition: 1s border-bottom-left-radius 4.5s,
+                500ms height 4.7s;
+    overflow: hidden;
 }
 .header-content--wrapper{
+    position: relative;
     display: grid;
     height: 100vh;
-    width: 100%;
     background-color: #151515;
-    border-top-left-radius: 100%;
     overflow: hidden;
     box-sizing: border-box;
     grid-template-columns: 1fr;
-    grid-template-rows: 65px 50px 30px;
+    grid-template-rows: 65px 25px 30px;
     padding: calc(50vh - 100px) 20px 0 20px;
     text-align: center;
     user-select: none;
-    transition: 1s all;
 }
 .glitch{
     letter-spacing: 3px;
@@ -51,7 +68,7 @@
     overflow: hidden;
     clip: rect(0, 900px, 0, 0);
     font-weight: bold;
-    animation: noise-anim 4s infinite ease;
+    animation: noise-anim 3s 150ms infinite alternate ease;
 }
 
 .glitch:before {
@@ -64,12 +81,12 @@
     overflow: hidden;
     clip: rect(0, 900px, 0, 0);
     font-weight: bold;
-    animation: noise-anim 4s infinite alternate-reverse ease;
+    animation: noise-anim 4s infinite alternate-reverse linear;
 }
 
 @media (min-width: 600px){
     #header-bar{
-        max-width: calc(100% - 300px);
+        width: 320px;
     }
     .glitch:after{
         margin-left: -375px;
@@ -78,39 +95,33 @@
         font-size: 60px;
     }
     .header-content--position{
-        font-size: 32px;
+        font-size: 20px;
     }
     .header-content--wrapper{
-        grid-template-rows: 90px 80px 50px;
-    }
-    .header--load-icon.loaded span{
-        width: 85px;
+        grid-template-rows: 90px 30px 50px;
     }
 }
 @media (min-width: 900px){
     #header-bar{
-        max-width: 100%;
-        margin: 0;
+        width: 100%;
     }
     .glitch{
         display: relative;
     }
     .glitch:after {
-        margin-left: 0px;
-        left: 148px;
+        margin-left: -2px;
+        left: 0px;
+    }
+    .header-content--position{
+        font-size: 23px;
+        margin-left: 2px;
     }
     .header-content--name{
         font-size: 80px;
     }
-    .header-content--position{
-        font-size: 35px;
-    }
     .header-content--wrapper{
         text-align: left;
-        grid-template-rows: 110px 80px 50px;
+        grid-template-rows: 110px 25px 50px;
         padding: calc(50vh - 100px) 150px 0 150px;
-    }
-    .header--load-icon.loaded span{
-        width: 60px;
     }
 }

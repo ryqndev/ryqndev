@@ -9,12 +9,12 @@ import './App.css';
 //00101001 01110110 01100101 00101000 01100100 00101001
 //sbeve
 function App() {
-    const [progress, setProgress] = useState(5);
+    const [progress, setProgress] = useState(1);
     const [header, setheader] = useState(false);
     const headerRef = useRef(setheader);
     headerRef.current = setheader;
 
-    setTimeout(() => {  setProgress(100) }, 2000);
+    setTimeout(() => {  setProgress(100) }, 3000);
 
     let removeLoadScreen = () => {
         // setTimeout( () => { headerRef.current(true) }, 5000 );

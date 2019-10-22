@@ -3,14 +3,14 @@ import './styles/HeaderScreen.css';
 import './styles/animations.css';
 
 const HeaderContent = ({progress}) => {
+    let ld = progress >= 100;
     return (
-        <div className="header-content--wrapper">
+        <div className={`header-content--wrapper ${ld ? "ld": ""}`}>
             <div className="header-content--name">
                 <div className="glitch">RYAN YANG</div>
             </div>
-            <div id="header-bar" style={{width: progress + '%'}}
-                className={progress >= 100 ? "loaded" : ""}>    
-            </div>
+            <div id="header-bar" style={{backgroundSize: `${progress}%`}} className={ld ? "ld" : ""}></div>
+            <div className={`header-content--position ${ld ? "ld" : ""}`}>frontend // swe</div>
         </div>
     );
 }
@@ -20,13 +20,8 @@ const HeaderContent = ({progress}) => {
  * @param {Number} pr - loading progress. number between [0 - 100] 
  */
 const HeaderScreen = ({progress = 0}) => {
-    useEffect(() => {
-        if(progress >= 100){
-            
-        }
-    }, [progress]);
     return (
-        <div>
+        <div className={`header-wrapper ${progress >= 100 ? "ld": ""}`}>
             <HeaderContent progress={progress}/>
         </div>
     );
