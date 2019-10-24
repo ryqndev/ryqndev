@@ -3,7 +3,7 @@ import './styles/BobaWatch.css';
 
 const BobaWatch = () => {
     return (
-        <div className="boba-watch--wrapper">
+        <div className="bwatch--wrapper">
             
         </div>
     );

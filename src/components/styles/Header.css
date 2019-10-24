@@ -1,0 +1,159 @@
+.header-wrapper{
+    height: calc(100vh - 95px);
+    display: grid;
+    grid-template-columns: 1fr;
+    grid-template-rows: 1fr 1fr;
+    border-bottom: 30px solid #151515;
+    box-shadow: inset 0 -10px 5px -10px #151515;
+    overflow: hidden;
+}
+.header-image{
+    position: relative;
+    z-index: -1;
+    background-image: url('/profile-transparent.png');
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center;
+    width: 400px;
+    height: 400px;
+    bottom: -100px;
+    border: 80px solid #151515;
+    background-color: #ffed48;
+    border-radius: 50%;
+    box-sizing: border-box;
+    box-shadow: 0 0 5px #151515, inset 0 0 5px #151515;
+    margin: 0 -120px 0 auto;
+    transition: 250ms all;
+}
+.header-icon--wrapper{
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    padding-left: 43px;
+    margin-top: calc(90px - 15vh);
+    box-sizing: border-box;
+    height: 0;
+}
+.header-profile--name > .glitch-small{
+    position: absolute;
+    top: 90px;
+    left: 60px;
+    font-size: 60px;
+    line-height: 1;
+    width: 170px;
+    text-align: center;
+    z-index: -1;
+}
+.glitch-small:before {
+    content: "RYAN YANG";
+    position: absolute;
+    margin-left: -2px;
+    top: 0px;
+    text-align: center;
+    text-shadow: 2px 0 blue;
+    color: black;
+    background: white;
+    overflow: hidden;
+    clip: rect(0, 900px, 0, 0);
+    font-weight: bold;
+    animation: noise-anim-2-big 4s infinite alternate ease;
+}
+.glitch-small:after {
+    content: "RYAN YANG";
+    position: absolute;
+    left: -2px;
+    top: 0px;
+    text-align: center;
+    text-shadow: -2px 0 red;
+    color: black;
+    background: white;
+    overflow: hidden;
+    clip: rect(0, 900px, 0, 0);
+    font-weight: bold;
+    animation: noise-anim-big 4s 150ms infinite alternate ease;
+}
+
+.header--side-text{
+    position: absolute;
+    right: calc( 100vw - 200px );
+    text-align: right;
+    width: 400px;
+    transform: rotateZ(-90deg);
+    user-select: none;
+}
+.header--side-text > span{
+    color: #ffae00;
+}
+.header-profile{
+    display: grid;
+    grid-template-rows: 1fr 1fr;
+    padding: 25vh 10px 0 20px;
+}
+.header-profile--name{
+    font-size: 15vw;
+    font-family: 'Red Hat Display', sans-serif;
+    font-weight: bold;
+}
+@media (min-width: 600px){
+    .header-profile{
+        padding: 20vh 40px 0 50px;
+    }
+    .header-profile--name{
+        font-size: calc(50px + 5vw);
+    }
+    .header--side-text{
+        right: calc( 100vw - 280px );
+        width: 400px;
+    }
+    .header-image{
+        width: 600px;
+        height: 600px;
+        border: 120px solid #151515;
+        bottom: -150px;
+        margin-right: -80px;
+    }
+}
+@media (min-width: 1100px){
+    .header-profile{
+        padding: 20vh 40px 0 50px;
+    }
+    .header-profile--name{
+        font-size: calc(50px + 5vw);
+    }
+    .header-wrapper{
+        grid-template-columns: 1fr 1fr;
+        grid-template-rows: 1fr;
+        max-height: 700px;
+    }
+    .header--side-text{
+        right: calc( 100vw - 140px );
+        width: 250px;
+        top: 100px;
+    }
+    .header-image{
+        width: 800px;
+        height: 800px;
+        border: 120px solid #151515;
+        bottom: -130px;
+        margin-right: -150px;
+    }
+}
+@media (min-width: 1500px){
+    .header-profile--name{
+        font-size: calc(20px + 5vw);
+    }
+    .header-wrapper{
+        max-height: 885px;
+    }
+    .header--side-text{
+        right: calc( 100vw - 250px );
+        width: 250px;
+        top: 100px;
+    }
+    .header-image{
+        width: 1000px;
+        height: 1000px;
+        bottom: -180px;
+        margin-right: -100px;
+        border: 180px solid #151515;
+    }
+}

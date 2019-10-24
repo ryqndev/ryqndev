@@ -1,0 +1,72 @@
+.footer-wrapper{
+    display: grid;
+    grid-template-columns: 1fr;
+    grid-template-rows: auto auto 60px;
+    background-color: #151515;
+    color: white;
+    padding: 40px 20px 10px 20px;
+}
+.footer-top{
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: 1fr;
+    border-bottom: 5px solid #ffee00;
+    margin-bottom: 15px;
+}
+.footer-top--socials{
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    width: 150px;
+    padding-bottom: 10px;
+    box-sizing: border-box;
+    margin-left: auto;
+}
+.footer-top--socials > .icon{
+    height: 40px;
+    width: 40px;
+    background-color: #151515;
+}
+.footer-top--socials > .icon:hover{
+    background-color: #ffee00;
+}
+.footer-top--name{
+    box-sizing: border-box;
+    padding-top: 8px;
+    font-size: 20px;
+    font-family: 'Red Hat Display', sans-serif;
+    font-weight: bold;
+}
+.footer-bottom{
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-template-rows: 1fr;
+}
+.footer-bottom > div > span{
+    font-size: 18px;
+    color: #ffffff;
+    font-weight: bold;
+}
+.footer-made-with{
+    font-size: 15px;
+    text-align: center;
+    color: #666666;
+    padding-top: 40px;
+}
+@media (min-width: 600px){
+    .footer-wrapper{
+        padding: 40px 85px 40px 85px;
+    }
+}
+@media (min-width: 900px){
+    .footer-wrapper{
+        padding: 40px 125px 40px 125px;
+    }
+    .footer-bottom{
+        grid-template-columns: repeat(3, 200px);
+    }
+}
+@media (min-width: 1200px){
+    .footer-wrapper{
+        padding: 40px 200px 40px 200px;
+    }
+}

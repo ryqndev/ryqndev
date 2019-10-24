@@ -1,46 +1,51 @@
-#header-bar{
+#loading-bar{
     height: 6px;
     background-color: #6600bb;
     background: no-repeat linear-gradient(#f0f, #f0f);
     background-size: 0%;
     transition: 2s background ease-in-out, width 200ms, 1s box-shadow 1.8s,
-     opacity 1.5s 3s;
+     opacity 1s 2.5s;
     width: 150px;
     box-sizing: border-box;
     margin: 0 auto;
     border-radius: 3px;
     box-shadow: 0 0 5px 2px #f0f;
 }
-#header-bar.ld{
+#loading-bar.ld{
     box-shadow: 0 0 0px 0px #f0f;
     opacity: 0;
 }
-.header-content--position.ld{
+.loading-content--position.ld{
     transition: transform 1.5s 3s;
     transform: translateY(-30px);
 }
-.header-content--name{
+.loading-content--name{
     font-family: 'Red Hat Display', sans-serif;
     color: white;
     font-size: 40px;
     font-weight: bold;
 }
-.header-content--position{
+.loading-content--position{
     color: #c079c0;
     font-size: 18px;
 }
-.header-wrapper{
+.loading-wrapper{
     height: 100vh;
+    width: 100vw;
+    top: 0;
+    left: 0;
+    z-index: 100;
+    position: fixed;
 }
 
-.header-wrapper.ld{
+.loading-wrapper.ld{
     border-bottom-left-radius: 100%;
     height: 0vh;
     transition: 1s border-bottom-left-radius 4.5s,
-                500ms height 4.7s;
+                1.5s height 4.7s;
     overflow: hidden;
 }
-.header-content--wrapper{
+.loading-content--wrapper{
     position: relative;
     display: grid;
     height: 100vh;
@@ -85,24 +90,24 @@
 }
 
 @media (min-width: 600px){
-    #header-bar{
+    #loading-bar{
         width: 320px;
     }
     .glitch:after{
         margin-left: -375px;
     }
-    .header-content--name{
+    .loading-content--name{
         font-size: 60px;
     }
-    .header-content--position{
+    .loading-content--position{
         font-size: 20px;
     }
-    .header-content--wrapper{
+    .loading-content--wrapper{
         grid-template-rows: 90px 30px 50px;
     }
 }
 @media (min-width: 900px){
-    #header-bar{
+    #loading-bar{
         width: 100%;
     }
     .glitch{
@@ -112,14 +117,14 @@
         margin-left: -2px;
         left: 0px;
     }
-    .header-content--position{
+    .loading-content--position{
         font-size: 23px;
         margin-left: 2px;
     }
-    .header-content--name{
+    .loading-content--name{
         font-size: 80px;
     }
-    .header-content--wrapper{
+    .loading-content--wrapper{
         text-align: left;
         grid-template-rows: 110px 25px 50px;
         padding: calc(50vh - 100px) 150px 0 150px;

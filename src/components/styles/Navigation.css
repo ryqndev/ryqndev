@@ -1,0 +1,15 @@
+.nav-wrapper{
+    position: sticky;
+    top: 0;
+    display: grid;
+    margin: 5px auto 15px auto;
+    height: 20px;
+    padding: 15px;
+    z-index: 0;
+    width: 250px;
+    grid-template-columns: repeat(3, 1fr);
+}
+.nav-content{
+    text-align: center;
+    cursor: pointer;
+}
