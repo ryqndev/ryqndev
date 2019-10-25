@@ -1,6 +1,6 @@
 {
   "files": {
-    "main.css": "/static/css/main.a1dba252.chunk.css",
+    "main.css": "/static/css/main.87c38f3b.chunk.css",
     "main.js": "/static/js/main.89e2ec98.chunk.js",
     "main.js.map": "/static/js/main.89e2ec98.chunk.js.map",
     "runtime-main.js": "/static/js/runtime-main.f2db0397.js",
@@ -8,9 +8,9 @@
     "static/js/2.0f92e86a.chunk.js": "/static/js/2.0f92e86a.chunk.js",
     "static/js/2.0f92e86a.chunk.js.map": "/static/js/2.0f92e86a.chunk.js.map",
     "index.html": "/index.html",
-    "precache-manifest.0e6c2bc3528aa8b1e3573e7d561d719f.js": "/precache-manifest.0e6c2bc3528aa8b1e3573e7d561d719f.js",
+    "precache-manifest.1fc115f74c85a1235c855045e500d43f.js": "/precache-manifest.1fc115f74c85a1235c855045e500d43f.js",
     "service-worker.js": "/service-worker.js",
-    "static/css/main.a1dba252.chunk.css.map": "/static/css/main.a1dba252.chunk.css.map",
+    "static/css/main.87c38f3b.chunk.css.map": "/static/css/main.87c38f3b.chunk.css.map",
     "static/media/github.svg": "/static/media/github.d8e2822a.svg",
     "static/media/gmail.svg": "/static/media/gmail.2382b9b0.svg",
     "static/media/instagram.svg": "/static/media/instagram.ce41af6a.svg"
@@ -18,7 +18,7 @@
   "entrypoints": [
     "static/js/runtime-main.f2db0397.js",
     "static/js/2.0f92e86a.chunk.js",
-    "static/css/main.a1dba252.chunk.css",
+    "static/css/main.87c38f3b.chunk.css",
     "static/js/main.89e2ec98.chunk.js"
   ]
 }
