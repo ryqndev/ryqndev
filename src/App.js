@@ -12,11 +12,11 @@ import './App.css';
 //sbeve
 
 const App = () => {
-    const [progress, setProgress] = useState(1);
-    setTimeout(() => {  setProgress(100) }, 3000);
+    const [progress, setProgress] = useState(100);
+    // setTimeout(() => {  setProgress(100) }, 3000);
 
     return (
-        <div className={"site-wrapper" + (progress >= 100 ? " ld" : "")}>
+        <div id="site-wrapper" className={(progress >= 100 ? " ld" : "")}>
             <Loading progress={progress} />
             <Navigation />
             <Header />

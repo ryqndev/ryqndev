@@ -7,6 +7,7 @@ const WebLink = ({text, link}) => {
             href={link}
             target="_blank"
             rel="noopener noreferrer"
+            className="weblink-link"
         >
             {text}
         </a>

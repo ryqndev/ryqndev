@@ -1,4 +1,13 @@
-a{
+a.weblink-link:active{
+    color: #ff00ff;
+}
+a.weblink-link:hover{
+    color: #ff00ff;
+}
+a.weblink-link{
     text-decoration: none;
     color: #999999;
+    transition: 250ms all;
+    pointer-events: all;
+    user-select: all;
 }

@@ -116,8 +116,9 @@
     .header-profile{
         padding: 20vh 40px 0 50px;
     }
-    .header-profile--name{
-        font-size: calc(50px + 5vw);
+    .header-profile--name > .glitch-small{
+        font-size: 100px;
+        width: 590px;
     }
     .header-wrapper{
         grid-template-columns: 1fr 1fr;
@@ -128,6 +129,13 @@
         right: calc( 100vw - 140px );
         width: 250px;
         top: 100px;
+    }
+    .header-icon--wrapper{
+        padding-left: 0;
+    }
+    .header-icon--wrapper > .icon{
+        height: 60px;
+        width: 60px;
     }
     .header-image{
         width: 800px;
@@ -140,6 +148,11 @@
 @media (min-width: 1500px){
     .header-profile--name{
         font-size: calc(20px + 5vw);
+    }
+    .header-profile--name > .glitch-small{
+        left: 60px;
+        font-size: 150px;
+        width: 900px;
     }
     .header-wrapper{
         max-height: 885px;

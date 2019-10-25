@@ -1,5 +1,105 @@
+:root{
+    --bwatch-scroll: 1;
+}
 .bwatch--wrapper{
+    position: relative;
     font-family: 'Poppins', sans-serif;
     height: 100vh;
     background-color: #FFDCDC;
+    z-index: -2;
+    display: grid;
+    grid-template-columns: 1fr;
+    grid-template-rows: 1fr 1fr;
+}
+.bwatch--description{
+}
+.bwatch-title{
+    text-align: center;
+    font-size: 30px;
+}
+.bwatch--device{
+}
+.bwatch--layers{
+    position: relative;
+    height: 100%;
+}
+.bwatch-layer{
+    top: calc(-100px + 20vh);
+    margin-left: calc(50vw - 75px);
+    position: absolute;
+    transform: rotateX(65deg) rotateZ(-45deg) translateZ(0);
+    height: 260px;
+    background-position: center;
+    background-size: cover;
+    background-repeat: no-repeat;
+    width: 150px;
+    transition: all 250ms ease-in-out;
+    box-shadow: 0 0 1px 1px rgba(255, 255, 255, 0.4); 
+}
+#layer-1{
+    background-image: url('/layer3.png');
+    margin-top: 0px;
+}
+#layer-2{
+    background-image: url('/layer2.png');
+    margin-top: calc(-30px * var(--bwatch-scroll));
+}
+#layer-3{
+    background-image: url('/layer1.png');
+    margin-top: calc(-60px * var(--bwatch-scroll));
+}
+@media (min-width: 850px){
+    .bwatch--wrapper{
+        grid-template-columns: 1fr 1fr;
+        grid-template-rows: 1fr;
+    }
+    .bwatch-layer{
+        top: 18vh;
+        margin-left: calc(25vw - 110px);
+        height: 380px;
+        width: 215px;
+    }
+    #layer-1{
+        margin-top: 0px;
+    }
+    #layer-2{
+        margin-top: calc(-45px * var(--bwatch-scroll));
+    }
+    #layer-3{
+        margin-top: calc(-90px * var(--bwatch-scroll));
+    }
+}
+@media (min-width: 1100px){
+    .bwatch-layer{
+        top: 30vh;
+        margin-left: calc(25vw - 100px);
+        height: 380px;
+        width: 220px;
+    }
+    #layer-1{
+        margin-top: 0px;
+    }
+    #layer-2{
+        margin-top: calc(-75px * var(--bwatch-scroll));
+    }
+    #layer-3{
+        margin-top: calc(-150px * var(--bwatch-scroll));
+    }
+}
+@media (min-width: 1500px){
+    .bwatch-layer{
+        top: 30vh;
+        margin-left: calc(25vw - 140px);
+        height: 520px;
+        width: 300px;
+    }
+    #layer-1{
+        margin-top: 0px;
+    }
+    #layer-2{
+        margin-top: calc(-100px * var(--bwatch-scroll)); 
+    }
+    #layer-3{
+        margin-top: calc(-200px * var(--bwatch-scroll));
+    }
 }

@@ -35,7 +35,7 @@ const Footer = () => {
                 </div>
             </div>
             <div className="footer-made-with">
-                Made with <span role="img" aria-label="love">❤️</span> at UCI on sbux coffee & boba
+                Made with <span role="img" aria-label="love">❤️</span> at UCI on sbux <span role="img" aria-label="coffee">☕</span> & boba
             </div>
         </div>
     );

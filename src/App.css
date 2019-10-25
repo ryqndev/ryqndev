@@ -8,14 +8,14 @@ body{
     height: 100vh;
     min-width: 300px;
 }
-.site-wrapper{
+#site-wrapper{
     position: relative;
     overflow-y: scroll;
     overflow-x: hidden;
     height: 100vh;
     min-width: 300px;
 }
-.site-wrapper:not(.ld){
+#site-wrapper:not(.ld){
     height: 100vh;
     overflow-y: hidden;
 }
