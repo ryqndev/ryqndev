@@ -42,8 +42,6 @@
     color: white;
     padding: 30px 30px 20px 60px;
     background-color: #FC8A8A;
-    text-overflow: ellipsis;
-    overflow-y: scroll;
 }
 .bwatch-about span{
     font-weight: bold;
