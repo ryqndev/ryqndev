@@ -10,7 +10,7 @@
 .header-image{
     position: relative;
     z-index: -1;
-    background-image: url('/profile-transparent.png');
+    background-image: url('/assets//profile-transparent.png');
     background-size: cover;
     background-repeat: no-repeat;
     background-position: center;

@@ -4,18 +4,55 @@
 .bwatch--wrapper{
     position: relative;
     font-family: 'Poppins', sans-serif;
-    height: 100vh;
     background-color: #FFDCDC;
     z-index: -2;
     display: grid;
     grid-template-columns: 1fr;
-    grid-template-rows: 1fr 1fr;
+    grid-template-rows: auto 400px;
 }
 .bwatch--description{
+    padding-top: 120px;
+    padding-bottom: 120px;
+}
+.bwatch-title--holder{
+    padding: 0;
+    width: 300px;
+    grid-template-columns: 1fr;
+    grid-template-rows: 100px 50px;
+    text-align: center;
+    margin: 0 auto;
+    margin-bottom: 60px;
+    display: grid;
+}
+.bwatch-title--logo{
+    background-image: url('/assets/logo-no-bg.png');
+    background-position: center;
+    background-size: contain;
+    background-repeat: no-repeat;    
+    margin-top: -45px;
 }
 .bwatch-title{
     text-align: center;
-    font-size: 30px;
+    font-size: 44px;
+    font-weight: bold;
+}
+.bwatch-about{
+    width: 90vw;
+    box-sizing: border-box;
+    color: white;
+    padding: 30px 30px 20px 60px;
+    background-color: #FC8A8A;
+    text-overflow: ellipsis;
+    overflow-y: scroll;
+}
+.bwatch-about span{
+    font-weight: bold;
+}
+
+.bwatch-about-after{
+    height: 100px;
+    width: 70vw;
+    background-color: #FFC9C2;
 }
 .bwatch--device{
 }
@@ -37,21 +74,39 @@
     box-shadow: 0 0 1px 1px rgba(255, 255, 255, 0.4); 
 }
 #layer-1{
-    background-image: url('/layer3.png');
+    background-image: url('/assets/layer3.png');
     margin-top: 0px;
 }
 #layer-2{
-    background-image: url('/layer2.png');
+    background-image: url('/assets/layer2.png');
     margin-top: calc(-30px * var(--bwatch-scroll));
 }
 #layer-3{
-    background-image: url('/layer1.png');
+    background-image: url('/assets/layer1.png');
     margin-top: calc(-60px * var(--bwatch-scroll));
 }
 @media (min-width: 850px){
     .bwatch--wrapper{
         grid-template-columns: 1fr 1fr;
+        grid-template-rows: auto;
+    }
+    .bwatch--description{
+        padding-top: 60px;
+    }
+    .bwatch-about{
+        width: 45vw;
+        padding: 30px 45px 30px 100px;
+
+    }
+    .bwatch-about-after{
+        width: 30vw;
+    }
+    .bwatch-title--holder{
+        grid-template-columns: 100px 300px;
         grid-template-rows: 1fr;
+        width: 400px;
+        margin: 30px auto;
+        padding-top: 20px;
     }
     .bwatch-layer{
         top: 18vh;
