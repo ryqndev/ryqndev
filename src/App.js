@@ -12,11 +12,14 @@ import './App.css';
 //sbeve
 
 const App = () => {
-    const [progress, setProgress] = useState(1);
+    const [progress, setProgress] = useState(localStorage.getItem('loaded') ? 100 : 1);
     const [scroll, setScroll] = useState(0);
     const scrollRef = useRef(setScroll);   
-    
-    setTimeout(() => {  setProgress(100) }, 3000);
+
+    setTimeout(() => { 
+        localStorage.setItem('loaded', true);
+        setProgress(100);
+    }, 3000);
 
     useEffect(() => {
         document.getElementById('site-wrapper').addEventListener('scroll', (e) => {
@@ -26,9 +29,9 @@ const App = () => {
     return (
         <div id="site-wrapper" className={(progress >= 100 ? " ld" : "")}>
             <Loading progress={progress} />
-            <Navigation scroll={scroll}/>
+            <Navigation scroll={scroll} />
             <Header />
-            <BobaWatch />
+            <BobaWatch scroll={scroll} />
             <Footer />
         </div>
     );
