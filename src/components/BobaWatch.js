@@ -28,11 +28,23 @@ const BobaWatch = ({scroll}) => {
                 <div className="bwatch-about-after">
 
                 </div>
-                {/* <div className="bwatch-stats--wrapper">
-                    <div className="bwatch-stats--item" onClick={() => toggle(!state)}>
-                    <animated.span>{props.number.interpolate(val => val.toFixed(1))}</animated.span>k
+                <div className="bwatch-stats--wrapper">
+                    <div className="bwatch-stats--item">
+                        <animated.span>{props.number.interpolate(val => val.toFixed(1))}</animated.span>k
+                        <br />
+                        MAU
                     </div>
-                </div> */}
+                    <div className="bwatch-stats--item">
+                        400
+                        <br />
+                        DAU
+                    </div>
+                    <div className="bwatch-stats--item">
+                        5k
+                        <br />
+                        RU
+                    </div>
+                </div>
             </div>
             <div className="bwatch--device">
                 <div className="bwatch--layers">

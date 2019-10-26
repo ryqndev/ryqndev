@@ -46,11 +46,27 @@
 .bwatch-about span{
     font-weight: bold;
 }
-
 .bwatch-about-after{
     height: 20px;
     width: 70vw;
     background-color: #FFC9C2;
+}
+.bwatch-stats--wrapper{
+    height: 80px;
+    padding: 20px;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    column-gap: 20px;;
+}
+.bwatch-stats--item{
+    height: 100%;
+    width: auto;
+    background-color: white;
+    text-align: center;
+    box-sizing: border-box;
+    padding-top: 12px;
+    border-radius: 2px;
+    transition: 250ms all;
 }
 .bwatch--device{
 }
@@ -68,7 +84,6 @@
     background-size: cover;
     background-repeat: no-repeat;
     width: 150px;
-    /* transition: all 250ms ease-in-out; */
     box-shadow: 0 0 1px 1px rgba(255, 255, 255, 0.4); 
 }
 #layer-1{
@@ -94,10 +109,14 @@
     .bwatch-about{
         width: 45vw;
         padding: 30px 45px 30px 100px;
-
     }
     .bwatch-about-after{
         width: 30vw;
+    }
+    .bwatch-stats--wrapper{
+        height: 80px;
+        padding: 40px;
+        column-gap: 40px;;
     }
     .bwatch-title--holder{
         grid-template-columns: 100px 300px;
@@ -122,16 +141,6 @@
         margin-top: calc(-90px * var(--bwatch-scroll));
     }
 }
-.bwatch-stats--item{
-    height: 50px;
-    width: 50px;
-    background-color: white;
-    text-align: center;
-    box-sizing: border-box;
-    padding-top: 12px;
-    border-radius: 2px;
-    transition: 250ms all;
-}
 @media (min-width: 1100px){
     .bwatch-layer{
         top: 30vh;
@@ -143,10 +152,10 @@
         margin-top: 0px;
     }
     #layer-2{
-        margin-top: calc(-75px * var(--bwatch-scroll));
+        margin-top: calc(-25px * var(--bwatch-scroll));
     }
     #layer-3{
-        margin-top: calc(-150px * var(--bwatch-scroll));
+        margin-top: calc(-50px * var(--bwatch-scroll));
     }
 }
 @media (min-width: 1500px){
@@ -160,9 +169,9 @@
         margin-top: 0px;
     }
     #layer-2{
-        margin-top: calc(-100px * var(--bwatch-scroll)); 
+        margin-top: calc(-50px * var(--bwatch-scroll)); 
     }
     #layer-3{
-        margin-top: calc(-200px * var(--bwatch-scroll));
+        margin-top: calc(-100px * var(--bwatch-scroll));
     }
 }
