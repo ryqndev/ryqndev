@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect, useRef} from 'react';
 import Loading from './components/Loading';
 import Navigation from './components/Navigation';
 import Header from './components/Header';
@@ -12,13 +12,21 @@ import './App.css';
 //sbeve
 
 const App = () => {
-    const [progress, setProgress] = useState(100);
-    // setTimeout(() => {  setProgress(100) }, 3000);
+    const [progress, setProgress] = useState(1);
+    const [scroll, setScroll] = useState(0);
+    const scrollRef = useRef(setScroll);   
+    
+    setTimeout(() => {  setProgress(100) }, 3000);
 
+    useEffect(() => {
+        document.getElementById('site-wrapper').addEventListener('scroll', (e) => {
+            scrollRef.current(document.getElementById('site-wrapper').scrollTop);
+        });
+    }, []);
     return (
         <div id="site-wrapper" className={(progress >= 100 ? " ld" : "")}>
             <Loading progress={progress} />
-            <Navigation />
+            <Navigation scroll={scroll}/>
             <Header />
             <BobaWatch />
             <Footer />

@@ -1,17 +1,36 @@
 import React, {useState, useEffect, useRef} from 'react';
 import './styles/Navigation.css';
+import '../assets/libraries/hamburgers.css';
 
   
-const Navigation = () => {
-    const [mini, setMini] = useState(false);
-    // document.getElementById('site-wrapper').addEventListener('scroll', (e) => {
-    // ref.current = window.scrollY ? true : false;
+const Navigation = ({scroll}) => {
+    const [opened, toggleMenu] = useState(false)
+    // useEffect(() => {
+    //     console.log(scroll);
+    // }, [scroll]);
+    let toggle = () => {
+        toggleMenu(!opened);
+    }
     return (
-        <div className={`nav-wrapper ${mini ? "mini" : ""}`}>
-            
-            <div className="nav-content">me</div>
-            <div className="nav-content">projects</div>
-            <div className="nav-content">more</div>
+        <div className={`nav-wrapper ${scroll ? "mini" : ""} ${opened ? "open" : ""}`}>
+            <button
+                className={`hamburger hamburger--emphatic ${opened ? "is-active" : ""}`}
+                type="button"
+                aria-label="Menu"
+                aria-controls="navigation"
+                onClick={toggle}
+            >
+                <span className="hamburger-box">
+                    <span className={`hamburger-inner ${opened ? "open" : ""}`}></span>
+                </span>
+            </button> 
+            <div className={`nav-content ${opened ? "open" : ""}`}>
+                <div className="nav-content--holder">
+                    <span>Projects:</span>
+                    <br />
+                    <a href="https://info.boba.watch" target="_blank" rel="noopener noreferrer">boba watch</a>
+                </div>
+            </div>
         </div>
     );
 }
