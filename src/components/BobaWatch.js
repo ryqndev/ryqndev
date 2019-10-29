@@ -7,7 +7,7 @@ const BobaWatch = ({scroll}) => {
     const [state, toggle] = useState(true)
     const props = useSpring({ number: 13.8, from: { number: 0 } })
     useEffect(() => {
-        document.documentElement.style.setProperty('--bwatch-scroll', Math.abs(7 - scroll * 0.005));
+        document.documentElement.style.setProperty('--bwatch-scroll', Math.abs(7 - scroll * 0.007));
     }, [scroll]);
     return (
         <div className="bwatch--wrapper">
@@ -30,19 +30,25 @@ const BobaWatch = ({scroll}) => {
                 </div>
                 <div className="bwatch-stats--wrapper">
                     <div className="bwatch-stats--item">
-                        <animated.span>{props.number.interpolate(val => val.toFixed(1))}</animated.span>k
+                        <div>
+                            <animated.span>{props.number.interpolate(val => val.toFixed(1))}</animated.span>k+
+                        </div>
                         <br />
-                        MAU
+                        mau
                     </div>
                     <div className="bwatch-stats--item">
-                        400
+                        <div>
+                            400+
+                        </div>
                         <br />
-                        DAU
+                        dau
                     </div>
                     <div className="bwatch-stats--item">
-                        5k
+                        <div>
+                            5k+
+                        </div>
                         <br />
-                        RU
+                        ru
                     </div>
                 </div>
             </div>

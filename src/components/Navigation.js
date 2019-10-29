@@ -4,17 +4,14 @@ import '../assets/libraries/hamburgers.css';
 
   
 const Navigation = ({scroll}) => {
-    const [opened, toggleMenu] = useState(false)
-    // useEffect(() => {
-    //     console.log(scroll);
-    // }, [scroll]);
+    const [opened, toggleMenu] = useState(false);
     let toggle = () => {
         toggleMenu(!opened);
     }
     return (
         <div className={`nav-wrapper ${scroll ? "mini" : ""} ${opened ? "open" : ""}`}>
             <button
-                className={`hamburger hamburger--emphatic ${opened ? "is-active" : ""}`}
+                className={`hamburger hamburger--stand ${opened ? "is-active" : ""}`}
                 type="button"
                 aria-label="Menu"
                 aria-controls="navigation"

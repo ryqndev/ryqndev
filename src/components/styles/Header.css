@@ -121,11 +121,12 @@
     .header-profile--name > .glitch-small{
         font-size: 100px;
         width: 590px;
+        margin-left: 45px;
     }
     .header-wrapper{
         grid-template-columns: 1fr 1fr;
         grid-template-rows: 1fr;
-        max-height: 700px;
+        max-height: 820px;
     }
     .header--side-text{
         right: calc( 100vw - 140px );
@@ -133,7 +134,7 @@
         top: 100px;
     }
     .header-icon--wrapper{
-        padding-left: 0;
+        padding-left: 50px;
     }
     .header-icon--wrapper > .icon{
         height: 60px;
@@ -152,15 +153,15 @@
         font-size: calc(20px + 5vw);
     }
     .header-profile--name > .glitch-small{
-        left: 60px;
+        margin-left: 10px;
         font-size: 150px;
         width: 900px;
     }
     .header-wrapper{
-        max-height: 885px;
+        max-height: 960px;
     }
     .header-icon--wrapper{
-        padding-left: 8px;
+        padding-left: 28px;
         padding-top: 40px;
     }
     .header--side-text{
