@@ -1,10 +1,14 @@
-import React, {useEffect, useState} from 'react';
-import { useSpring, animated } from 'react-spring'
+import React, {useEffect} from 'react';
+import { useSpring, animated} from 'react-spring'
 
 import './styles/BobaWatch.css';
 
 const BobaWatch = ({scroll}) => {
-    const [props, set] = useSpring(() => ({  
+    const [props, set] = useSpring(() => ({
+        config: { 
+            duration: 3000,
+            easing: t => --t * t * t + 1
+        },
         mau: 0,
         dau: 0,
         ru: 0
@@ -18,7 +22,7 @@ const BobaWatch = ({scroll}) => {
                 ru: 5,
             });
         }
-    }, [scroll]);
+    }, [scroll, set]);
     return (
         <div className="bwatch--wrapper" >
             <div className="bwatch--description">

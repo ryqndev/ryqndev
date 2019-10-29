@@ -22,6 +22,7 @@ const App = () => {
     }, 3000);
 
     useEffect(() => {
+        scrollRef.current(document.getElementById('site-wrapper').scrollTop);
         document.getElementById('site-wrapper').addEventListener('scroll', (e) => {
             scrollRef.current(document.getElementById('site-wrapper').scrollTop);
         });
