@@ -4,13 +4,23 @@ import { useSpring, animated } from 'react-spring'
 import './styles/BobaWatch.css';
 
 const BobaWatch = ({scroll}) => {
-    const [state, toggle] = useState(true)
-    const props = useSpring({ number: 13.8, from: { number: 0 } })
+    const [props, set] = useSpring(() => ({  
+        mau: 0,
+        dau: 0,
+        ru: 0
+    }));
     useEffect(() => {
         document.documentElement.style.setProperty('--bwatch-scroll', Math.abs(7 - scroll * 0.007));
+        if(document.getElementById('bwatch-wrapper--top').getBoundingClientRect().top + 100 <= window.innerHeight){
+            set({
+                mau: 14.1,
+                dau: 1.2,
+                ru: 5,
+            });
+        }
     }, [scroll]);
     return (
-        <div className="bwatch--wrapper">
+        <div className="bwatch--wrapper" >
             <div className="bwatch--description">
                 <div className="bwatch-title--holder">
                     <div className="bwatch-title--logo"></div>
@@ -28,24 +38,24 @@ const BobaWatch = ({scroll}) => {
                 <div className="bwatch-about-after">
 
                 </div>
-                <div className="bwatch-stats--wrapper">
-                    <div className="bwatch-stats--item">
+                <div className="bwatch-stats--wrapper" id="bwatch-wrapper--top">
+                    <div className="bwatch-stats--item" >
                         <div>
-                            <animated.span>{props.number.interpolate(val => val.toFixed(1))}</animated.span>k+
+                            <animated.span>{props.mau.interpolate(val => val.toFixed(1))}</animated.span>k+
                         </div>
                         <br />
                         mau
                     </div>
                     <div className="bwatch-stats--item">
                         <div>
-                            400+
+                            <animated.span>{props.dau.interpolate(val => val.toFixed(1))}</animated.span>k+
                         </div>
                         <br />
                         dau
                     </div>
                     <div className="bwatch-stats--item">
                         <div>
-                            5k+
+                        <animated.span>{props.ru.interpolate(val => val.toFixed(1))}</animated.span>k+
                         </div>
                         <br />
                         ru
