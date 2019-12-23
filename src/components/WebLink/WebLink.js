@@ -1,5 +1,5 @@
 import React from 'react';
-import './styles/WebLink.css';
+import './WebLink.css';
 
 const WebLink = ({text, link}) => {
     return (

@@ -11,5 +11,6 @@
     transition: all 250ms;
 }
 .icon:hover{
-    background-color: #ffee00;
+    /* background-color: #ffee00; */
+    mix-blend-mode: screen;
 }

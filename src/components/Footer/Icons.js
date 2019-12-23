@@ -1,10 +1,8 @@
 import React from 'react';
-import './styles/Icon.css';
-import gmailIcon from '../assets/icons/gmail.svg';
-// import linkedinIcon from '../assets/icons/linkedin.svg';
-import githubIcon from '../assets/icons/github.svg';
-import instagramIcon from '../assets/icons/instagram.svg';
-// import messengerIcon from '../assets/icons/messenger.svg';
+import './Icon.css';
+import gmailIcon from '../../assets/icons/gmail.svg';
+import githubIcon from '../../assets/icons/github.svg';
+import instagramIcon from '../../assets/icons/instagram.svg';
 
 const iconOrder = [
     {

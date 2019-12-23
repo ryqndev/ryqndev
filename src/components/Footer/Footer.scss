@@ -1,0 +1,59 @@
+.f-w{
+    display: grid;
+    grid-template-columns: 1fr;
+    grid-template-rows: auto auto 60px;
+    background-color: #000000;
+    padding: 80px 20px 40px 20px;
+    @media screen and (min-width: 600px){
+        padding: 80px 12vw 40px 12vw;
+    }
+    @media screen and (min-width: 1350px){
+        padding: 80px calc( 50vw - 525px) 40px calc( 50vw - 525px);
+    }
+    margin: 0 auto;
+    & .top{
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        grid-template-rows: 1fr;
+        border-bottom: 5px solid #ff00ff;
+        margin-bottom: 15px;
+    }
+    & .name{
+        padding-top: 8px;
+        font-size: 20px;
+        font-family: 'Red Hat Display', sans-serif;
+        font-weight: bold;
+    }
+    & .socials{
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        width: 150px;
+        padding-bottom: 10px;
+        box-sizing: border-box;
+        margin-left: auto;
+        & .icon{
+            height: 40px;
+            width: 40px;
+            background-color: #000000;
+            &:hover{
+                background-color: #ff00ff22;
+            }
+        }
+    }
+    & .made-with{
+        font-size: 15px;
+        text-align: center;
+        color: #666666;
+        padding-top: 40px;
+    }
+}
+.footer-bottom{
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-template-rows: 1fr;
+}
+.footer-bottom > div > span{
+    font-size: 18px;
+    color: #ffffff;
+    font-weight: bold;
+}

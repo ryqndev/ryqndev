@@ -10,4 +10,5 @@ a.weblink-link{
     transition: 250ms all;
     pointer-events: all;
     user-select: all;
+    display: block;
 }
