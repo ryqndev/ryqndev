@@ -5,7 +5,7 @@
     padding: 20px;
     margin: 0 auto;
 }
-#p-w-content{
+#ps-p-description{
     background-color: #151515;
     padding: 20px;
     transition: opacity 350ms;
@@ -14,7 +14,7 @@
     #ps-w{
         width: 80vw;
     }
-    .p-w-content{
+    #ps-p-description{
         padding: 20px 10vw 20px 10vw;
     }
 }
@@ -25,5 +25,5 @@
     width: 100vw;
     height: 100vh;
     z-index: -1;
-    overflow: hidden;
+    overflow: scroll;
 }

@@ -3,8 +3,8 @@ import GridToFullscreenEffect from './fs-effect';
 
 let fsEffect;
 
-const load = () => {
-    const fsEffect = createfse();
+const load = (display) => {
+    const fsEffect = createfse(display);
     imagesLoaded(document.querySelectorAll("img"), instance => {
         let images = [];
         for (var i = 0, imageSet = {}; i < instance.elements.length; i++) {
@@ -18,7 +18,7 @@ const load = () => {
         fsEffect.createTextures(images);
     });
 }
-function createfse() {
+function createfse(display) {
     const smallImages = [
         ...document.body.querySelectorAll("img:not(.img-large)")
     ];
@@ -38,6 +38,7 @@ function createfse() {
                 smallImages[index].style.opacity = opacity;
             },
             onToFullscreenStart: ({ index }) => {
+                display(index);
                 smallImages[index].style.opacity = 0;
             },
             onToGridFinish: ({ lastIndex }) => {
