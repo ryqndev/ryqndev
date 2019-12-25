@@ -1,4 +1,5 @@
 import bobaWatchImage from '../../assets/boba_watch.png';
+import webDevImage from '../../assets/webdev.jpeg';
 
 const data = [
     {
@@ -13,7 +14,8 @@ const data = [
         name: 'Intro to Web Dev',
         type: 'Coding Tutorials',
         year: 2019,
-        image: 'https://bit.ly/2PMb0lW'
+        // image: 'https://bit.ly/2PMb0lW'
+        image: webDevImage
     }
 ]
 const total = data.length;

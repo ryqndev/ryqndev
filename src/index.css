@@ -1,6 +1,6 @@
 html{
   background-color: #151515;
-  /* cursor: url('../src/assets/cursor.png'), auto;	 */
+  cursor: url('../src/assets/cursor.png'), auto;	
 }
 body {
   margin: 0;

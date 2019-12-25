@@ -17,7 +17,7 @@ const App = () => {
 
     return (
         <div id="w">
-            <Projects />
+            <Projects scroll={scroll}/>
             <Footer />
         </div>
     );
