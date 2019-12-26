@@ -9,18 +9,15 @@ const Projects = () => {
     const psRef = useRef(null);
     let contents = [];
     const [markdown, setMarkdown] = useState("");
-    const display = (index) => {
-        setMarkdown(contents[index]);
-    }
     useEffect(() => {
-        fse.load(display);
+        fse.load(i => setMarkdown(contents[i]));
         data.forEach((e, i) => {
             fetch(e.content)
             .then((res) => res.text())
             .then((text) => {
                 contents[i] = text;
             });
-            });
+        });
     }, []);
     useEffect(() => {
         const scrollListener = psRef.current;
@@ -35,14 +32,19 @@ const Projects = () => {
 
     return (
         <div>
-            <div key="ps-c" id="ps-c" onClick={fse.toggle} ref={psRef}>
+            <div id="ps-c" onClick={fse.toggle} ref={psRef}>
                 <div id="ps-p-description">
                     <ReactMarkdown source={markdown} />
                 </div>
             </div>
-            Projects
-            <div key="ps-w" id="ps-w">
-                { data.map( e => <Project expand={false} key={e.id} {...e}  /> ) }
+            <div className="ps-w">
+                <div className="ps-h">
+                    <h2>Projects</h2>
+                </div>
+                <div id="ps-project">
+                    
+                    { data.map( e => <Project expand={false} key={e.id} {...e}  /> ) }
+                </div>
             </div>
         </div>
     )

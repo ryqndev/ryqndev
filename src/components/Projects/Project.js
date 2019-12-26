@@ -12,7 +12,7 @@ const Project = ({expand, id, name, type, year, image}) => {
 				</div>
 			</div>
             <span>{type} ⦿ {year}</span>
-            <h2>{name}</h2>
+            <h3>{name}</h3>
             <p> see more </p>
         </div>
     )

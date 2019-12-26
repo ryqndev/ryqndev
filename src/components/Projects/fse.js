@@ -25,7 +25,7 @@ function createfse(display) {
     const canvasWrapper = document.getElementById("ps-c");
     fsEffect = new GridToFullscreenEffect(
         canvasWrapper,
-        document.getElementById("ps-w"),
+        document.getElementById("ps-project"),
         {
             scrollContainer: window,
             onToFullscreenFinish: ({ index }) => {},

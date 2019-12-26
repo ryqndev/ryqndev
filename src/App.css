@@ -1,25 +1,3 @@
-:root{
-    --bg-color: #151515;
-    --text-color: #ffffff;
-    --text-accent: #ff00ff;
-}
-*{
-    box-sizing: border-box;
-    transition: all 350ms;
-}
-body{
-    margin: 0;
-    padding: 0;
-    background-color: #151515;
-    color: var(--text-color);
-    width: 100vw;
-    font-family: 'Quicksand', sans-serif;
-    overflow: hidden;
-    min-width: 300px;
-}
-span{
-    color: var(--text-accent);
-}
 #w{
     position: relative;
     overflow-y: scroll;
