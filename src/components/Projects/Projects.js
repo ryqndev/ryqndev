@@ -8,9 +8,16 @@ import './Projects.css';
 const Projects = () => {
     const psRef = useRef(null);
     let contents = [];
+    const display = (i) => {
+        psRef.current.scrollTo({top: 0});
+        setMarkdown(contents[i]);
+    }
+    const close = (i) => {
+        psRef.current.scrollTo({top: 0, behavior: 'smooth'});
+    }
     const [markdown, setMarkdown] = useState("");
     useEffect(() => {
-        fse.load(i => setMarkdown(contents[i]));
+        fse.load(display, close);
         data.forEach((e, i) => {
             fetch(e.content)
             .then((res) => res.text())
@@ -42,7 +49,6 @@ const Projects = () => {
                     <h2>Projects</h2>
                 </div>
                 <div id="ps-project">
-                    
                     { data.map( e => <Project expand={false} key={e.id} {...e}  /> ) }
                 </div>
             </div>

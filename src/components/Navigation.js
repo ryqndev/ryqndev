@@ -2,7 +2,6 @@ import React, {useState} from 'react';
 import './styles/Navigation.css';
 import '../assets/libraries/hamburgers.css';
 
-  
 const Navigation = ({scroll}) => {
     const [opened, toggleMenu] = useState(false);
     let toggle = () => {

@@ -3,8 +3,8 @@ import GridToFullscreenEffect from '../../assets/libraries/fs-effect';
 
 let fsEffect;
 
-const load = (display) => {
-    const fsEffect = createfse(display);
+const load = (display, close) => {
+    const fsEffect = createfse(display, close);
     imagesLoaded(document.querySelectorAll("img"), instance => {
         let images = [];
         for (var i = 0, imageSet = {}; i < instance.elements.length; i++) {
@@ -18,7 +18,7 @@ const load = (display) => {
         fsEffect.createTextures(images);
     });
 }
-function createfse(display) {
+function createfse(display, close) {
     const smallImages = [
         ...document.body.querySelectorAll("img:not(.img-large)")
     ];
@@ -29,7 +29,9 @@ function createfse(display) {
         {
             scrollContainer: window,
             onToFullscreenFinish: ({ index }) => {},
-            onToGridStart: ({ index }) => { },
+            onToGridStart: ({ index }) => {
+                close(index);
+            },
             onProgressChange: ({ index, progress }) => {
                 let opacity = progress > 0 ? 0 : 1;
                 smallImages[index].style.opacity = opacity;

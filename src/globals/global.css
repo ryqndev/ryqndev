@@ -12,8 +12,9 @@ h2{
     margin: 0;
 }
 h3{
-    font: bold 3.5rem/3.5rem 'Cabin', sans-serif ;
+    font: bold 4.5rem/3.5rem 'Hyperwave', sans-serif ;
     margin: 0;
+    padding-left: 10px;
 }
 span{
     color: var(--text-accent);
@@ -40,5 +41,8 @@ code {
 @media (min-width: 600px){
     h2{
         font-size: 9rem;
+    }
+    h3{
+        font-size: 6.5rem;
     }
 }

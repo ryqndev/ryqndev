@@ -5,11 +5,3 @@
     height: 100vh;
     min-width: 300px;
 }
-.yes{
-    height: 5000px;
-}
-.no{
-    position: fixed;
-    top: 10px;
-    left: 20px;
-}
