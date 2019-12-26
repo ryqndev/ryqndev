@@ -1,4 +1,5 @@
 import React, {useEffect} from 'react';
+import '../../globals/fonts.css';
 import './Project.scss';
 
 const Project = ({expand, id, name, type, year, image}) => {

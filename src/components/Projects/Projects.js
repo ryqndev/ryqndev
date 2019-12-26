@@ -24,9 +24,9 @@ const Projects = () => {
     }, []);
     useEffect(() => {
         const scrollListener = psRef.current;
-        // scrollListener.addEventListener('wheel', scroll);
+        scrollListener.addEventListener('wheel', scroll);
         return () => {
-            // scrollListener.removeEventListener('wheel', scroll);
+            scrollListener.removeEventListener('wheel', scroll);
         }
     }, [psRef]);
     let scroll = (e, v) => {
@@ -40,6 +40,7 @@ const Projects = () => {
                     <ReactMarkdown source={markdown} />
                 </div>
             </div>
+            Projects
             <div key="ps-w" id="ps-w">
                 { data.map( e => <Project expand={false} key={e.id} {...e}  /> ) }
             </div>

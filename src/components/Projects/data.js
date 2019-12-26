@@ -1,5 +1,5 @@
-import bobaWatchImage from '../../assets/boba_watch.png';
-import webDevImage from '../../assets/webdev.jpeg';
+import bobaWatchImage from '../../assets/images/boba_watch.png';
+import webDevImage from '../../assets/images/webdev.jpeg';
 
 const data = [
     {

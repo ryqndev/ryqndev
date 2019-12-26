@@ -1,5 +1,5 @@
 import imagesLoaded from 'imagesloaded';
-import GridToFullscreenEffect from './fs-effect';
+import GridToFullscreenEffect from '../../assets/libraries/fs-effect';
 
 let fsEffect;
 
@@ -22,9 +22,6 @@ function createfse(display) {
     const smallImages = [
         ...document.body.querySelectorAll("img:not(.img-large)")
     ];
-    // const largeImages = [
-    //     ...document.body.querySelectorAll("img.img-large")
-    // ];
     const canvasWrapper = document.getElementById("ps-c");
     fsEffect = new GridToFullscreenEffect(
         canvasWrapper,
