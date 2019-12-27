@@ -1,4 +1,6 @@
 import React, {useState, useEffect, useRef} from 'react';
+import Sidebar from './components/Sidebar/Sidebar';
+import Header from './components/Header/Header';
 import Projects from './components/Projects/Projects';
 import Footer from './components/Footer/Footer';
 import './App.css';
@@ -17,7 +19,9 @@ const App = () => {
 
     return (
         <div id="w">
-            <Projects scroll={scroll}/>
+            <Sidebar />
+            <Header scroll={scroll} />
+            <Projects />
             <Footer />
         </div>
     );

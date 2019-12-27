@@ -1,11 +1,11 @@
 import React from 'react';
-import Icons from './Icons';
+import Icons from '../Icons/Icons';
 import WebLink from '../WebLink/WebLink';
 import './Footer.scss';
 
 const Footer = () => {
     return (
-        <div className="f-w">
+        <footer className="f-w">
             <div className="top">
                 <div className="name">
                     RYAN YANG
@@ -33,7 +33,7 @@ const Footer = () => {
             <div className="made-with">
                 Made with <span role="img" aria-label="love">❤️</span> at UCI on sbux <span role="img" aria-label="coffee">☕</span> & boba
             </div>
-        </div>
+        </footer>
     );
 }
 

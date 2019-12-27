@@ -1,0 +1,30 @@
+.s-w{
+    position: fixed;
+    width: 90vh;
+    height: 50px;
+    top: 0;
+    left: 40px;
+    color: rgb(0, 177, 200);
+    font: 25px 'Quicksand';
+    text-align: right;
+    transform: rotate(90deg);
+    transform-origin: bottom left;
+    @media screen and (min-width:600px) {
+        // height: 20vw;
+    }
+}
+.social{
+    display: grid;
+    grid-template-columns: repeat(4, 40px);
+    padding-bottom: 10px;
+    box-sizing: border-box;
+    margin-left: 20px;
+    float: right; 
+    &  a.icon{
+        height: 35px;
+        width: 35px;
+        transform: rotate(-90deg);
+        // background-color: #151515;
+        mix-blend-mode: screen;
+    }
+}

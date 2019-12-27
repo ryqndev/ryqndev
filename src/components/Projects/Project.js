@@ -1,10 +1,10 @@
-import React, {useEffect} from 'react';
+import React from 'react';
 import '../../globals/fonts.css';
 import './Project.scss';
 
-const Project = ({expand, id, name, type, year, image}) => {
+const Project = ({id, name, type, year, image}) => {
     return (
-        <div className="p-w">
+        <figure className="p-w">
             <div className="p-img-w">
 				<div className="item">
 					<img className="img" src={image} alt={name + ' banner'} />
@@ -14,7 +14,7 @@ const Project = ({expand, id, name, type, year, image}) => {
             <span>{type} ⦿ {year}</span>
             <h3>{name}</h3>
             <p> see more </p>
-        </div>
+        </figure>
     )
 }
 

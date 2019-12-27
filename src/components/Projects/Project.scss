@@ -1,4 +1,6 @@
 .p-w{
+    scroll-margin-top: 100px;
+    scroll-snap-align: start;
     margin-bottom: 80px;
     & .p-img-w{
         width: 100%;

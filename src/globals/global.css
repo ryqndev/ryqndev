@@ -5,9 +5,10 @@
 }
 *{
     box-sizing: border-box;
-    transition: all 350ms;
+    /* transition: all 350ms; */
 }
 h2{
+    scroll-snap-align: start;
     font: bold 5.5rem/3.5rem 'Hyperwave', sans-serif ;
     margin: 0;
 }

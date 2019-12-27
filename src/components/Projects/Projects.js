@@ -25,6 +25,7 @@ const Projects = () => {
                 contents[i] = text;
             });
         });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
     useEffect(() => {
         const scrollListener = psRef.current;
@@ -38,11 +39,11 @@ const Projects = () => {
     }
 
     return (
-        <div>
+        <section>
             <div id="ps-c" onClick={fse.toggle} ref={psRef}>
-                <div id="ps-p-description">
+                <article id="ps-p-description">
                     <ReactMarkdown source={markdown} />
-                </div>
+                </article>
             </div>
             <div className="ps-w">
                 <div className="ps-h">
@@ -52,7 +53,7 @@ const Projects = () => {
                     { data.map( e => <Project expand={false} key={e.id} {...e}  /> ) }
                 </div>
             </div>
-        </div>
+        </section>
     )
 }
 
