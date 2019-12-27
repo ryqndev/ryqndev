@@ -3,7 +3,7 @@ import Project from './Project';
 import fse from './fse';
 import {data} from './data';
 import ReactMarkdown from 'react-markdown';
-import './Projects.css';
+import './Projects.scss';
 
 const Projects = () => {
     const psRef = useRef(null);

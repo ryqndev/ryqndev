@@ -1,17 +1,19 @@
 .f-w{
+    position: relative;
+    z-index: 150;
     scroll-snap-align: start;
     display: grid;
     grid-template-columns: 1fr;
     grid-template-rows: auto auto 60px;
     background-color: #000000;
     padding: 80px 20px 40px 20px;
+    margin: 0 auto;
     @media screen and (min-width: 600px){
         padding: 80px 12vw 40px 12vw;
     }
     @media screen and (min-width: 1350px){
         padding: 80px calc( 50vw - 525px) 40px calc( 50vw - 525px);
     }
-    margin: 0 auto;
     & .top{
         display: grid;
         grid-template-columns: 1fr 1fr;

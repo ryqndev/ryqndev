@@ -11,20 +11,21 @@
 @keyframes noise-anim-2 {
     $steps: 20;
     @for $i from 0 through $steps {
-      #{percentage($i*(1/$steps))} {
-        $top: random(100);
-        $bottom: random(101 - $top);
-        clip-path: inset(#{$top}% 0 #{$bottom}% 0);
-      }
+        #{percentage($i*(1/$steps))} {
+            $top: random(100);
+            $bottom: random(101 - $top);
+            clip-path: inset(#{$top}% 0 #{$bottom}% 0);
+        }
     }
   }
 
 @keyframes fade{
-    from {
-        opacity: 0;
-    }
-
-    to {
-        opacity: 1;
-    }
+    from { opacity: 0 }
+    to   { opacity: 1 }
+}
+@keyframes blend {
+    0%   { background-position: 100% 100% }
+    33%  { background-position: 0%   100% }
+    66%  { background-position: 0%   0%   }
+    100% { background-position: 100% 0%   }
 }

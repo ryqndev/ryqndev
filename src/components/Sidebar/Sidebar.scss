@@ -1,16 +1,17 @@
 .s-w{
     position: fixed;
+    z-index: 200;
     width: 90vh;
     height: 50px;
     top: 0;
-    left: 40px;
+    left: -50px; 
+    text-align: right; 
     color: rgb(0, 177, 200);
     font: 25px 'Quicksand';
-    text-align: right;
     transform: rotate(90deg);
     transform-origin: bottom left;
-    @media screen and (min-width:600px) {
-        // height: 20vw;
+    @media screen and (min-aspect-ratio: 1/1) {
+        left: 40px; 
     }
 }
 .social{
@@ -24,7 +25,6 @@
         height: 35px;
         width: 35px;
         transform: rotate(-90deg);
-        // background-color: #151515;
         mix-blend-mode: screen;
     }
 }

@@ -2,6 +2,8 @@
     scroll-margin-top: 100px;
     scroll-snap-align: start;
     margin-bottom: 80px;
+    position: relative;
+    z-index: 100;
     & .p-img-w{
         width: 100%;
         border-radius: 4px;

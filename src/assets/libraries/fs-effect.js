@@ -356,7 +356,7 @@ class GridToFullscreenEffect {
           this.isAnimating = false;
           this.isFullscreen = false;
           this.tween = null;
-          this.itemsWrapper.style.zIndex = 0;
+          this.itemsWrapper.style.zIndex = 400;
           this.container.style.zIndex = -2;
           this.render();
           if (this.options.onToGridFinish)
@@ -442,8 +442,8 @@ class GridToFullscreenEffect {
   
       this.isAnimating = true;
   
-      this.itemsWrapper.style.zIndex = 0;
-      this.container.style.zIndex = 2;
+      this.itemsWrapper.style.zIndex = 400;
+      this.container.style.zIndex = 400;
   
       if (this.options.onToFullscreenStart)
         this.options.onToFullscreenStart({ index: this.currentImageIndex });

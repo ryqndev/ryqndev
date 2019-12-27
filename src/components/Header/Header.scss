@@ -1,0 +1,84 @@
+:root{
+    --scroll-small: 0;
+    --scroll-big: 0deg;
+}
+.h-w{
+    scroll-snap-align: start;
+    height: 100vh;
+    overflow: hidden;
+    & .special-square{
+        position: fixed;
+        z-index: 1;
+        height: 70vw;
+        width: 70vw;
+        top: calc(50vh - 35vw);
+        left: 15vw;
+        background: linear-gradient(225deg, #ff00ff, #00ffff);
+        background-size: 200% 200%;
+        animation: blend 4s ease infinite alternate-reverse;
+        pointer-events: none;
+        transform: scale( calc( 1 + var(--scroll-small)) );
+        @media screen and (min-aspect-ratio: 1/1){
+            height: 70vh;
+            width: 70vh;
+            top: 15vh;
+            left: calc(50vw - 35vh);
+        }
+        & .special-square-inner{
+            position: absolute;
+            height: calc(70vw - 40px);
+            width: calc(70vw - 40px);
+            margin-top: 20px;
+            margin-left: 20px;
+            background-color: var(--background-color);
+            overflow: hidden;
+            text-align: center;
+            pointer-events: none;
+            transform: rotate(90deg);
+            @media screen and (min-aspect-ratio: 1/1){
+                height: calc(70vh - 40px);
+                width: calc(70vh - 40px);
+                transform: rotate(0deg);
+            }
+        }
+    }
+}
+.h-name{
+    font-size: 12vh;
+    width: 100vh;
+    transform: rotate(90deg);
+    text-align: center;
+    font-family: 'Red Hat Display', sans-serif;
+    font-weight: bold;
+    pointer-events: none;
+    @media screen and (min-aspect-ratio: 1/1){
+        font-size: 12vw;
+        width: 100vw;
+        transform: rotate(0deg);
+    }
+    &.behind{
+        position: fixed;
+        left: calc( -50vw + 6vh );
+        top: calc( 50vh - 8vw );
+        color: var(--text-color-alt);
+        transform: scale( calc( 1 + var(--scroll-small) )) rotate(90deg);
+        @media screen and (min-aspect-ratio: 1/1){
+            top: calc(50vh - 8vw);
+            left: 0;
+            transform: scale( calc( 1 + var(--scroll-small) ));
+        }
+    }
+    &.front{
+        position: absolute;
+        left: calc( -50vh + 35vw );
+        top: calc( 50vw - 35vw);
+        color: var(--text-color);
+        transform: rotate(var(--scroll-big));
+        opacity: calc( 1 - var(--scroll-small) );
+        @media screen and (min-aspect-ratio: 1/1){
+            top: calc(35vh - 8vw - 20px);
+            left: calc( -50vw + 35vh - 20px);
+            transform: rotate(var(--scroll-big));
+        }
+    }
+}
