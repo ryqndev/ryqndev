@@ -1,6 +1,6 @@
 {
   "files": {
-    "main.css": "/static/css/main.bfc70099.chunk.css",
+    "main.css": "/static/css/main.b70e5431.chunk.css",
     "main.js": "/static/js/main.78a3b261.chunk.js",
     "main.js.map": "/static/js/main.78a3b261.chunk.js.map",
     "runtime-main.js": "/static/js/runtime-main.d23c2f31.js",
@@ -8,9 +8,9 @@
     "static/js/2.f1814adb.chunk.js": "/static/js/2.f1814adb.chunk.js",
     "static/js/2.f1814adb.chunk.js.map": "/static/js/2.f1814adb.chunk.js.map",
     "index.html": "/index.html",
-    "precache-manifest.b2d3aaeccfdb304f1f765b66f1902221.js": "/precache-manifest.b2d3aaeccfdb304f1f765b66f1902221.js",
+    "precache-manifest.20f6c8290d3e296502edfb5380561e0c.js": "/precache-manifest.20f6c8290d3e296502edfb5380561e0c.js",
     "service-worker.js": "/service-worker.js",
-    "static/css/main.bfc70099.chunk.css.map": "/static/css/main.bfc70099.chunk.css.map",
+    "static/css/main.b70e5431.chunk.css.map": "/static/css/main.b70e5431.chunk.css.map",
     "static/js/2.f1814adb.chunk.js.LICENSE": "/static/js/2.f1814adb.chunk.js.LICENSE",
     "static/media/fonts.css": "/static/media/Poppins-Regular.41e8dead.ttf",
     "static/media/boba_watch.png": "/static/media/boba_watch.d5c39048.png",
@@ -22,7 +22,7 @@
   "entrypoints": [
     "static/js/runtime-main.d23c2f31.js",
     "static/js/2.f1814adb.chunk.js",
-    "static/css/main.bfc70099.chunk.css",
+    "static/css/main.b70e5431.chunk.css",
     "static/js/main.78a3b261.chunk.js"
   ]
 }
