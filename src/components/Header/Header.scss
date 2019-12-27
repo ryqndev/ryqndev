@@ -17,8 +17,9 @@
         background-size: 200% 200%;
         animation: blend 4s ease infinite alternate-reverse;
         pointer-events: none;
-        transform: scale( calc( 1 + var(--scroll-small)) );
+        transform: scale( calc( 1 + var(--scroll-small)) ) rotate(90deg);;
         @media screen and (min-aspect-ratio: 1/1){
+            transform: scale( calc( 1 + var(--scroll-small)) ) rotate(0deg);
             height: 70vh;
             width: 70vh;
             top: 15vh;
@@ -34,7 +35,6 @@
             overflow: hidden;
             text-align: center;
             pointer-events: none;
-            transform: rotate(90deg);
             @media screen and (min-aspect-ratio: 1/1){
                 height: calc(70vh - 40px);
                 width: calc(70vh - 40px);
@@ -58,7 +58,7 @@
     }
     &.behind{
         position: fixed;
-        left: calc( -50vw + 6vh );
+        left: calc(-50vh + 50vw);
         top: calc( 50vh - 8vw );
         color: var(--text-color-alt);
         transform: scale( calc( 1 + var(--scroll-small) )) rotate(90deg);
@@ -71,7 +71,7 @@
     &.front{
         position: absolute;
         left: calc( -50vh + 35vw );
-        top: calc( 50vw - 35vw);
+        top: calc( 35vw - 35px - 6vh);
         color: var(--text-color);
         transform: rotate(var(--scroll-big));
         opacity: calc( 1 - var(--scroll-small) );
