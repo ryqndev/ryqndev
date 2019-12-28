@@ -2,31 +2,17 @@ import React, {useEffect, useState, useRef} from 'react';
 import Project from './Project';
 import fse from './fse';
 import {data} from './data';
-import ReactMarkdown from 'react-markdown';
 import './Projects.scss';
 
 const Projects = () => {
     const psRef = useRef(null);
-    let contents = [];
     const display = (i) => {
         psRef.current.scrollTo({top: 0});
-        setMarkdown(contents[i]);
+        setPID(i);
     }
-    const close = (i) => {
-        psRef.current.scrollTo({top: 0, behavior: 'smooth'});
-    }
-    const [markdown, setMarkdown] = useState("");
-    useEffect(() => {
-        fse.load(display, close);
-        data.forEach((e, i) => {
-            fetch(e.content)
-            .then((res) => res.text())
-            .then((text) => {
-                contents[i] = text;
-            });
-        });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, []);
+    const close = (i) => { psRef.current.scrollTo({top: 0, behavior: 'smooth'}) }
+    const [pID, setPID] = useState(0);
+    useEffect(() => { fse.load(display, close) }, []);
     useEffect(() => {
         const scrollListener = psRef.current;
         scrollListener.addEventListener('wheel', scroll);
@@ -42,7 +28,7 @@ const Projects = () => {
         <section>
             <div id="ps-c" onClick={fse.toggle} ref={psRef}>
                 <article id="ps-p-description">
-                    <ReactMarkdown source={markdown} />
+                    {data[pID].content}
                 </article>
             </div>
             <div className="ps-w">

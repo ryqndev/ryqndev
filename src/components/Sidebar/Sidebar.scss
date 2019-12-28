@@ -17,14 +17,14 @@
 .social{
     display: grid;
     grid-template-columns: repeat(4, 40px);
-    padding-bottom: 10px;
+    border-radius: 20px;
     box-sizing: border-box;
     margin-left: 20px;
+    background-color: var(--text-color);
     float: right; 
     &  a.icon{
         height: 35px;
         width: 35px;
         transform: rotate(-90deg);
-        mix-blend-mode: screen;
     }
 }

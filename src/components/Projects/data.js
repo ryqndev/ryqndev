@@ -1,3 +1,5 @@
+import React from 'react';
+import BobaWatch from '../BobaWatch';
 import bobaWatchImage from '../../assets/images/boba_watch.png';
 import webDevImage from '../../assets/images/webdev.jpeg';
 
@@ -8,7 +10,8 @@ const data = [
         type: 'Progressive Web App',
         year: 2018,
         image: bobaWatchImage,
-        content: 'https://raw.githubusercontent.com/ryqndev/boba-watch/master/README.md'
+        content: <BobaWatch />,
+
     }, 
     {
         id: 'intro-to-web-dev',
@@ -16,7 +19,7 @@ const data = [
         type: 'Coding Tutorials',
         year: 2019,
         image: webDevImage,
-        content: 'https://raw.githubusercontent.com/ryqndev/Intro-To-Web-Dev/master/readme.md'
+        content: <div />
     }
 ]
 const total = data.length;

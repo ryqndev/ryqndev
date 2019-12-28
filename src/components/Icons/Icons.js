@@ -1,6 +1,7 @@
 import React from 'react';
 import './Icon.css';
 import gmailIcon from '../../assets/icons/gmail.svg';
+import twitterIcon from '../../assets/icons/twitter.svg';
 import githubIcon from '../../assets/icons/github.svg';
 import instagramIcon from '../../assets/icons/instagram.svg';
 
@@ -9,6 +10,11 @@ const iconOrder = [
         'img': githubIcon,
         'type': 'github',
         'link': 'https://github.com/ryqndev'
+    },
+    {
+        'img': twitterIcon,
+        'type': 'twitter',
+        'link': 'https://twitter.com/ryqndev'
     },
     {
         'img': gmailIcon,
