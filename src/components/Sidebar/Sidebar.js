@@ -6,10 +6,11 @@ const Sidebar = () => {
     return (
         <aside className="s-w">
             <div className="s-c">
-                find me here   
+                <div className="s-line top"></div>
                 <div className="social">
                     <Icons />
                 </div>
+                <div className="s-line bottom"></div>
             </div>
         </aside>
     )

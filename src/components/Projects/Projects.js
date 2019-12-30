@@ -20,8 +20,8 @@ const Projects = () => {
             scrollListener.removeEventListener('wheel', scroll);
         }
     }, [psRef]);
-    let scroll = (e, v) => {
-        // console.log(e.deltaY);
+    let scroll = (e) => {
+        console.log(psRef.current.scrollTop);
     }
 
     return (

@@ -6,8 +6,11 @@
     height: 100vh;
     z-index: -1;
     overflow: scroll;
+    overscroll-behavior: contain ;
     & #ps-p-description{
-        background-color: #151515;
+        position: relative;
+        z-index: 150;
+        background-color: var(--background-color);
         padding: 20px;
         transition: opacity 350ms;
         @media screen and (min-width: 600px){
@@ -35,19 +38,6 @@
         @media screen and (min-width: 600px){
             padding-top: 4rem;
             height: 200px;
-        }
-        &::after{
-            content: "Projects";
-            position: relative;
-            font-family: "Hyperwave";
-            z-index: -1;
-            top: -5rem;
-            color: grey;
-            font-size: 6rem;
-            @media screen and (min-width: 600px){
-                top: -8rem;
-                font-size: 13rem;
-            }
         }
     }
 }

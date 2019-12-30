@@ -2,61 +2,35 @@
     position: relative;
     z-index: 150;
     scroll-snap-align: start;
-    display: grid;
-    grid-template-columns: 1fr;
-    grid-template-rows: auto auto 60px;
-    background-color: #000000;
-    padding: 80px 20px 40px 20px;
-    margin: 0 auto;
-    @media screen and (min-width: 600px){
-        padding: 80px 12vw 40px 12vw;
-    }
-    @media screen and (min-width: 1350px){
-        padding: 80px calc( 50vw - 525px) 40px calc( 50vw - 525px);
-    }
-    & .top{
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        grid-template-rows: 1fr;
-        border-bottom: 5px solid #ff00ff;
-        margin-bottom: 15px;
-    }
-    & .name{
-        padding-top: 8px;
-        font-size: 20px;
-        font-family: 'Red Hat Display', sans-serif;
-        font-weight: bold;
+    height: calc(100vh - 20px);
+    text-align: center;
+    background-color: var(--background-emphasis);
+    & .f-bg{
+        position: absolute;
+        text-align: center;
+        width: 100vw;
+        bottom: calc( 50vh - 12vw);
+        color: var(--background-color);
+        font-family: 'Hyperwave';
+        font-size: 25vw;
     }
     & .socials{
         display: grid;
-        grid-template-columns: repeat(3, 1fr);
-        width: 150px;
-        padding-bottom: 10px;
-        box-sizing: border-box;
-        margin-left: auto;
+        grid-template-columns: repeat(4, 50px);
+
         & .icon{
             height: 40px;
             width: 40px;
-            background-color: #000000;
-            &:hover{
-                background-color: #ff00ff22;
-            }
         }
     }
     & .made-with{
+        position: absolute;
         font-size: 15px;
+        width: 100vw;
         text-align: center;
         color: #666666;
-        padding-top: 40px;
+        font-family: 'Poppins';
+        text-transform: lowercase;
+        bottom: 30px;
     }
-}
-.footer-bottom{
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    grid-template-rows: 1fr;
-}
-.footer-bottom > div > span{
-    font-size: 18px;
-    color: #ffffff;
-    font-weight: bold;
 }
