@@ -1,31 +1,31 @@
 self.__precacheManifest = (self.__precacheManifest || []).concat([
   {
-    "revision": "24ecf8ed8ca270121b20779dea029e81",
+    "revision": "ee83aad8da594a6c40c486653b2f87d9",
     "url": "/index.html"
   },
   {
-    "revision": "a37a6e8cb83249cda4df",
-    "url": "/static/css/main.b70e5431.chunk.css"
+    "revision": "d4887b7325f6520818b3",
+    "url": "/static/css/main.55fbdb23.chunk.css"
   },
   {
-    "revision": "2bef942d6d529bb87be9",
-    "url": "/static/js/2.f1814adb.chunk.js"
+    "revision": "2bb19326a5635b73fd11",
+    "url": "/static/js/2.1ffc75ef.chunk.js"
   },
   {
-    "revision": "0d5bb8e4a0a57fee7ee26fca168d70ac",
-    "url": "/static/js/2.f1814adb.chunk.js.LICENSE"
+    "revision": "5fb65d2ef1c64987d338488291953a04",
+    "url": "/static/js/2.1ffc75ef.chunk.js.LICENSE"
   },
   {
-    "revision": "a37a6e8cb83249cda4df",
-    "url": "/static/js/main.78a3b261.chunk.js"
+    "revision": "d4887b7325f6520818b3",
+    "url": "/static/js/main.4d4461d1.chunk.js"
   },
   {
     "revision": "3c450ae7c905366138ac",
     "url": "/static/js/runtime-main.d23c2f31.js"
   },
   {
-    "revision": "95a7459c8324377a198a4989111152a3",
-    "url": "/static/media/Hyperwave.95a7459c.ttf"
+    "revision": "2cc7ab6df879d8a7f718325bc5b71c90",
+    "url": "/static/media/Hyperwave-Two.2cc7ab6d.woff"
   },
   {
     "revision": "6b78c7ec468eb0e13c6c5c4c39203986",
@@ -36,8 +36,8 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/static/media/Poppins-Regular.41e8dead.ttf"
   },
   {
-    "revision": "d5c39048337e29bfe6c4cf8fbcc3e1ff",
-    "url": "/static/media/boba_watch.d5c39048.png"
+    "revision": "86dab07ca1480b7f500b0988f8e82241",
+    "url": "/static/media/boba_watch.86dab07c.png"
   },
   {
     "revision": "d8e2822a63a42e8d1d4f21600d5284ae",
@@ -50,6 +50,10 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
   {
     "revision": "ce41af6adb85745468c5fdbccc500ed6",
     "url": "/static/media/instagram.ce41af6a.svg"
+  },
+  {
+    "revision": "912b7273306d40dba1651ddef8efe81a",
+    "url": "/static/media/twitter.912b7273.svg"
   },
   {
     "revision": "3dc93cf70b6b0a957ce92070dcba5e32",
