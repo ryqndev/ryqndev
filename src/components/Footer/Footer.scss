@@ -2,7 +2,7 @@
     position: relative;
     z-index: 150;
     scroll-snap-align: start;
-    height: calc(100vh - 20px);
+    height: 100vh;
     text-align: center;
     background-color: var(--background-emphasis);
     & .f-bg{
@@ -11,17 +11,7 @@
         width: 100vw;
         bottom: calc( 50vh - 12vw);
         color: var(--background-color);
-        font-family: 'Hyperwave';
-        font-size: 25vw;
-    }
-    & .socials{
-        display: grid;
-        grid-template-columns: repeat(4, 50px);
-
-        & .icon{
-            height: 40px;
-            width: 40px;
-        }
+        font: 25vw 'Hyperwave';
     }
     & .made-with{
         position: absolute;

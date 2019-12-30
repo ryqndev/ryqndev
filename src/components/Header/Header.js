@@ -19,6 +19,14 @@ const Header = ({scroll}) => {
             <div className="h-name behind">
                 RYAN YANG
             </div>
+            <div class="icon-scroll">
+                <div class="mouse">
+                    <div class="wheel"></div>
+                </div>
+                <div class="icon-arrows">
+                    <span></span>
+                </div>
+            </div>
         </header>
     );
 }
