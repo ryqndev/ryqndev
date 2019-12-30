@@ -60,7 +60,7 @@
     }
     &.behind{
         position: fixed;
-        left: calc( -50vh + 50vw );
+        left: calc( 50vw - 50vh );
         top: calc( 50vh - 8vw - 0px );
         color: var(--text-color-alt);
         transform: scale( calc( 1 + var(--scroll-small) )) rotate(90deg);
@@ -72,9 +72,8 @@
     }
     &.front{
         position: absolute;
-        left: calc( -35vh + 30vw - 20px);
-        // top: calc( 35vw - 35px - 6vh);
-        top: -2vh;
+        left: calc( 35vw - 50vh );
+        top: calc( 35vw - 20px - 8vh);
         color: var(--text-color);
         transform: rotate(var(--scroll-big));
         opacity: calc( 1 - var(--scroll-small) );
