@@ -1,6 +1,6 @@
 import React from 'react';
 import Toggle from 'react-toggle';
-import './Toggle.css';
+import './Toggle.scss';
 
 const toggle = ({cur, set}) => {
     return (

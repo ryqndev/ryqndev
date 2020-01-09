@@ -10,7 +10,10 @@ const Projects = () => {
         psRef.current.scrollTo({top: 0});
         setPID(i);
     }
-    const close = (i) => { psRef.current.scrollTo({top: 0, behavior: 'smooth'}) }
+    const close = (i) => { 
+        psRef.current.scrollTo({top: 0, behavior: 'smooth'});
+        psRef.current.children[0].style.top = 0;
+    }
     const [pID, setPID] = useState(0);
     useEffect(() => { fse.load(display, close) }, []);
     useEffect(() => {
@@ -20,8 +23,8 @@ const Projects = () => {
             scrollListener.removeEventListener('wheel', scroll);
         }
     }, [psRef]);
-    let scroll = (e) => {
-        console.log(psRef.current.scrollTop);
+    let scroll = () => {
+        psRef.current.children[0].style.top = psRef.current.scrollTop * 0.8 + 'px';
     }
 
     return (

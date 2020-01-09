@@ -7,15 +7,15 @@
     & .p-img-w{
         width: 100%;
         border-radius: 4px;
+        overflow: hidden;
         img{
             cursor: pointer;
             height: 100%;
             width: 100%;
             object-fit: cover;   
-            transition: filter 350ms;
-            // filter: blur(0px);
+            transition: transform 350ms;
             &:hover{
-                filter: contrast(150%);
+                transform: scale(1.05);
             }
             &.img-large{
                 position: fixed;
@@ -32,12 +32,7 @@
         margin: 25px 0 5px 5px;
     }
     p{
-        cursor: pointer;
         margin: 5px 0 10px 5px;
-        text-transform: uppercase;
-        color: grey;
-        &:hover{
-            color: white;
-        }
+        color: #888888;
     }
 }

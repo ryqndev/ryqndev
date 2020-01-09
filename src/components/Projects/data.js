@@ -1,5 +1,6 @@
 import React from 'react';
-import BobaWatch from '../BobaWatch';
+import BobaWatch from '../BobaWatch/BobaWatch';
+import LearnRyqnDev from '../LearnRyqnDev/LearnRyqnDev';
 import bobaWatchImage from '../../assets/images/boba_watch.png';
 import webDevImage from '../../assets/images/webdev.jpeg';
 
@@ -19,7 +20,7 @@ const data = [
         type: 'Coding Tutorials',
         year: 2019,
         image: webDevImage,
-        content: <div />
+        content: <LearnRyqnDev />
     }
 ]
 const total = data.length;
