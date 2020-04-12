@@ -1,16 +1,16 @@
 {
   "files": {
-    "main.css": "/static/css/main.1a9b0284.chunk.css",
-    "main.js": "/static/js/main.5adc6534.chunk.js",
-    "main.js.map": "/static/js/main.5adc6534.chunk.js.map",
+    "main.css": "/static/css/main.85f874d6.chunk.css",
+    "main.js": "/static/js/main.71f9fb74.chunk.js",
+    "main.js.map": "/static/js/main.71f9fb74.chunk.js.map",
     "runtime-main.js": "/static/js/runtime-main.d23c2f31.js",
     "runtime-main.js.map": "/static/js/runtime-main.d23c2f31.js.map",
     "static/js/2.31e0d068.chunk.js": "/static/js/2.31e0d068.chunk.js",
     "static/js/2.31e0d068.chunk.js.map": "/static/js/2.31e0d068.chunk.js.map",
     "index.html": "/index.html",
-    "precache-manifest.e9f07e66043e715c01595a18d8cde18a.js": "/precache-manifest.e9f07e66043e715c01595a18d8cde18a.js",
+    "precache-manifest.f47566dd35a116be7e0ede5e5b9f88e3.js": "/precache-manifest.f47566dd35a116be7e0ede5e5b9f88e3.js",
     "service-worker.js": "/service-worker.js",
-    "static/css/main.1a9b0284.chunk.css.map": "/static/css/main.1a9b0284.chunk.css.map",
+    "static/css/main.85f874d6.chunk.css.map": "/static/css/main.85f874d6.chunk.css.map",
     "static/js/2.31e0d068.chunk.js.LICENSE": "/static/js/2.31e0d068.chunk.js.LICENSE",
     "static/media/fonts.css": "/static/media/Poppins-Regular.41e8dead.ttf",
     "static/media/boba_watch.png": "/static/media/boba_watch.86dab07c.png",
@@ -23,7 +23,7 @@
   "entrypoints": [
     "static/js/runtime-main.d23c2f31.js",
     "static/js/2.31e0d068.chunk.js",
-    "static/css/main.1a9b0284.chunk.css",
-    "static/js/main.5adc6534.chunk.js"
+    "static/css/main.85f874d6.chunk.css",
+    "static/js/main.71f9fb74.chunk.js"
   ]
 }
