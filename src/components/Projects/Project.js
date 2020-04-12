@@ -13,7 +13,7 @@ const Project = ({id, name, type, year, image}) => {
 			</div>
             <span>{type} ⦿ {year}</span>
             <h3>{name}</h3>
-            <p> click image to view </p>
+            {/* <p> click image to view </p> */}
         </figure>
     )
 }
