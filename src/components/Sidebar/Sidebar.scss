@@ -1,55 +1,62 @@
-.s-w{
+.social-trigger{
     position: fixed;
-    z-index: 200;
-    width: 90vh;
-    height: 50px;
-    top: 0;
-    right: -60px; 
-    color: rgb(0, 177, 200);
-    font: 25px 'Quicksand';
-    transform: rotate(-90deg);
-    transform-origin: bottom right;
-    @media screen and (min-aspect-ratio: 1/1) {
-        right: 60px; 
+    padding: 10px 10px 6px 10px;
+    bottom: 30px;
+    right: 15px;
+    border-radius: 50%;
+    z-index: 500;
+    box-shadow: 0 0 2px  #ff00ff;
+    background-color: rgba($color: #ff00ff, $alpha: 0.1);
+    @media screen and (min-aspect-ratio: 1/1){
+        bottom: 80px;
+        right: 80px;
     }
-    & .s-line{
-        pointer-events: none;
+    transition: box-shadow 350ms, background-color 350ms;
+    & aside{
+        box-sizing: border-box;
         position: absolute;
-        top: 20px;
-        background-position: center;        
-        height: 2px; 
-        border-radius: 4px;
-        animation: blend 8s ease infinite alternate-reverse;
-        &.top{
-            left: 300px;
-            width:  calc(80vh - 350px);
-            background: linear-gradient(225deg, #ff00ff, #00ffff);
-            background-size: 200% 200%;
-        }
-        &.bottom{
-            left: 25px;
-            width:  50px;
-            background: linear-gradient(45deg, #0059ff, #00ffff);
-            background-size: 300px 300px;
+        bottom: 53px;
+        right: -7.5px;
+        width: 60px;
+        background-color: white;
+        background: linear-gradient(225deg, #ff00ff22, #00ffff22);
+        background-size: 200% 200%;
+        animation: blend 4s ease infinite alternate-reverse;
+        display: grid;
+        grid-template-rows: repeat(4, 60px);
+        height: 0px;
+        overflow: hidden;
+        padding: 0px;
+        clip-path: polygon(100% 0%, 100% 95%, 70% 95%, 50% 100%, 30% 95%, 0% 95%, 0% 0%);
+        transition: height 250ms 200ms, padding 250ms 200ms;
+        & div{
+            padding: 5px 10px;
+            & a{
+                display: block;
+                height: 100%;
+                width: 100%;
+                margin: 0 auto;
+                & .icon{
+                    padding-top: 20px;
+                }
+            }
         }
     }
-}
-.social{
-    display: grid;
-    grid-template-columns: repeat(4, 45px);
-    border-radius: 20px;
-    box-sizing: border-box;
-    width: 180px;
-    margin-left: 100px;
-    // box-shadow: inset 0px 0px 10px 0px #ff00ff;
-    // background-color: #00ffff11;
-    // background-color: var(--text-color);
-    &  a.icon{
-        height: 40px;
-        width: 40px;
-        transform: rotate(90deg);
-        &:hover{
-            filter: invert(100%);
+    & path{
+        transition: fill 350ms;
+        fill: #ff00ff;
+    }
+    &:hover, &.open{
+        box-shadow: 0 0 5px 1px #ff00ff;
+        background-color: rgba($color: #ff00ff, $alpha: 0.4);
+        & path{
+            fill: #ffffff;
+        }
+        & aside{
+            height: 260px;
+            padding-top: 5px;
+            padding-bottom: 15px;
+            transition: height 250ms, padding 250ms;
         }
     }
 }
