@@ -12,7 +12,7 @@ const App = () => {
     const [scroll, setScroll] = useState(0);
     
     const scrolled = useRef(setScroll);
-    const site     = useRef(null);
+    const site = useRef(null);
     
     useEffect(() => { Theme(dark) }, [dark]);
 
