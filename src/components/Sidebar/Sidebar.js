@@ -3,7 +3,7 @@ import './Sidebar.scss';
 import gmailIcon from '../../assets/icons/gmail.svg';
 import twitterIcon from '../../assets/icons/twitter.svg';
 import githubIcon from '../../assets/icons/github.svg';
-import instagramIcon from '../../assets/icons/instagram.svg';
+// import instagramIcon from '../../assets/icons/instagram.svg';
 import {ReactComponent as SocialTriggerIcon} from '../../assets/icons/social_trigger.svg';
 
 const iconOrder = [
@@ -21,11 +21,6 @@ const iconOrder = [
         'img': gmailIcon,
         'type': 'gmail',
         'link': 'mailto:rqyang@uci.edu'
-    },
-    {
-        'img': instagramIcon,
-        'type': 'instagram',
-        'link': 'https://instagram.com/lotsofsbux'
     }
 ];
 

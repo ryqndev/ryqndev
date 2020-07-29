@@ -46,7 +46,7 @@
         transition: fill 350ms;
         fill: #ff00ff;
     }
-    &:hover, &.open{
+    &.open{
         box-shadow: 0 0 5px 1px #ff00ff;
         background-color: rgba($color: #ff00ff, $alpha: 0.4);
         & path{
