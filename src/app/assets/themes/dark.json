@@ -1,0 +1,15 @@
+{
+    "themeName": "Dark",
+    "themeStyles": {
+        "--dark-mode": "1",
+        "--background-color": "#151515",
+        "--background-color-alt": "#FFFFFF",
+        "--background-emphasis": "#000000",
+        "--text-color": "#FFFFFF",
+        "--text-color-alt": "#000000",
+        "--emphasis-text": "#FFFFFF",
+        "--accent-color": "#FF00FF",
+        "--accent-color-alt": "#00FFFF",
+        "--emphasis-shadow": "#FF00FF"
+    }
+}

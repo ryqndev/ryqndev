@@ -1,0 +1,69 @@
+:root{
+    --animation-time: 350ms;
+    --animation-quick: 100ms;
+}
+@keyframes noise-anim-1 {
+    $steps: 20;
+    @for $i from 0 through $steps {
+      #{percentage($i*(1/$steps))} {
+        $top: random(100);
+        $bottom: random(101 - $top);
+        clip-path: inset(#{$top}% 0 #{$bottom}% 0);
+      }
+    }
+  }
+@keyframes noise-anim-2 {
+    $steps: 20;
+    @for $i from 0 through $steps {
+        #{percentage($i*(1/$steps))} {
+            $top: random(100);
+            $bottom: random(101 - $top);
+            clip-path: inset(#{$top}% 0 #{$bottom}% 0);
+        }
+    }
+}
+@keyframes fade{
+    from { opacity: 0 }
+    to   { opacity: 1 }
+}
+@keyframes blend {
+    0%   { background-position: 100% 100% }
+    33%  { background-position: 0%   100% }
+    66%  { background-position: 0%   0%   }
+    100% { background-position: 100% 0%   }
+}
+.fade-left-enter {
+    opacity: 0;
+    transform: translateX(-10px);
+}
+.fade-left-enter-active {
+    opacity: 1;
+    transform: translateX(0px);
+    transition: opacity var(--animation-time), transform var(--animation-time);
+}
+.fade-left-exit {
+    transform: translateX(0px);
+    opacity: 1;
+}
+.fade-left-exit-active {
+    opacity: 0;
+    transform: translateX(-10px);
+    transition: opacity var(--animation-time), transform var(--animation-time);
+}
+
+.fade-quick-enter {
+    opacity: 0;
+}
+.fade-quick-exit {
+    opacity: 1;
+}
+.fade-quick-enter-active {
+    opacity: 1;
+}
+.fade-quick-exit-active {
+    opacity: 0;
+}
+.fade-quick-enter-active,
+.fade-quick-exit-active{
+    transition: opacity var(--animation-quick);
+}

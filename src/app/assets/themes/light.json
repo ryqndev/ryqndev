@@ -1,0 +1,15 @@
+{
+    "themeName": "Light",
+    "themeStyles": {
+        "--dark-mode": "0",
+        "--background-color": "#FFEEEE",
+        "--background-color-alt": "#151515",
+        "--background-emphasis": "#FFBBBB",
+        "--text-color": "#000000",
+        "--text-color-alt": "#FFEEEE",
+        "--emphasis-text": "#FF9999",
+        "--accent-color": "#FF00FF",
+        "--accent-color-alt": "#00FFFF",
+        "--emphasis-shadow": "#000000"
+    }
+}
