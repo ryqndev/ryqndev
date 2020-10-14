@@ -33,6 +33,7 @@ const App = () => {
             <Router basename={process.env.PUBLIC_URL}>
                 <Page path="/" component={<Home />}/>
                 <Page path="/boba-watch" component={<BobaWatch/>}/>
+                <Route path="/intro-to-web-dev" render={() => (window.location = "https://www.github.com/ryqndev/Intro-To-Web-Dev")}/>
             </Router>
         </div>
 	);
