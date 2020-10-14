@@ -7,7 +7,6 @@ const Project = ({id, name, type, year, image}) => {
             <div className="p-img-w">
                 <div className="item">
                     <img className="img" src={image} alt={name + ' banner'} />
-                    <img className="img-large" src={image} alt={name + ' banner'} />
                 </div>
             </div>
             <span>{type} ⦿ {year}</span>

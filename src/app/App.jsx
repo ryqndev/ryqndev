@@ -1,17 +1,18 @@
-import React, {useState, useEffect, Fragment} from 'react';
+import React, {useState, useEffect} from 'react';
 import {BrowserRouter as Router, Route} from 'react-router-dom';
+import Toggle from 'react-toggle';
 import {CSSTransition} from 'react-transition-group';
 import Home from './Pages/Home';
 import BobaWatch from './Pages/BobaWatch';
 import {getTheme, setTheme as updateTheme} from './controller/theme';
-import Toggle from 'react-toggle';
 import './styles/main.scss';
+import './App.scss';
 
-const Page = ({path, children, component}) => (
+const Page = ({path, component}) => (
     <Route exact path={path}>
         {({ match }) => (
-            <CSSTransition unmountOnExit mountOnEnter in={match != null} timeout={100} classNames="fade-quick">
-                <div className="page with-user">
+            <CSSTransition unmountOnExit mountOnEnter in={match != null} timeout={200} classNames="fade-quick">
+                <div className="page">
                     {component}
                 </div>
             </CSSTransition>
@@ -25,15 +26,15 @@ const App = () => {
     useEffect(() => {updateTheme(theme)}, [theme]);
 
 	return (
-        <Fragment>
+        <div>
             <label className="t-w">
                 <Toggle checked={!!theme} icons={false} onChange={() => {setTheme(+!theme)}} />
             </label>
             <Router basename={process.env.PUBLIC_URL}>
-                <Page path="/" component={Home}/>
-                <Page path="/boba-watch" component={BobaWatch}/>
+                <Page path="/" component={<Home />}/>
+                <Page path="/boba-watch" component={<BobaWatch/>}/>
             </Router>
-        </Fragment>
+        </div>
 	);
 }
 

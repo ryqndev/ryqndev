@@ -24,7 +24,6 @@ time, mark, audio, video {
 html, body{
 	width: 100vw;
 	min-width: 300px;
-	overflow: hidden;
 	color: var(--text-color);
 	background-color: var(--background-color-alt);
 	transition: background-color 500ms, color 500ms;
@@ -42,6 +41,9 @@ body {
 }
 code {
 	font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New', monospace;
+}
+img{
+	display: block;
 }
 // HTML5 display-role reset for older browsers
 article, aside, details, figcaption, figure,

@@ -1,29 +1,12 @@
-import React, {useState, useEffect, useRef} from 'react';
+import React from 'react';
 import Projects from './Projects';
+import About from './About';
+import {ScrollableNotice, Footer} from '../../Components';
+import useScroll from '../../controller/hooks/useScroll';
 import './Home.scss';
 
 const Home = () => {
-    const [scroll, setScroll] = useState(0);
-
-    const scrolled = useRef(setScroll);
-    const site = useRef(null);
-    
-    useEffect(() => {
-        let wrapper = site.current;
-        let updateScroll = () => {scrolled.current(wrapper.scrollTop)}
-
-        updateScroll();
-        wrapper.addEventListener('scroll', updateScroll);
-
-        return () => {
-            wrapper.removeEventListener('scroll', updateScroll);
-        }
-    }, []);
-
-    useEffect(() => {
-        document.documentElement.style.setProperty('--scroll-small', scroll / 300);
-        document.documentElement.style.setProperty('--scroll-big', scroll / -20 + 'deg');
-    }, [scroll])
+    const site = useScroll();
 
     return (
         <div id="w" ref={site}>
@@ -38,26 +21,11 @@ const Home = () => {
                 <div className="h-name behind">
                     RYAN YANG
                 </div>
-                <div className="icon-scroll">
-                    <div className="mouse">
-                        <div className="wheel"></div>
-                    </div>
-                    <div className="icon-arrows">
-                        <span></span>
-                    </div>
-                </div>
+                <ScrollableNotice />
             </header>
-            
+            <About />
             <Projects />
-            
-            <footer className="f-w">
-                <div className="f-bg">
-                    ryan yang
-                </div>
-                <div className="made-with">
-                    Made with <span role="img" aria-label="love">❤️</span> at UCI on sbux <span role="img" aria-label="coffee">☕</span> & boba
-                </div>
-            </footer>
+            <Footer />
         </div>
     );
 }

@@ -48,11 +48,6 @@
             &:hover{
                 transform: scale(1.05);
             }
-            &.img-large{
-                position: fixed;
-                opacity: 0;
-                pointer-events: none;
-            }
         }
     }
     span{
