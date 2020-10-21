@@ -69,6 +69,7 @@
         background-size: cover;
         @media screen and (max-width: 850px){
             height: 70vh;
+            border-bottom-right-radius: 30vh;
         }
         &::after{
             content: '';
@@ -97,17 +98,28 @@
         }
     }
     & h1{
-        transform: translateY(-9rem);
+        transform: translateY(-5rem);
         padding-right: 13vw;
         color: var(--text-color);
         text-align: right;
-        font-size: 11rem;
+        font-size: 5rem;
+        line-height: 4.5rem;
         font-weight: bold;
         transition: color 350ms;
-        @media screen and (max-width: 850px){
+        @media screen and (min-width: 850px){
+            transform: translateY(-3rem);
+            font-size: 7rem;
+            line-height: 11rem;
+        }
+        @media screen and (min-width: 1200px){
             transform: translateY(-5rem);
-            font-size: 5rem;
-            line-height: 4.5rem;
+            font-size: 9rem;
+            line-height: 11rem;
+        }
+        @media screen and (min-width: 1500px){
+            transform: translateY(-8rem);
+            font-size: 11rem;
+            line-height: 13rem;
         }
     }
     & .description{
@@ -119,6 +131,20 @@
         font-weight: bold;
         font-size: 2rem;
         transition: color 350ms;
+        &.light{
+            font-weight: normal;
+            font-size: 1.8rem;
+            @media screen and (max-width: 850px){
+                font-size: 1rem;
+            }
+        }
+        & a{
+            display: inline;
+            color: var(--text-accent);
+            &:hover, &:active, &:focus{
+                text-decoration: underline;
+            }
+        }
         @media screen and (max-width: 850px){
             text-align: justify;
             padding: 0 15px 0 20px;
