@@ -49,8 +49,3 @@ If you're the second guy, read below:
 > **No.**
 
 Learn coding yourself. It's not that hard I promise and I'll help you :)
-
-
-# Stuff about the actual website
-stuff i borrowed from others
-- [hamburgers](https://jonsuh.com/hamburgers/) - MIT licensed prebuilt hamburger menu icons
