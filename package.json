@@ -44,6 +44,6 @@
     "gsap": "^3.5.1",
     "imagesloaded": "^4.1.4",
     "react-markdown": "^4.3.1",
-    "three": "^0.111.0"
+    "three": "^0.125.0"
   }
 }
