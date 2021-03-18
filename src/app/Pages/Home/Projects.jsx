@@ -14,8 +14,8 @@ const data = [
         image: bobaWatchImage,
     }, 
     {
-        id: 'intro-to-web-dev',
-        name: 'Intro to Web Dev',
+        id: 'learn-ryqn-dev',
+        name: 'learn.ryqn.dev',
         type: 'Coding Tutorials',
         year: 2019,
         image: webDevImage,
