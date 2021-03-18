@@ -1,11 +1,11 @@
 self.__precacheManifest = (self.__precacheManifest || []).concat([
   {
-    "revision": "b34ffdf8734ceb7b83577ff370aac57c",
+    "revision": "d243123ea0773c515eef66497cd2af79",
     "url": "/index.html"
   },
   {
-    "revision": "9f819e8dac90b08f1e42",
-    "url": "/static/css/main.98a31cd7.chunk.css"
+    "revision": "70e7aa34907f7a4584ae",
+    "url": "/static/css/main.af511ae2.chunk.css"
   },
   {
     "revision": "2f06d3575a01c9e34535",
@@ -16,7 +16,7 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/static/js/2.ef50834b.chunk.js.LICENSE.txt"
   },
   {
-    "revision": "9f819e8dac90b08f1e42",
+    "revision": "70e7aa34907f7a4584ae",
     "url": "/static/js/main.9bccfc70.chunk.js"
   },
   {
@@ -24,8 +24,8 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/static/js/runtime-main.3f68c55c.js"
   },
   {
-    "revision": "2cc7ab6df879d8a7f718325bc5b71c90",
-    "url": "/static/media/Hyperwave-Two.2cc7ab6d.woff"
+    "revision": "95a7459c8324377a198a4989111152a3",
+    "url": "/static/media/Hyperwave-Two.95a7459c.ttf"
   },
   {
     "revision": "6b78c7ec468eb0e13c6c5c4c39203986",
