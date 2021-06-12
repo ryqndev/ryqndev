@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {memo} from 'react';
 import Project from './Project';
 import './Projects.scss';
 
@@ -37,4 +37,4 @@ const Projects = () => {
     )
 }
 
-export default Projects;
+export default memo(Projects);

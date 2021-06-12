@@ -3,25 +3,24 @@
     --scroll-big: 0deg;
 }
 #w{
+    box-sizing: border-box;
     height: 100vh;
+    min-width: 300px;
     overflow-y: scroll;
     overflow-x: hidden;
-    min-width: 300px;
-    scroll-snap-type: y mandatory;
 }
 .h-w{
-    scroll-snap-align: start;
-    height: 100vh;
-    margin-bottom: 300px;
+    pointer-events: none;
+    position: fixed;
+    display: grid;
+    place-content: center;
+    height: 100%;
+    width: 100%;
     overflow: hidden;
     & .special-square{
-        position: fixed;
         z-index: 1;
         height: 70vw;
         width: 70vw;
-        // top: calc(50vh - 32vw);
-        top: calc(50vh - 32vw);
-        left: 15vw;
         background: linear-gradient(225deg, #ff00ff, #00ffff);
         background-size: 200% 200%;
         animation: blend 4s ease infinite alternate-reverse;
@@ -31,72 +30,60 @@
             transform: scale( calc( 1 + var(--scroll-small)) ) rotate(0deg);
             height: 70vh;
             width: 70vh;
-            top: 15vh;
-            left: calc(50vw - 35vh);
         }
         & .special-square-inner{
-            position: absolute;
-            height: calc(70vw - 40px);
-            width: calc(70vw - 40px);
+            height: calc(100% - 40px);
+            width: calc(100% - 40px);
             margin-top: 20px;
-            // margin-top: 5vh;
             margin-left: 20px;
             background-color: var(--background-color);
             overflow: hidden;
-            text-align: center;
-            pointer-events: none;
             transition: background-color 500ms;
             @media screen and (min-aspect-ratio: 1/1){
-                height: calc(70vh - 40px);
-                width: calc(70vh - 40px);
                 transform: rotate(0deg);
             }
         }
     }
 }
+.header-placeholder {
+    height: 180vh;
+    @media screen and (min-aspect-ratio: 1/1){
+        height: 100vh;
+    }
+}
 .h-name{
-    width: 100vh;
-    text-align: center;
+    display: grid;
+    place-content: center;
+    height: 100%;
+    width: 100%;
     font-size: 32vw;
-    margin-top: -5vh;
-    // font-family: 'Ma Shan Zheng', cursive;
-    font-family: 'Red Hat Display';
-    font-weight: bold;
-    transform: rotate(90deg);
+    font-family: 'Ma Shan Zheng', cursive;
+    letter-spacing: 0.5vw;
     pointer-events: none;
     transition: color 500ms;
     @media screen and (min-aspect-ratio: 1/1){
-        font-size: 12vw;
-        letter-spacing: 0.5vw;
-        margin-top: 0vh;
-        width: 100vw;
+        font-size: 20vw;
         transform: rotate(0deg);
     }
     &.behind{
         position: fixed;
-        left: calc( 50vw - 50vh );
-        top: calc( 50vh - 8vw - 0px );
+        top: 0;
+        white-space: nowrap;
         color: var(--text-color-alt);
         transform: scale( calc( 1 + var(--scroll-small) )) rotate(90deg);
         @media screen and (min-aspect-ratio: 1/1){
-            top: calc( 50vh - 8vw );
+            // top: calc( 50vh - 8vw );
             left: 0;
             transform: scale( calc( 1 + var(--scroll-small) ));
         }
     }
     &.front{
-        display: grid;
-        place-content: center;
-        position: absolute;
-        left: calc( 35vw - 50vh );
-        // top: calc( 35vw - 20px - 8vh);
-        top: calc( 30vw - 20px + 1vh);
+
+        white-space: nowrap;
         color: var(--text-color);
         transform: rotate(var(--scroll-big));
         opacity: calc( 1 - var(--scroll-small) );
         @media screen and (min-aspect-ratio: 1/1){
-            top: calc(35vh - 8vw - 20px);
-            left: calc( -50vw + 35vh - 20px);
             transform: rotate(var(--scroll-big));
         }
     }
