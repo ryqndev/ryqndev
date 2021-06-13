@@ -127,8 +127,8 @@
         width: calc(100vw - 40px);
         max-width: 1000px;
         color: var(--text-color);
-        text-align: justify;
         font-weight: bold;
+        font-family: 'Cabin';
         font-size: 2rem;
         transition: color 350ms;
         &.light{

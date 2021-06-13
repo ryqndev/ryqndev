@@ -1,5 +1,5 @@
 :root{
-    --animation-time: 350ms;
+    --animation-time: 500ms;
     --animation-quick: 100ms;
 }
 @keyframes fade{
@@ -11,24 +11,6 @@
     33%  { background-position: 0%   100% }
     66%  { background-position: 0%   0%   }
     100% { background-position: 100% 0%   }
-}
-.fade-left-enter {
-    opacity: 0;
-    transform: translateX(-10px);
-}
-.fade-left-enter-active {
-    opacity: 1;
-    transform: translateX(0px);
-    transition: opacity var(--animation-time), transform var(--animation-time);
-}
-.fade-left-exit {
-    transform: translateX(0px);
-    opacity: 1;
-}
-.fade-left-exit-active {
-    opacity: 0;
-    transform: translateX(-10px);
-    transition: opacity var(--animation-time), transform var(--animation-time);
 }
 
 .fade-quick-enter {
@@ -45,5 +27,5 @@
 }
 .fade-quick-enter-active,
 .fade-quick-exit-active{
-    transition: opacity var(--animation-quick);
+    transition: opacity var(--animation-time);
 }

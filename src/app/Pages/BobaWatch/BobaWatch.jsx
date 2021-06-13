@@ -1,7 +1,7 @@
 import { memo } from 'react';
 import BobaWatchSplashBannerImage from '../../assets/images/splash-min.png';
-import { ScrollableNotice, Footer } from '../../Components';
-import BackLink from '../../Components/BackLink/BackLink';
+import { ScrollableNotice, Footer } from '../../components';
+import BackLink from '../../components/BackLink/BackLink';
 import useScroll from '../../controller/hooks/useScroll';
 import './BobaWatch.scss';
 
@@ -18,7 +18,7 @@ const BobaWatch = () => {
 			<figure className='hero'>
 				<BackLink to='/' pageName='projects' />
 				<div className='bwatch--layers'>
-					<div id='layer-1' className='bwatch-layer' style={{}}></div>
+					<div id='layer-1' className='bwatch-layer'></div>
 					<div id='layer-2' className='bwatch-layer'></div>
 					<div id='layer-3' className='bwatch-layer'></div>
 				</div>
@@ -29,7 +29,7 @@ const BobaWatch = () => {
 			<div className='description'>
 				I founded <span>Boba Watch</span> - a Progressive Web App that
 				helps users keep track of and analyze their drink spending - in
-				April of 2019. Using a <span>React</span>/SASS/Firebase tech
+				April of 2019. Using a <span>React</span>/<span>SASS</span>/<span>Firebase</span> tech
 				stack, I built the app from the ground up and designed the
 				infrastructure currently in place to support high level
 				production features such as <span>i18n</span> for thousands of
@@ -61,6 +61,8 @@ const BobaWatch = () => {
 
                 During our release, we had over 2 thousand sign-ups within the first hour and due to the scaling nature of Firestore, we were able to accomodate all of our users and never went above the free tier. I kept all of our server calls to a minimum by keeping as much of the logic in the client-side which meant we were going to have sync issues but it kept us from having to pay for server usage. Today, we have several thousand registered users and several hundred monthly average users.
             </div> */}
+
+
 			<Footer />
 		</article>
 	);

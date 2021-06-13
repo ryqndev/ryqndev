@@ -1,42 +1,51 @@
-import React, {useState, useEffect} from 'react';
-import {BrowserRouter as Router, Route} from 'react-router-dom';
+import { useState, useEffect } from 'react';
+import {
+	Routes,
+	Route,
+	useLocation,
+} from 'react-router-dom';
 import Toggle from 'react-toggle';
-import {CSSTransition} from 'react-transition-group';
-import Home from './Pages/Home';
-import BobaWatch from './Pages/BobaWatch';
-import {getTheme, setTheme as updateTheme} from './controller/theme';
+import { CSSTransition, TransitionGroup } from 'react-transition-group';
+import Home from './pages/Home';
+import BobaWatch from './pages/BobaWatch';
+import Redirect from './pages/Redirect';
+import { getTheme, setTheme as updateTheme } from './controller/theme';
 import './styles/main.scss';
-import './App.scss';
-
-const Page = ({path, component}) => (
-    <Route exact path={path}>
-        {({ match }) => (
-            <CSSTransition unmountOnExit mountOnEnter in={match != null} timeout={200} classNames="fade-quick">
-                <div className="page">
-                    {component}
-                </div>
-            </CSSTransition>
-        )}
-    </Route>
-);
 
 const App = () => {
-    const [theme, setTheme] = useState(getTheme());
+	const [theme, setTheme] = useState(getTheme());
+	const location = useLocation();
 
-    useEffect(() => {updateTheme(theme)}, [theme]);
+	useEffect(() => {
+		updateTheme(theme);
+	}, [theme]);
 
 	return (
-        <div>
-            <label className="t-w">
-                <Toggle checked={!!theme} icons={false} onChange={() => {setTheme(+!theme)}} />
-            </label>
-            <Router basename={process.env.PUBLIC_URL}>
-                <Page path="/" component={<Home />}/>
-                <Page path="/boba-watch" component={<BobaWatch/>}/>
-                <Route path="/learn-ryqn-dev" render={() => (window.location = "https://learn.ryqn.dev/")}/>
-            </Router>
-        </div>
+		<>
+			<Toggle
+				className='t-w'
+				checked={!!theme}
+				icons={false}
+				onChange={() => {
+					setTheme(+!theme);
+				}}
+			/>
+			<TransitionGroup>
+				<CSSTransition
+					key={location.key}
+					classNames='fade-quick'
+					timeout={500}
+				>
+					<Routes>
+						<Route path='/' element={<Home />} exact />
+                        <Route path='/pick-ban-pro' element={<Redirect to='https://pickban.pro/'/>} />
+						<Route path='/boba-watch' element={<BobaWatch />} />
+						<Route path='/learn-ryqn-dev' element={<Redirect to='https://learn.ryqn.dev/'/>} />
+					</Routes>
+				</CSSTransition>
+			</TransitionGroup>
+		</>
 	);
-}
+};
 
 export default App;
