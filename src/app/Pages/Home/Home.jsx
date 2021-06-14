@@ -1,21 +1,21 @@
 import { memo } from 'react';
 import Projects from './Projects';
 import About from './About';
-import { ScrollableNotice, Footer } from '../../components';
+import { ScrollableNotice } from '../../components';
 import useScroll from '../../controller/hooks/useScroll';
 import './Home.scss';
 
-const Home = ({name='杨秋睿'}) => {
-	const site = useScroll();
+const Home = ({ name = '杨秋睿' }) => {
+	useScroll();
 
 	return (
-		<div id='w' ref={site}>
+		<>
 			<div className='header-placeholder'>
 				<header className='h-w'>
-					<div className='h-name behind'>{name}</div>
-					<div className='special-square'>
-						<div className='special-square-inner'>
-							<div className='h-name front'>{name}</div>
+					<h1 className='name behind'>{name}</h1>
+					<div className='fake-border'>
+						<div className='fake-border--content'>
+							<h1 className='name front'>{name}</h1>
 						</div>
 					</div>
 					<ScrollableNotice />
@@ -23,8 +23,7 @@ const Home = ({name='杨秋睿'}) => {
 			</div>
 			<About />
 			<Projects />
-			<Footer />
-		</div>
+		</>
 	);
 };
 

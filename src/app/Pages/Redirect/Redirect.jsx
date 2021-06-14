@@ -2,9 +2,8 @@ import { useEffect } from 'react';
 
 const Redirect = ({ to }) => {
 	useEffect(() => {
-        window.location.replace(to);
-    });
-
+		window.location.replace(to);
+	});
 	return null;
 };
 

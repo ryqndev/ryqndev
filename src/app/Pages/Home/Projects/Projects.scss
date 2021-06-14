@@ -1,4 +1,4 @@
-.ps-w{
+.ps-w {
     z-index: 2;
     position: relative;
     height: auto;
@@ -6,10 +6,12 @@
     max-width: 1300px;
     padding: 40vh 20px 30vh 20px;
     margin: 0 auto;
-    @media screen and (min-width: 600px){
+
+    @media screen and (min-width: 600px) {
         width: 80vw;
     }
-    & .ps-h{
+
+    & .ps-h {
         position: relative;
         z-index: 300;
         padding-top: 2.5rem;
@@ -17,54 +19,73 @@
         text-align: center;
         height: 150px;
         transform: rotate(-5deg);
-        @media screen and (min-width: 600px){
+
+        @media screen and (min-width: 600px) {
             padding-top: 4rem;
             height: 200px;
         }
-        @media (min-width: 900px){
+
+        @media (min-width: 900px) {
             height: 300px;
         }
-        @media (min-width: 1200px){
+
+        @media (min-width: 1200px) {
             height: 350px;
         }
     }
 }
-.p-w{
+
+.p-w {
     scroll-margin-top: 100px;
     scroll-snap-align: start;
     margin-bottom: 150px;
     position: relative;
     z-index: 100;
-    & .p-img-w{
+
+    & .p-img-w {
         width: 100%;
         border-radius: 4px;
         overflow: hidden;
-        img{
+
+        img {
             cursor: pointer;
             height: 100%;
             width: 100%;
-            object-fit: cover;   
+            object-fit: cover;
             transition: transform 350ms;
-            &:hover{
+
+            &:hover {
                 transform: scale(1.05);
             }
         }
     }
-    span{
+
+    span {
         font: bold 1.2rem 'Poppins';
         display: block;
         letter-spacing: 3px;
         text-transform: uppercase;
         margin: 25px 0 0 2px;
     }
-    p{
+
+    p {
         margin: 5px 0 0 2px;
         color: #888888;
     }
+
     h3 {
         font-size: 3em;
         line-height: 1em;
         margin: 0px;
+
+    }
+    @media screen and (max-width: 800px) {
+        h3 {
+            font-size: 2em;
+        }
+        span {
+            font-size: 1em;
+            letter-spacing: 1px;
+        }
     }
 }
-

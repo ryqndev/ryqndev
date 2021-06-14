@@ -93,7 +93,7 @@ video {
 
 html,
 body {
-	width: 100vw;
+	overscroll-behavior: auto none;
 	min-width: 300px;
 	color: var(--text-color);
 	background-color: black;

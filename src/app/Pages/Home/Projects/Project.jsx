@@ -1,9 +1,9 @@
-import React, { memo } from 'react';
+import { memo } from 'react';
 import { Link } from 'react-router-dom';
 
 const Project = ({ id, name, type, year, image }) => {
 	return (
-		<Link to={'/' + id} className='p-w'>
+		<Link to={id} className='p-w'>
 			<div className='p-img-w'>
 				<div className='item'>
 					<img className='img' src={image} alt={name + ' banner'} />

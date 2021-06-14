@@ -1,38 +1,48 @@
-.back-link--wrapper{
-    position: relative;
+.back-link--wrapper {
+    position: fixed;
     top: 20px;
     left: 20px;
-    width: 320px;
     font-size: 1.5rem;
     z-index: 10;
     cursor: pointer;
-    @media screen and (max-width: 850px){
+    transition: transform 350ms;
+
+    @media screen and (max-width: 850px) {
         top: 10px;
         left: 10px;
         font-size: 1rem;
     }
-    & svg{
+
+    & svg {
         height: 1.2rem;
         width: auto;
-        @media screen and (max-width: 850px){
+
+        @media screen and (max-width: 850px) {
             height: 0.6rem;
         }
-        & path{
+
+        & path {
             fill: var(--text-color-alt);
             transition: fill 350ms;
         }
     }
-    & a > span{
+
+    & a>span {
         color: var(--text-color);
         border-bottom: 1px solid transparent;
         transition: color 350ms;
     }
-    &:hover{
-        & span{
+
+    &:hover,
+    &:active {
+        transform: translateX(5px);
+
+        & span {
             color: var(--text-color-alt);
         }
-        & svg{
-            & path{
+
+        & svg {
+            & path {
                 fill: var(--text-color);
             }
         }

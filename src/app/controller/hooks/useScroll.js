@@ -1,27 +1,20 @@
-import {useState, useEffect, useRef} from 'react';
+import { useEffect } from 'react';
 
 const useScroll = () => {
-    const [scroll, setScroll] = useState(0);
-    const site = useRef();
 
     useEffect(() => {
-        let siteRef = site.current;
-        let updateScroll = () => {setScroll(site.current.scrollTop)}
+        let updateScroll = () => {
+            document.documentElement.style.setProperty('--scroll-small', window.scrollY / 300);
+            document.documentElement.style.setProperty('--scroll-big', window.scrollY / -20 + 'deg');
+        }
 
         updateScroll();
-        siteRef.addEventListener('scroll', updateScroll);
+        window.addEventListener('scroll', updateScroll);
 
         return () => {
-            siteRef.removeEventListener('scroll', updateScroll);
+            window.removeEventListener('scroll', updateScroll);
         }
     }, []);
-
-    useEffect(() => {
-        document.documentElement.style.setProperty('--scroll-small', scroll / 300);
-        document.documentElement.style.setProperty('--scroll-big', scroll / -20 + 'deg');
-    }, [scroll]);
-
-    return site;
 
 }
 

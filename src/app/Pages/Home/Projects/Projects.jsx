@@ -18,7 +18,7 @@ const data = [
 		id: 'boba-watch',
 		name: 'Boba Watch',
 		type: 'Progressive Web App',
-		year: 2018,
+		year: 2019,
 		image: bobaWatchImage,
 	},
 	{
