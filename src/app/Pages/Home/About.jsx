@@ -7,7 +7,7 @@ const About = () => {
 		<section>
 			<div className='ps-w'>
 				<div className='ps-h'>
-					<h2>About</h2>
+					{/* <h2>About</h2> */}
 				</div>
 				<p className='resume-link'>
 					i'm a software engineer looking for work. see my{' '}

@@ -1,14 +1,15 @@
 import { useEffect } from 'react';
 import BackLink from '../../components/BackLink/BackLink';
 import { wrapper } from './ProjectWrapper.module.scss';
+import clsx from 'clsx';
 
-const ProjectWrapper = ({ name, children }) => {
+const ProjectWrapper = ({ name, children, className }) => {
 	useEffect(() => {
 		window.scrollTo({ top: 0, behavior: 'smooth' });
 	}, []);
 
 	return (
-		<main className={wrapper}>
+		<main className={clsx(wrapper, className)}>
 			<nav>
 				<BackLink to='/' pageName='projects' />
 			</nav>

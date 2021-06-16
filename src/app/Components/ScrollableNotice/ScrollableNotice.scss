@@ -8,7 +8,7 @@
     & .mouse{
         height: 1.375em;
         width: .875em;
-        border: 1px solid var(--text-color-alt);
+        border: 1px solid var(--background-color);
         border-radius: 2em;
         opacity: 0.7;
         & .wheel {
@@ -17,7 +17,7 @@
             height: 0.1875rem;
             width: 0.1875rem;
             margin: 0.1875rem auto 0;
-            background-color: var(--text-color-alt);
+            background-color: var(--background-color);
             animation: mouse-wheel 1.2s ease infinite;
             border-radius: 50%;
         }
@@ -26,8 +26,8 @@
         display: block;
         width: 0.315rem;
         height: 0.315rem;
-        border-right: 1px solid var(--text-color-alt);
-        border-bottom: 1px solid var(--text-color-alt);
+        border-right: 1px solid var(--background-color);
+        border-bottom: 1px solid var(--background-color);
         transform: rotate(45deg);
         margin-left: 0.295rem;
         animation: mouse-scroll 1s infinite;

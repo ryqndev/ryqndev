@@ -5,15 +5,14 @@
 
 .page--wrapper {
     display: grid;
-    grid-template-columns: 1fr auto 1fr;
-    --grid-line-color: rgb(70, 70, 70);
+    grid-template-columns: 15px 1fr 15px;
+    --grid-line-color: transparent;
     --grid-line-width: 1px;
-
+    
     &>div {
         position: relative;
         z-index: 10;
         grid-column: 2/3;
-        overflow: hidden;
     }
 
     &>div.content {
@@ -34,18 +33,18 @@
 
         &::before {
             top: 2%;
-            left: 70%;
+            left: 15%;
         }
 
         &::after {
-            top: -1%;
-            left: 15%;
+            top: 4%;
+            left: 70%;
         }
     }
 
-    @media screen and (max-width: 850px) {
-        grid-template-columns: 15px 1fr 15px;
-
+    @media screen and (min-width: 850px) {
+        grid-template-columns: 1fr auto 1fr;
+        --grid-line-color: #aaaaaa55;
     }
 }
 

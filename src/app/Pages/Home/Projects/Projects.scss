@@ -36,58 +36,77 @@
 }
 
 .p-w {
-    scroll-margin-top: 100px;
-    scroll-snap-align: start;
-    margin-bottom: 150px;
+    margin-bottom: 100px;
     position: relative;
     z-index: 100;
 
     & .p-img-w {
         width: 100%;
-        // border-radius: 4px;
         overflow: hidden;
-
-        img {
-            cursor: pointer;
-            height: 100%;
-            width: 100%;
-            object-fit: cover;
-            transition: transform 350ms;
+        &::before,
+        &::after {
+            content: '';
+            display: block;
+            width: 100vw;
+            position: absolute;
+            height: var(--grid-line-width);
+            background-color: var(--grid-line-color);
+        }
+        &::before {
+            top: -1px;
+        }
+        &>.item {
+            background-color: var(--background-color);
+            transition: transform 250ms, background-color 500ms;
 
             &:hover {
                 transform: scale(1.05);
             }
+
+            &>img {
+                cursor: pointer;
+                height: 100%;
+                width: 100%;
+                object-fit: cover;
+            }
         }
-    }
-
-    span {
-        font: bold 1.2rem 'Poppins';
-        display: block;
-        letter-spacing: 3px;
-        text-transform: uppercase;
-        margin: 25px 0 0 2px;
-        padding-left: 10px;
 
     }
+    .detail-holder{
+        overflow: hidden;
+        transition: background-color 500ms;
+        padding: 25px 0px 25px 10px;
+        background-color: var(--background-color);
+        border-bottom: var(--grid-line-width) solid var(--grid-line-color);
+        width: 70%;
 
-    p {
-        margin: 5px 0 0 2px;
-        color: #888888;
-        padding-left: 10px;
-
+        span {
+            font: bold 1.2rem 'Poppins';
+            display: block;
+            letter-spacing: 3px;
+            padding-left: 2px;
+            text-transform: uppercase;
+        }
+    
+        p {
+            margin: 5px 0 0 2px;
+            color: #888888;
+        }
+    
+        h3 {
+            font-size: 3em;
+            line-height: 1em;
+            margin: 0px;    
+        }
+    
     }
 
-    h3 {
-        font-size: 3em;
-        line-height: 1em;
-        margin: 0px;
-        padding-left: 10px;
-
-    }
+    
     @media screen and (max-width: 800px) {
         h3 {
             font-size: 2em;
         }
+
         span {
             font-size: 1em;
             letter-spacing: 1px;
