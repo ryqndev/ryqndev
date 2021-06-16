@@ -4,7 +4,7 @@
     height: auto;
     width: 100%;
     max-width: 1300px;
-    padding: 40vh 20px 30vh 20px;
+    padding: 40vh 0px 30vh 0px;
     margin: 0 auto;
 
     @media screen and (min-width: 600px) {
@@ -44,7 +44,7 @@
 
     & .p-img-w {
         width: 100%;
-        border-radius: 4px;
+        // border-radius: 4px;
         overflow: hidden;
 
         img {
@@ -66,17 +66,22 @@
         letter-spacing: 3px;
         text-transform: uppercase;
         margin: 25px 0 0 2px;
+        padding-left: 10px;
+
     }
 
     p {
         margin: 5px 0 0 2px;
         color: #888888;
+        padding-left: 10px;
+
     }
 
     h3 {
         font-size: 3em;
         line-height: 1em;
         margin: 0px;
+        padding-left: 10px;
 
     }
     @media screen and (max-width: 800px) {

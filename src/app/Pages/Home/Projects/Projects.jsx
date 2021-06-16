@@ -39,7 +39,7 @@ const Projects = () => {
 				</div>
 				<div id='ps-project'>
 					{data.map(e => (
-						<Project expand={false} key={e.id} {...e} />
+						<Project key={e.id} {...e} />
 					))}
 				</div>
 			</div>

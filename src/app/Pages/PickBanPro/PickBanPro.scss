@@ -65,7 +65,7 @@ h1.title {
 
 .description {
     margin: 0px auto 100px;
-    width: calc(100vw - 40px);
+    width: calc(100vw - 30px);
     max-width: 1000px;
     color: var(--text-color);
     font-weight: bold;
@@ -102,8 +102,7 @@ h1.title {
 
 .image-expand--holder {
     margin: 100px auto;
-    width: 90vw;
-    height: 60vw;
+    width: calc(100vw - 20px);
     overflow: hidden;
     border: 1px solid #F68080;
     border-radius: 4px;

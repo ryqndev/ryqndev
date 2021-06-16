@@ -1,14 +1,15 @@
 .t-w {
 	position: fixed;
-	top: 12px;
-	right: 10px;
+	top: 8px;
+	right: 13px;
 	z-index: 1350;
+	transform: scale(0.9);
 }
-
 @media screen and (min-width: 600px) {
 	.t-w {
-		top: 12px;
-		right: 15px;
+		top: 18px;
+		right: 20px;
+		transform: scale(1);
 	}
 }
 .react-toggle {
