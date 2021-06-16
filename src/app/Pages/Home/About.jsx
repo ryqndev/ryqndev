@@ -6,10 +6,8 @@ const About = () => {
 	return (
 		<section>
 			<div className='ps-w'>
-				<div className='ps-h'>
-					{/* <h2>About</h2> */}
-				</div>
-				<p className='resume-link'>
+				<div className='ps-h'>{/* <h2>About</h2> */}</div>
+				<p className='resume-link' id='me'>
 					i'm a software engineer looking for work. see my{' '}
 					<a
 						href={ResumePDF}

@@ -1,9 +1,8 @@
-import { memo, useEffect } from 'react';
+import { memo } from 'react';
 import Projects from './Projects';
 import About from './About';
 import { ScrollableNotice } from '../../components';
 import useScroll from '../../controller/hooks/useScroll';
-import AOS from 'aos';
 import './Home.scss';
 
 const Home = ({ name = '杨秋睿' }) => {
@@ -11,7 +10,7 @@ const Home = ({ name = '杨秋睿' }) => {
 
 	return (
 		<div className='page--wrapper'>
-			<div className='header-placeholder'></div>
+			<div id="home" className='header-placeholder'></div>
 			<header className='h-w'>
 				<h1 className='name behind'>{name}</h1>
 				<div className='fake-border'>

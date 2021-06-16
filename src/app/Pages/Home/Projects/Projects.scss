@@ -15,7 +15,7 @@
         position: relative;
         z-index: 300;
         padding-top: 2.5rem;
-        margin: 0 auto;
+        margin: 0 auto 5vh;
         text-align: center;
         height: 150px;
         transform: rotate(-5deg);
@@ -25,12 +25,14 @@
             height: 200px;
         }
 
-        @media (min-width: 900px) {
+        @media (min-width: 850px) {
             height: 300px;
+            margin: 0 auto 15vh;
         }
 
         @media (min-width: 1200px) {
             height: 350px;
+            
         }
     }
 }
@@ -98,18 +100,16 @@
             line-height: 1em;
             margin: 0px;    
         }
+        @media screen and (max-width: 800px) {
+            h3 {
+                font-size: 2em;
+            }
     
-    }
-
-    
-    @media screen and (max-width: 800px) {
-        h3 {
-            font-size: 2em;
-        }
-
-        span {
-            font-size: 1em;
-            letter-spacing: 1px;
+            span {
+                font-size: 1em;
+                letter-spacing: 1px;
+            }
         }
     }
+
 }

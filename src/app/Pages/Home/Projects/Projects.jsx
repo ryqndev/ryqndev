@@ -35,7 +35,7 @@ const Projects = () => {
 		<section>
 			<div className='ps-w'>
 				<div className='ps-h'>
-					<h2>Projects</h2>
+					<h2 id="projects">Projects</h2>
 				</div>
 				<div id='ps-project'>
 					{data.map(e => (

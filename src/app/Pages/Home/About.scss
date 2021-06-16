@@ -1,5 +1,5 @@
 p.resume-link{
-    font-size: 2rem;
+    font-size: 1.4rem;
     padding: 100px 50px;
     margin: 0 auto;
     text-align: center;
@@ -10,5 +10,8 @@ p.resume-link{
         display: inline;
         text-decoration: underline;
         color: var(--text-accent);
+    }
+    @media screen and (min-width: 850px) {
+        font-size: 2.5rem;
     }
 }

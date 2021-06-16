@@ -1,5 +1,5 @@
 figure.hero {
-    background-color: rgb(255, 217, 0);
+    background-color: rgb(255, 235, 122);
     height: 80vh;
     width: 85vw;
     border-bottom-right-radius: 30vh;
@@ -13,11 +13,11 @@ figure.hero {
     &::after {
         content: '';
         display: block;
-        height: 110vh;
+        height: 140vh;
         width: 15vw;
         background: repeating-linear-gradient(45deg,
-                var(--text-color) 4px,
-                var(--text-color) 5px,
+                #88888833 4px,
+                #88888833 5px,
                 transparent 6px,
                 transparent 25px);
         transform: translateX(82vw) translateY(-70vh);
@@ -41,8 +41,8 @@ h1.title {
     text-align: right;
     font: 8rem 'Hyperwave';
     line-height: 4.5rem;
-    font-weight: bold;
     transition: color 350ms;
+    text-shadow: 5px 5px #a200ff;
 
     @media screen and (min-width: 850px) {
         transform: translateY(-6rem);
