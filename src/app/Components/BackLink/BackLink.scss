@@ -1,7 +1,6 @@
 .back-link--wrapper {
-    position: fixed;
-    top: 20px;
-    left: 20px;
+    place-self: center start;
+    padding-left: 20px;
     font-size: 1.5rem;
     z-index: 10;
     cursor: pointer;
@@ -22,12 +21,15 @@
         }
 
         & path {
-            fill: var(--text-color-alt);
+            // fill: var(--text-color-alt);
+            fill: var(--text-accent);
             transition: fill 350ms;
         }
     }
 
     & a>span {
+        font-family: 'Red Hat Display';
+        font-weight: bold;
         color: var(--text-color);
         border-bottom: 1px solid transparent;
         transition: color 350ms;

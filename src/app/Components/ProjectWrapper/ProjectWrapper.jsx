@@ -9,7 +9,9 @@ const ProjectWrapper = ({ name, children }) => {
 
 	return (
 		<main className={wrapper}>
-			<BackLink to='/' pageName='projects' />
+			<nav>
+				<BackLink to='/' pageName='projects' />
+			</nav>
 			<aside>
 				<span>{name}</span> - a case study
 			</aside>

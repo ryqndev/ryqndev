@@ -2,7 +2,17 @@
     background-color: var(--background-color);
     transition: background-color 350ms;
     padding-bottom: 40px;
-    
+    &>nav {
+        z-index: 1000;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100vw;
+        height: 50px;
+        display: grid;
+        background-color: #a5787844;
+    }
+
     &>aside {
         position: fixed;
         z-index: 10;

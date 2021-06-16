@@ -2,7 +2,7 @@ import { useState, useEffect, memo } from 'react';
 import { Routes, Route, useLocation } from 'react-router-dom';
 import Toggle from 'react-toggle';
 import { CSSTransition, TransitionGroup } from 'react-transition-group';
-import { Home, BobaWatch, Redirect } from './pages';
+import { Home, BobaWatch, Redirect, PickBanPro } from './pages';
 import Footer from './components/Footer';
 import { getTheme, setTheme as updateTheme } from './controller/theme';
 import './styles/main.scss';
@@ -33,10 +33,7 @@ const App = () => {
 				>
 					<Routes>
 						<Route path='/' element={<Home />} exact />
-						<Route
-							path='/pick-ban-pro'
-							element={<Redirect to='https://pickban.pro/' />}
-						/>
+						<Route path='/pick-ban-pro' element={<PickBanPro />} />
 						<Route path='/boba-watch' element={<BobaWatch />} />
 						<Route
 							path='/learn-ryqn-dev'
