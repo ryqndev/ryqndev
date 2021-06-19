@@ -50,12 +50,6 @@ h1.title {
         line-height: 11rem;
     }
 
-    // @media screen and (min-width: 1200px) {
-    //     transform: translateY(-5rem);
-    //     font-size: 9rem;
-    //     line-height: 11rem;
-    // }
-
     @media screen and (min-width: 1500px) {
         transform: translateY(-8rem);
         font-size: 17rem;
@@ -69,7 +63,7 @@ h1.title {
     max-width: 1000px;
     color: var(--text-color);
     font-weight: bold;
-    font-family: 'Cabin';
+    font-family: 'Red Hat Display';
     font-size: 2rem;
     transition: color 350ms;
 

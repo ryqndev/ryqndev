@@ -1,5 +1,7 @@
-import React, { memo } from 'react';
+import { memo, useEffect } from 'react';
+import AOS from 'aos';
 import Project from './Project';
+import 'aos/dist/aos.css';
 import './Projects.scss';
 
 import bobaWatchImage from '../../../assets/images/boba_watch.png';
@@ -31,6 +33,10 @@ const data = [
 ];
 
 const Projects = () => {
+	useEffect(() => {
+		AOS.init();
+ 	}, []);
+
 	return (
 		<section>
 			<div className='ps-w'>

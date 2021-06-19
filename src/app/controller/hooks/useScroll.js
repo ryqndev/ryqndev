@@ -3,16 +3,38 @@ import { useEffect } from 'react';
 const useScroll = () => {
 
     useEffect(() => {
+        let waiting = false, endScrollHandle;
         let updateScroll = () => {
-            document.documentElement.style.setProperty('--scroll-small', window.scrollY / 300);
-            document.documentElement.style.setProperty('--scroll-big', window.scrollY / -20 + 'deg');
+            if (waiting) return;
+            waiting = true;
+        
+            if(window.scrollY < window.innerHeight * 1.5) {
+                document.documentElement.style.setProperty('--scroll-small', window.scrollY / 300);
+                document.documentElement.style.setProperty('--scroll-big', window.scrollY / -20 + 'deg');
+            }
+        
+            clearTimeout(endScrollHandle);
+
+            setTimeout(function () {
+                waiting = false;
+            }, 15);
+
+            endScrollHandle = setTimeout(function () {
+                document.documentElement.style.setProperty('--scroll-small', window.scrollY / 300);
+                document.documentElement.style.setProperty('--scroll-big', window.scrollY / -20 + 'deg');
+            }, 200);
+
         }
+
         updateScroll();
         window.addEventListener('scroll', updateScroll);
 
-        return () => {
-            window.removeEventListener('scroll', updateScroll);
-        }
+        window.addEventListener('load', () => {
+            document.documentElement.style.setProperty('--scroll-small', window.scrollY / 300);
+            document.documentElement.style.setProperty('--scroll-big', window.scrollY / -20 + 'deg');
+        });
+
+        return () => window.removeEventListener('scroll', updateScroll);
     }, []);
 
 }

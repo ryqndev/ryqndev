@@ -1,22 +1,14 @@
-import { memo, useEffect } from 'react';
+import { memo } from 'react';
 import { Link } from 'react-router-dom';
-import AOS from 'aos';
-import 'aos/dist/aos.css';
 
 const Project = ({ id, name, type, year, image }) => {
-	useEffect(() => {
-		AOS.init();
-	}, []);
-
-	useEffect(() => {
-		AOS.refreshHard();
-	}, [image]);
 
 	return (
 		<Link to={id} className='p-w'>
 			<div className='p-img-w'>
 				<div className='item'>
 					<img
+						id={id+'image'}
 						className='img'
 						data-aos='fade-right'
 						data-aos-offset='300'

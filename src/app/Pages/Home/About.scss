@@ -1,4 +1,4 @@
-p.resume-link{
+p.resume-link {
     font-size: 1.4rem;
     padding: 100px 50px;
     margin: 0 auto;
@@ -6,11 +6,14 @@ p.resume-link{
     background-color: var(--background-color);
     font-family: "Red Hat Display";
     font-weight: bold;
-    & a{
+    transition: background-color 350ms;
+
+    & a {
         display: inline;
         text-decoration: underline;
         color: var(--text-accent);
     }
+
     @media screen and (min-width: 850px) {
         font-size: 2.5rem;
     }
