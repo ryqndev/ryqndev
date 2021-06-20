@@ -2,13 +2,12 @@ import { memo } from 'react';
 import { Link } from 'react-router-dom';
 
 const Project = ({ id, name, type, year, image }) => {
-
 	return (
 		<Link to={id} className='p-w'>
 			<div className='p-img-w'>
 				<div className='item'>
 					<img
-						id={id+'image'}
+						id={id + 'image'}
 						className='img'
 						data-aos='fade-right'
 						data-aos-offset='300'

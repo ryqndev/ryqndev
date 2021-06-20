@@ -1,0 +1,42 @@
+.wrapper{
+    position: relative;
+    z-index: 150;
+    height: 100vh;
+    width: 100vw;
+    display: grid;
+    background-color: var(--background-emphasis);
+    transition: background-color 350ms;
+}
+.background{
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100vh;
+    width: 100vw;
+    display: grid;
+    &>svg {
+        place-self: center;
+        height: auto;
+        width: 80%;
+        &>path{
+            transition: fill 350ms;
+            fill: var(--background-color);
+        }
+    }
+    &>.made-with--note{
+        box-sizing: border-box;
+        position: absolute;
+        bottom: 0;
+        padding: 10px;
+        width: 100vw;
+        text-align: center;
+        text-transform: uppercase;
+        color: grey;
+        font: 1em 'Red Hat Display';
+        letter-spacing: 2px;
+        font-weight: bold;
+        @media screen and (max-width: 800px) {
+            font-size: 0.7em;
+        }
+    }
+}

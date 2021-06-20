@@ -19,10 +19,10 @@ const useScroll = () => {
                 waiting = false;
             }, 15);
 
-            endScrollHandle = setTimeout(function () {
+            endScrollHandle = setTimeout(() => {
                 document.documentElement.style.setProperty('--scroll-small', window.scrollY / 300);
                 document.documentElement.style.setProperty('--scroll-big', window.scrollY / -20 + 'deg');
-            }, 200);
+            }, 300);
 
         }
 

@@ -11,7 +11,7 @@ const ProjectWrapper = ({ name, children, className }) => {
 	return (
 		<main className={clsx(wrapper, className)}>
 			<nav>
-				<BackLink to='/#projects' pageName='projects' />
+				<BackLink to='/' pageName='projects' />
 			</nav>
 			<aside>
 				<span>{name}</span> - a case study

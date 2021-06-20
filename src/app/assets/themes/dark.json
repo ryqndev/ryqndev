@@ -4,7 +4,7 @@
         "--dark-mode": "1",
         "--background-color": "#151515",
         "--background-color-alt": "#FFFFFF",
-        "--background-emphasis": "#000000",
+        "--background-emphasis": "#101010",
         "--text-color": "#FFFFFF",
         "--text-color-alt": "#000000",
         "--emphasis-text": "#FFFFFF",

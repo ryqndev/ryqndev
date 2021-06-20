@@ -59,10 +59,10 @@
         }
         &>.item {
             background-color: var(--background-color);
-            transition: transform 250ms, background-color 350ms;
+            transition: transform 500ms, background-color 350ms;
 
             &:hover {
-                transform: scale(1.05);
+                transform: scale(1.02);
             }
 
             &>img {

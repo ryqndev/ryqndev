@@ -1,8 +1,10 @@
+import { memo } from 'react';
 import { ReactComponent as BackArrow } from '../../assets/icons/arrow.svg';
 import { Link } from 'react-router-dom';
 import './BackLink.scss';
 
 const BackLink = ({ to = '/', pageName = '' }) => {
+
 	return (
 		<div className='back-link--wrapper'>
 			<Link to={to}>
@@ -12,4 +14,4 @@ const BackLink = ({ to = '/', pageName = '' }) => {
 	);
 };
 
-export default BackLink;
+export default memo(BackLink);

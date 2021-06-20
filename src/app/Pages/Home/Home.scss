@@ -24,6 +24,7 @@
         border-left: var(--grid-line-width) solid var(--grid-line-color);
         border-right: var(--grid-line-width) solid var(--grid-line-color);
         grid-column: 2/3;
+        margin: 100px 0 150px;
 
         &::before,
         &::after {
