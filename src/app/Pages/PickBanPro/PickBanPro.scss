@@ -1,7 +1,7 @@
 figure.hero {
     background-color: rgb(255, 235, 122);
-    height: 80vh;
-    width: 85vw;
+    height: 40vh;
+    width: 75vw;
     border-bottom-right-radius: 30vh;
     background-size: cover;
 
@@ -62,7 +62,6 @@ h1.title {
     width: calc(100vw - 30px);
     max-width: 1000px;
     color: var(--text-color);
-    font-weight: bold;
     font-family: 'Red Hat Display';
     font-size: 2rem;
     transition: color 350ms;
@@ -115,4 +114,5 @@ h1.title {
 
 .pickbanpro span {
     color: #a200ff;
+    font-weight: bold;
 }

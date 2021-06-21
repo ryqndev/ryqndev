@@ -1,4 +1,5 @@
 import { memo } from 'react';
+import { Link } from 'react-router-dom';
 import { ReactComponent as ChineseName } from '../../assets/chinese.svg';
 import { ReactComponent as EnglishName } from '../../assets/english.svg';
 import { ReactComponent as GithubIcon } from '../../assets/icons/github.svg';
@@ -28,13 +29,13 @@ const Footer = () => {
 				<img src={ProfileImage} alt='Ryan Yang Profile' />
 				<EnglishName />
 				<div className={cn.icons}>
-					<a href="https://ryqn.dev/">
+					<a href='https://ryqn.dev/'>
 						<PortfolioIcon />
 					</a>
-					<a href="https://github.com/ryqndev">
+					<a href='https://github.com/ryqndev'>
 						<GithubIcon />
 					</a>
-					<a href="mailto:ryanqyang@gmail.com">
+					<a href='mailto:ryanqyang@gmail.com'>
 						<GmailIcon />
 					</a>
 				</div>
@@ -95,6 +96,18 @@ const Footer = () => {
 						Subtle Asian Traits members
 					</span>
 				</a>
+
+				<h3>Projects</h3>
+				<Link to='/pick-ban-pro' className={cn.article}>
+					<h4>Pick Ban Pro</h4>
+					<time dateTime='2021-5'>May 2021</time>
+					<span>https://pickban.pro</span>
+				</Link>
+				<Link to='/boba-watch' className={cn.article}>
+					<h4>Boba Watch</h4>
+					<time dateTime='2019-10'>Oct 2019</time>
+					<span>https://boba.watch</span>
+				</Link>
 			</div>
 		</footer>
 	);

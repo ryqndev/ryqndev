@@ -1,4 +1,4 @@
-import { useState, useEffect, memo } from 'react';
+import { useState, useEffect, memo, Suspense } from 'react';
 import { Routes, Route } from 'react-router-dom';
 import Toggle from 'react-toggle';
 import { Home, BobaWatch, Redirect, PickBanPro } from './pages';
@@ -25,7 +25,9 @@ const App = () => {
 				}}
 			/>
 			<LoadingSplash>
+				<Suspense>
 				<Routes>
+					
 					<Route path='/' element={<Home />} exact />
 					<Route path='pick-ban-pro' element={<PickBanPro />} />
 					<Route path='boba-watch' element={<BobaWatch />} />
@@ -34,6 +36,7 @@ const App = () => {
 						element={<Redirect to='https://learn.ryqn.dev/' />}
 					/>
 				</Routes>
+				</Suspense>
 			</LoadingSplash>
 			<Footer />
 		</>

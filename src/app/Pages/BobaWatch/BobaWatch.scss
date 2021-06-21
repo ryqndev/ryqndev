@@ -111,11 +111,13 @@
         width: calc(100vw - 40px);
         max-width: 1000px;
         color: var(--text-color);
-        font-weight: bold;
         font-family: 'Red Hat Display';
         font-size: 2rem;
         transition: color 350ms;
+        & span {
+            font-weight: bold;
 
+        }
         &.light {
             font-weight: normal;
             font-size: 1.8rem;

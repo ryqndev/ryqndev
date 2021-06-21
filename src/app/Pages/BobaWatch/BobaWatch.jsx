@@ -28,7 +28,7 @@ const BobaWatch = () => {
 					I founded <span>Boba Watch</span> - a Progressive Web App
 					that helps users keep track of and analyze their drink
 					spending - in April of 2019. Using a{' '}
-					<span>React</span> / <span>SASS</span> / <span>Firebase</span> 
+					<span>React</span> / <span>SASS</span> / <span>Firebase</span>{' '}
 					tech stack, I built the app from the ground up and designed 
 					the infrastructure currently in place to support high 
 					level production features such as <span>i18n</span> for 

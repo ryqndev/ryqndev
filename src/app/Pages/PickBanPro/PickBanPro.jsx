@@ -6,17 +6,12 @@ const PickBanPro = () => {
 	return (
 		<ProjectWrapper name='Pick Ban Pro' className='pickbanpro'>
 			<figure className='hero'>
-				<div className='bwatch--layers'>
-					<div id='layer-1' className='bwatch-layer'></div>
-					<div id='layer-2' className='bwatch-layer'></div>
-					<div id='layer-3' className='bwatch-layer'></div>
-				</div>
 			</figure>
 
 			<h1 className='title'>Pick Ban Pro</h1>
 
 			<div className='description'>
-				<span>Pick Ban Pro</span> is an customizable draft tool for{' '}
+				<span>Pick Ban Pro</span> is a customizable draft tool for{' '}
 				<span>League of Legends</span>. Compared to other draft tools
 				that exist, Pick Ban Pro offers not only the most functionality,
 				but the most impressionable <span>aesthetics</span> as well.
