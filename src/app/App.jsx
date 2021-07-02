@@ -1,11 +1,11 @@
-import { useState, useEffect, memo, Suspense } from 'react';
+import React, { useState, useEffect, memo, Suspense } from 'react';
 import { Routes, Route } from 'react-router-dom';
 import Toggle from 'react-toggle';
+import Footer from '@ryqndev/footer';
 import { Home, BobaWatch, Redirect, PickBanPro } from './pages';
-import Footer from './components/Footer';
 import { getTheme, setTheme as updateTheme } from './controller/theme';
-import './styles/main.scss';
 import LoadingSplash from './components/LoadingSplash';
+import './styles/main.scss';
 
 const App = () => {
 	const [theme, setTheme] = useState(getTheme());
