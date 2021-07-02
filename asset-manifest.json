@@ -1,28 +1,23 @@
 {
   "files": {
-    "main.css": "/static/css/main.cfa3d744.chunk.css",
-    "main.js": "/static/js/main.40a3740f.chunk.js",
-    "main.js.map": "/static/js/main.40a3740f.chunk.js.map",
+    "main.css": "/static/css/main.1c437f3d.chunk.css",
+    "main.js": "/static/js/main.37f7c21f.chunk.js",
+    "main.js.map": "/static/js/main.37f7c21f.chunk.js.map",
     "runtime-main.js": "/static/js/runtime-main.d3a6ca87.js",
     "runtime-main.js.map": "/static/js/runtime-main.d3a6ca87.js.map",
     "static/css/2.7fc9bc2b.chunk.css": "/static/css/2.7fc9bc2b.chunk.css",
-    "static/js/2.508ea8eb.chunk.js": "/static/js/2.508ea8eb.chunk.js",
-    "static/js/2.508ea8eb.chunk.js.map": "/static/js/2.508ea8eb.chunk.js.map",
+    "static/js/2.358d1e16.chunk.js": "/static/js/2.358d1e16.chunk.js",
+    "static/js/2.358d1e16.chunk.js.map": "/static/js/2.358d1e16.chunk.js.map",
     "index.html": "/index.html",
     "static/css/2.7fc9bc2b.chunk.css.map": "/static/css/2.7fc9bc2b.chunk.css.map",
-    "static/css/main.cfa3d744.chunk.css.map": "/static/css/main.cfa3d744.chunk.css.map",
-    "static/js/2.508ea8eb.chunk.js.LICENSE.txt": "/static/js/2.508ea8eb.chunk.js.LICENSE.txt",
+    "static/css/main.1c437f3d.chunk.css.map": "/static/css/main.1c437f3d.chunk.css.map",
+    "static/js/2.358d1e16.chunk.js.LICENSE.txt": "/static/js/2.358d1e16.chunk.js.LICENSE.txt",
     "static/media/main.scss": "/static/media/Poppins-Regular.ccfdd78d.ttf",
     "static/media/arrow.5338971a.svg": "/static/media/arrow.5338971a.svg",
     "static/media/boba_watch.670eef71.png": "/static/media/boba_watch.670eef71.png",
     "static/media/chinese.6c036deb.svg": "/static/media/chinese.6c036deb.svg",
-    "static/media/english.4d6b6b40.svg": "/static/media/english.4d6b6b40.svg",
-    "static/media/github.b1997d6c.svg": "/static/media/github.b1997d6c.svg",
-    "static/media/gmail.33a78295.svg": "/static/media/gmail.33a78295.svg",
     "static/media/BobaWatch.scss": "/static/media/layer3.ac425dd2.png",
-    "static/media/light-logo.3fb37688.svg": "/static/media/light-logo.3fb37688.svg",
     "static/media/pickbanpro.68da5f95.png": "/static/media/pickbanpro.68da5f95.png",
-    "static/media/profile-transparent-square.40654011.png": "/static/media/profile-transparent-square.40654011.png",
     "static/media/resume.a3adf71e.pdf": "/static/media/resume.a3adf71e.pdf",
     "static/media/splash-min.6095074d.png": "/static/media/splash-min.6095074d.png",
     "static/media/webdev.e2ad91d4.jpeg": "/static/media/webdev.e2ad91d4.jpeg"
@@ -30,8 +25,8 @@
   "entrypoints": [
     "static/js/runtime-main.d3a6ca87.js",
     "static/css/2.7fc9bc2b.chunk.css",
-    "static/js/2.508ea8eb.chunk.js",
-    "static/css/main.cfa3d744.chunk.css",
-    "static/js/main.40a3740f.chunk.js"
+    "static/js/2.358d1e16.chunk.js",
+    "static/css/main.1c437f3d.chunk.css",
+    "static/js/main.37f7c21f.chunk.js"
   ]
 }
