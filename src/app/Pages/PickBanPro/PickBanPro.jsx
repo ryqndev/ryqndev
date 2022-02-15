@@ -1,12 +1,12 @@
-import ProjectWrapper from '../../components/ProjectWrapper';
+// import ProjectWrapper from '../../components/ProjectWrapper';
 import PickBanProSplashBannerImage from '../../assets/images/pickbanpro.png';
 import './PickBanPro.scss';
 
 const PickBanPro = () => {
 	return (
-		<ProjectWrapper name='Pick Ban Pro' className='pickbanpro'>
-			<figure className='hero'>
-			</figure>
+		// <ProjectWrapper name='Pick Ban Pro' className='pickbanpro'>
+		<>
+			<figure className='hero'></figure>
 
 			<h1 className='title'>Pick Ban Pro</h1>
 
@@ -27,7 +27,8 @@ const PickBanPro = () => {
 					className='splash'
 				/>
 			</div>
-		</ProjectWrapper>
+		</>
+		// </ProjectWrapper>
 	);
 };
 

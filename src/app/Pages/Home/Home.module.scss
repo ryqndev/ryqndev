@@ -1,0 +1,14 @@
+.container {
+    &>.header {
+        height: 150vh;
+        width: 100vw;
+    }
+
+    &>.content {
+        background-color: #000000;
+        width: 100vw;
+        height: 400vh;
+        position: relative;
+        z-index: 2;
+    }
+}

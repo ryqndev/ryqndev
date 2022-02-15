@@ -1,35 +1,20 @@
 import { memo } from 'react';
-import Projects from './Projects';
-import About from './About';
-import { ScrollableNotice } from '../../components';
-import useScroll from '../../controller/hooks/useScroll';
-import { ReactComponent as ChineseName } from '../../assets/chinese.svg';
-import './Home.scss';
+import { useScroll } from '../../controller';
+import { Curtain, Timeline } from './components';
+import cn from './Home.module.scss';
 
 const Home = () => {
-	useScroll();
-	return (
-		<div className='page--wrapper'>
-			<div id='home' className='header-placeholder'></div>
-			<header className='h-w'>
-				<h1 className='name behind'>
-					<ChineseName />
-				</h1>
-				<div className='fake-border'>
-					<div className='fake-border--content'>
-						<h1 className='name front'>
-							<ChineseName />
-						</h1>
-					</div>
-				</div>
-				<ScrollableNotice />
-			</header>
+	const { y } = useScroll();
 
-			<div className='content'>
-				<About />
-				<Projects />
+	return (
+		<main className={cn.container}>
+			<div className={cn.header}>
+				{y < (window.innerHeight * 1.5) && <Curtain y={y} />}
 			</div>
-		</div>
+			<div className={cn.content}>
+				<Timeline />
+			</div>
+		</main>
 	);
 };
 

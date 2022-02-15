@@ -1,7 +1,6 @@
 import { memo } from 'react';
 import BobaWatchSplashBannerImage from '../../assets/images/splash-min.png';
 import { ScrollableNotice } from '../../components';
-import ProjectWrapper from '../../components/ProjectWrapper';
 import useScroll from '../../controller/hooks/useScroll';
 import './BobaWatch.scss';
 
@@ -9,7 +8,7 @@ const BobaWatch = () => {
 	useScroll();
 
 	return (
-		<ProjectWrapper name='boba watch'>
+		// <ProjectWrapper name='boba watch'>
 			<article className='boba-watch--wrapper'>
 				<div style={{ position: 'relative' }}>
 					<ScrollableNotice flipped />
@@ -54,7 +53,7 @@ const BobaWatch = () => {
 					<span>social media platform based on boba</span>.
 				</div>
 			</article>
-		</ProjectWrapper>
+		// </ProjectWrapper>
 	);
 };
 

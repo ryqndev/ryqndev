@@ -1,5 +1,4 @@
 import ScrollableNotice from './ScrollableNotice';
+import ThreeContainer, { Cube, UCI } from './Three';
 
-export {
-    ScrollableNotice,
-}
+export { Cube, ScrollableNotice, ThreeContainer, UCI };
