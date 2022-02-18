@@ -8,12 +8,12 @@ function UCI({ y }) {
 	const { scene } = useLoader(GLTFLoader, '/assets/island/island.gltf');
 	const [ref] = usePlane(() => ({
 		rotation: [-Math.PI / 2, 0, 0],
-		position: [0, -0.5, 0],
+		position: [0, 0.2, 0],
 	}));
-	
+
 	useEffect(() => {
 		primitive.current.rotation.y = y / window.innerHeight / 2;
-	}, [ref, y]);
+	}, [y]);
 
 	return (
 		<Suspense fallback={null}>

@@ -1,0 +1,23 @@
+.container {
+    z-index: 0;
+    top: 50vh;
+    left: 32vw;
+    position: fixed;
+    width: min-content;
+    display: grid;
+    place-content: center;
+    background-color: transparent;
+    color: #7D46C2;
+    font-family: Hyperwave;
+    font-size: 30vw;
+    text-align: center;
+    line-height: 0.6em;
+    text-shadow: 5px 5px #649BFF;
+    transform: rotate(-10deg) translate(0%, -50%);
+    opacity: 0;
+    transition: opacity 500ms;
+
+    &.visible {
+        opacity: 1;
+    }
+}

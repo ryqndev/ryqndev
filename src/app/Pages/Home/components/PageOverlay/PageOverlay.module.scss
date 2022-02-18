@@ -1,10 +1,9 @@
 .container {
-    position: absolute;
-    right: max(5vw, 20px);
-    top: 50vh;
     z-index: 1000;
+    position: absolute;
+    top: 50vh;
+    right: max(2.5vw, 20px);
     transform: translateY(-50%);
-    // width: 150px;
     display: grid;
     row-gap: 15px;
 

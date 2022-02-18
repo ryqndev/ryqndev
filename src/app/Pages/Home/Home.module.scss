@@ -1,5 +1,6 @@
 .container {
     background: var(--background-color);
+    transition: background 350ms; 
 
     &>.header {
         height: 150vh;
@@ -10,9 +11,5 @@
         width: 100vw;
         height: 400vh;
         position: relative;
-        z-index: 2;
-        background: var(--model-bg-fallback);
-        background: var(--model-bg);
-        transition: background 350ms; 
     }
 }

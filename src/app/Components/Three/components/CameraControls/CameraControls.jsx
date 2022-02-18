@@ -1,13 +1,16 @@
-import {
-	OrbitControls,
-	OrthographicCamera,
-} from '@react-three/drei';
+import { OrbitControls, OrthographicCamera } from '@react-three/drei';
 
 function CameraControls() {
 	return (
 		<>
-			<OrbitControls enableZoom={false} target={[0, 2, 0]}/>
-			<OrthographicCamera makeDefault zoom={45} position={[10, 2.8, 0]} />
+			<OrbitControls
+				enable={false}
+				enableZoom={false}
+				enablePan={false}
+				enableRotate={false}
+				target={[0, 1, 0]}
+			/>
+			<OrthographicCamera makeDefault zoom={45} position={[10, 2, 0]} />
 		</>
 	);
 }

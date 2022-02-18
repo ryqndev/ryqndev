@@ -12,8 +12,8 @@ function Timespan({ start, end }) {
 			{new Date(start).toLocaleDateString(
 				navigator.languages[0],
 				dateDisplayOptions
-			)}{' '}
-			⎯⎯⎯⎯⎯⎯⎯⎯{' '}
+			)}
+			<span>⎯⎯⎯⎯⎯⎯⎯⎯</span>
 			{end
 				? new Date(end).toLocaleDateString(
 						navigator.languages[0],

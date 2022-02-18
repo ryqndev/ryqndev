@@ -1,13 +1,13 @@
 .t-w {
 	position: fixed;
-	top: max(6vw, 20px);
-	right: max(5vw, 20px);
+	top: max(2vw, 20px);
+	right: max(2.1vw, 20px);
 	z-index: 1350;
 	transform: scale(0.9);
 }
 @media screen and (min-width: 600px) {
 	.t-w {
-		top: max(4vw, 20px);
+		top: max(2vw, 20px);
 		transform: scale(1);
 	}
 }

@@ -3,8 +3,10 @@ import { useScroll } from '../../controller';
 import { useProject } from './controller';
 import { ScrollableNotice } from '../../components';
 import {
+	BackgroundText,
 	Curtain,
 	PageOverlay,
+	Project,
 	ProjectName,
 	Timeline,
 	Timespan,
@@ -22,13 +24,13 @@ const Home = ({ theme }) => {
 			<div className={cn.header}>
 				{y < window.innerHeight * 1.5 && <Curtain y={y} />}
 			</div>
+			<BackgroundText y={y}/>
 			<div
 				className={cn.content}
-				style={{ height: (PROJECTS.length - 1) * 100 + 'vh' }}
+				style={{ height: (PROJECTS.length - 1) * 200 + 'vh' }}
 				ref={projectsRef}
 			>
-				<Timeline theme={theme} y={y}>
-					<ScrollableNotice />
+				<Timeline theme={theme} y={y} project={project}>
 					<PageOverlay
 						pages={PROJECTS}
 						project={project}
@@ -37,11 +39,13 @@ const Home = ({ theme }) => {
 					{PROJECTS?.[project] && (
 						<>
 							<Timespan {...PROJECTS[project].date} />
-							<ProjectName name={PROJECTS[project].name}/>
+							<ProjectName name={PROJECTS[project].name} />
 						</>
 					)}
+					<Project project={project}/>
 				</Timeline>
 			</div>
+			<ScrollableNotice />
 		</main>
 	);
 };

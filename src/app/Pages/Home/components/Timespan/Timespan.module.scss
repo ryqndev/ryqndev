@@ -1,9 +1,14 @@
 .container {
     position: absolute;
     font-size: 1.1em;
-    bottom: 4vw;
-    right: 5vw;
-    color: #88a;
+    bottom: 1.5vw;
+    right: 3vw;
+    color: #7D46C2;
     mix-blend-mode: difference;
-}
+    font-weight: bold;
 
+    &>span {
+        color: #649BFF;
+        margin: 0px 10px;
+    }
+}
