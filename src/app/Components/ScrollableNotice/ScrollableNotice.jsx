@@ -15,9 +15,6 @@ const ScrollableNotice = ({ flipped = false }) => {
 			<div className='mouse'>
 				<div className='wheel'></div>
 			</div>
-			<div className='icon-arrows'>
-				<span></span>
-			</div>
 		</div>
 	);
 };

@@ -1,4 +1,3 @@
-import { ScrollableNotice } from '../../../../components';
 import { useLayoutEffect, memo } from 'react';
 import { ReactComponent as ChineseName } from '../../../../assets/chinese.svg';
 import cn from './Curtain.module.scss';
@@ -29,7 +28,6 @@ function Curtain({ y }) {
 					</h1>
 				</div>
 			</div>
-			{/* <ScrollableNotice /> */}
 		</header>
 	);
 }

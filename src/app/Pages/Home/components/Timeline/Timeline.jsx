@@ -1,16 +1,18 @@
+import { memo } from 'react';
 import { ThreeContainer, Cube, UCI } from '../../../../components';
 import cn from './Timeline.module.scss';
 
-function Timeline() {
+function Timeline({ theme, y, children, ...props }) {
 	return (
-		<div className={cn.container}>
-			<ThreeContainer className={cn.container}>
+		<div className={cn.container} {...props}>
+			<ThreeContainer className={cn.container} theme={theme}>
 				<Cube position={[3, 50, 3]} />
 				<Cube position={[-3, 30, -3]} />
-				<UCI />
+				<UCI y={y} />
 			</ThreeContainer>
+			{children}
 		</div>
 	);
 }
 
-export default Timeline;
+export default memo(Timeline);

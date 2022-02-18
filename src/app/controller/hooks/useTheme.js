@@ -9,7 +9,7 @@ import darkTheme from '../../assets/themes/dark.json';
 const themes = [lightTheme, darkTheme];
 
 const useTheme = () => {
-	const [theme, setTheme] = useState(0);
+	const [theme, setTheme] = useState(parseInt(localStorage.getItem('theme')) ?? 0);
 
 	useEffect(() => {
 		localStorage.setItem('theme', theme);

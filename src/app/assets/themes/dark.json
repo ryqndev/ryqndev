@@ -3,6 +3,9 @@
     "themeStyles": {
         "--dark-mode": "1",
         "--background-color": "#151515",
+        "--sky-color": "#000000",
+        "--model-bg-fallback": "#151515",
+        "--model-bg": "linear-gradient(180deg, #151515 0%, #000000 92%)",
         "--background-color-alt": "#FFFFFF",
         "--background-emphasis": "#101010",
         "--text-color": "#FFFFFF",

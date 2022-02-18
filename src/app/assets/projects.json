@@ -1,0 +1,23 @@
+[{
+    "name": "Boba Watch",
+    "date": {
+        "start": "2019-10-23"
+    }
+}, {
+    "name": "Learn",
+    "date": {
+        "start": "2021-02-21"
+    }
+}, {
+    "name": "Data Vis",
+    "date": {
+        "start": "2022-01-03",
+        "end": "2022-01-16"
+    }
+}, {
+    "name": "Pick Ban Pro",
+    "date": {
+        "start": "2021-05-21",
+        "end": "2021-11-21"
+    }
+}]

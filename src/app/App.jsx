@@ -7,7 +7,7 @@ import LoadingSplash from './components/LoadingSplash';
 import './styles/main.scss';
 
 const App = () => {
-	const {theme, toggle} = useTheme();
+	const { theme, toggle } = useTheme();
 
 	return (
 		<>
@@ -19,15 +19,15 @@ const App = () => {
 			/>
 			<LoadingSplash>
 				<Suspense>
-				<Routes>
-					<Route path='/' element={<Home />} exact />
-					{/* <Route path='pick-ban-pro' element={<PickBanPro />} />
+					<Routes>
+						<Route path='/' element={<Home theme={theme} />} exact />
+						{/* <Route path='pick-ban-pro' element={<PickBanPro />} />
 					<Route path='boba-watch' element={<BobaWatch />} />
 					<Route
 						path='learn-ryqn-dev'
 						element={<Redirect to='https://learn.ryqn.dev/' />}
 					/> */}
-				</Routes>
+					</Routes>
 				</Suspense>
 			</LoadingSplash>
 			{/* <Footer /> */}
