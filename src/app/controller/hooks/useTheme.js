@@ -9,9 +9,10 @@ import darkTheme from '../../assets/themes/dark.json';
 const themes = [lightTheme, darkTheme];
 
 const useTheme = () => {
-	const [theme, setTheme] = useState(parseInt(localStorage.getItem('theme')) ?? 0);
+	const [theme, setTheme] = useState(parseInt(localStorage.getItem('theme') ?? 1));
 
 	useEffect(() => {
+		if(isNaN(theme)) return setTheme(1);
 		localStorage.setItem('theme', theme);
 
 		let styles = themes[theme].themeStyles;

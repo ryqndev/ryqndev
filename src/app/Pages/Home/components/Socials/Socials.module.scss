@@ -1,0 +1,27 @@
+.container {
+    position: absolute;
+    bottom: 1.5vw;
+    left: 2.3vw;
+    height: 35px;
+
+    display: grid;
+    grid-auto-flow: column;
+    column-gap: 20px;
+    place-content: center;
+
+    &>a {
+        display: grid;
+
+        &:hover {
+            &>svg {
+                fill: #649BFF;
+            }
+        }
+        &>svg {
+            height: 35px;
+            width: 35px;
+            fill: #7D46C2;
+            transition: fill 350ms;
+        }
+    }
+}

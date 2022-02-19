@@ -1,6 +1,5 @@
 import clsx from 'clsx';
 import { memo } from 'react';
-import { Link } from 'react-router-dom';
 import { Html } from '@react-three/drei';
 import { ReactComponent as LaunchIcon } from '../../../../../../assets/icons/launch.svg';
 import cn from './ActionList.module.scss';

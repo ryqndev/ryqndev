@@ -1,11 +1,36 @@
 .container {
-    
-    position: fixed;
-    left: 20vw;
-    bottom: 20vw;
-    z-index: 10000;
-    color: white;
-    font-size: 5em;
-    transform: rotateY(90deg);
-}
+    position: absolute;
+    bottom: 5vw;
+    left: 2vw;
+    white-space: nowrap;
+    transform-origin: top left;
+    transform: rotateZ(-90deg);
 
+    &>p {
+        text-transform: uppercase;
+        font-weight: bold;
+        color: #649BFF;
+        font-size: 1.8em;
+
+        &>span {
+            white-space: nowrap;
+            width: auto;
+            color: #7D46C2;
+            margin: 0 15px 0 10px;
+            transition: width 350ms;
+        }
+    }
+
+    @media screen and (max-width: 550px) {
+        top: max(2vw, 15px);
+        transform: rotateZ(0deg);
+        left: 20px;
+
+        font-size: 0.6em;
+    }
+
+    @media screen and (max-width: 340px) {
+        left: 20px;
+        font-size: 0.5em;
+    }
+}

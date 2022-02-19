@@ -20,4 +20,12 @@
     &.visible {
         opacity: 1;
     }
+    @media screen and (max-width: 750px) {
+        left: 28vw;
+        font-size: 40vw;
+    }
+    @media screen and (max-width: 550px) {
+        left: 20vw;
+        font-size: 50vw;
+    }
 }

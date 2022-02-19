@@ -5,7 +5,7 @@ import { ActionList } from './components';
 function ProjectBall({ data, selected }) {
 	const [ref] = useBox(() => ({
 		mass: 1,
-		position: [Math.random() * 15 - 7,  Math.random() * 5 + 10, Math.random() * 15 - 7],
+		position: [Math.random() * 10 - 5,  Math.random() * 5 + 10, Math.random() * 10 - 5],
 	}));
 
 	const hover = () => {

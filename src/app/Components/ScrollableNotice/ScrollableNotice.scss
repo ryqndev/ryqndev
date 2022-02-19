@@ -1,6 +1,6 @@
 .scrollable-notice--wrapper {
     position: fixed;
-    bottom: 2vw;
+    bottom: max(2vw, 30px);
     right: 50%;
     width: 1em;
     z-index: 950;

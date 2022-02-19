@@ -8,6 +8,7 @@ import {
 	PageOverlay,
 	Project,
 	ProjectName,
+	Socials,
 	Timeline,
 	Timespan,
 } from './components';
@@ -31,17 +32,18 @@ const Home = ({ theme }) => {
 				ref={projectsRef}
 			>
 				<Timeline theme={theme} y={y} project={project}>
-					<PageOverlay
+					{(window.innerWidth > 680) && <PageOverlay
 						pages={PROJECTS}
 						project={project}
 						setProject={setProject}
-					/>
+					/>}
 					{PROJECTS?.[project] && (
 						<>
 							<Timespan {...PROJECTS[project].date} />
-							<ProjectName name={PROJECTS[project].name} />
+							<ProjectName name={PROJECTS[project].displayName} />
 						</>
 					)}
+					<Socials />
 					<Project project={project}/>
 				</Timeline>
 			</div>

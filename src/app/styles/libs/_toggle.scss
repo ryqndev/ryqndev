@@ -5,9 +5,10 @@
 	z-index: 1350;
 	transform: scale(0.9);
 }
-@media screen and (min-width: 600px) {
+@media screen and (max-width: 600px) {
 	.t-w {
-		top: max(2vw, 20px);
+		top: max(2vw, 15px);
+		right: max(2vw, 15px);
 		transform: scale(1);
 	}
 }
