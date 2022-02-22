@@ -1,5 +1,11 @@
 {
     "translation": {
-        "english": "inglés"
+        "en": "es",
+        "english": "inglés",
+        "visit": "visitar",
+        "code": "código",
+        "article #1": "artículo #1",
+        "article #2": "artículo #2",
+        "present": "Presente"
     }
 }

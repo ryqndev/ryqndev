@@ -1,3 +1,5 @@
+import { useTranslation } from 'react-i18next';
+import { memo } from 'react';
 import cn from './Timespan.module.scss';
 
 const dateDisplayOptions = {
@@ -7,21 +9,23 @@ const dateDisplayOptions = {
 };
 
 function Timespan({ start, end }) {
+	const { t, i18n } = useTranslation();
+
 	return (
 		<aside className={cn.container}>
 			{new Date(start).toLocaleDateString(
-				navigator.languages[0],
+				i18n.language,
 				dateDisplayOptions
 			)}
 			<span>⎯⎯⎯⎯⎯⎯⎯⎯</span>
 			{end
 				? new Date(end).toLocaleDateString(
-						navigator.languages[0],
+						i18n.language,
 						dateDisplayOptions
 				  )
-				: 'Present'}
+				: t('present')}
 		</aside>
 	);
 }
 
-export default Timespan;
+export default memo(Timespan);

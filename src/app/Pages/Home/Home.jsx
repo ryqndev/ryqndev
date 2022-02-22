@@ -5,6 +5,7 @@ import { ScrollableNotice } from '../../components';
 import {
 	BackgroundText,
 	Curtain,
+	LanguageSelect,
 	PageOverlay,
 	Project,
 	ProjectName,
@@ -37,6 +38,7 @@ const Home = ({ theme }) => {
 						project={project}
 						setProject={setProject}
 					/>}
+					<LanguageSelect />
 					{PROJECTS?.[project] && (
 						<>
 							<Timespan {...PROJECTS[project].date} />
@@ -44,7 +46,6 @@ const Home = ({ theme }) => {
 						</>
 					)}
 					<Socials />
-					<Project project={project}/>
 				</Timeline>
 			</div>
 			<ScrollableNotice />

@@ -1,3 +1,4 @@
+import { memo } from 'react';
 import { ReactComponent as Github } from './assets/github.svg';
 import { ReactComponent as Instagram } from './assets/instagram.svg';
 import { ReactComponent as Linkedin } from './assets/linkedin.svg';
@@ -38,4 +39,4 @@ function Socials() {
 	);
 }
 
-export default Socials;
+export default memo(Socials);

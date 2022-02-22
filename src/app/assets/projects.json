@@ -5,6 +5,10 @@
         "start": "2019-10-23"
     },
     "url": "https://boba.watch/",
+    "image": {
+        "src": "https://boba.watch/bobawatch.png",
+        "alt": "Collection of Boba Watch app screens"
+    },
     "links": [{
             "url": "https://boba.watch",
             "title": "visit"
@@ -16,10 +20,6 @@
         {
             "url": "https://www.cs.uci.edu/student-spotlight-ryan-yang-and-the-instant-popularity-of-boba-watch/",
             "title": "article #2"
-        },
-        {
-            "url": "https://dailybruin.com/2019/10/22/app-developed-by-students-allows-users-to-track-boba-purchases-unites-community",
-            "title": "article #3"
         }
     ]
 }, {
@@ -29,10 +29,19 @@
         "start": "2021-02-21"
     },
     "url": "https://learn.ryqn.dev",
+    "image": {
+        "src": "./assets/learn.png",
+        "alt": "Screenshot of Learn article"
+    },
     "links": [{
-        "url": "https://learn.ryqn.dev",
-        "title": "visit"
-    }]
+            "url": "https://learn.ryqn.dev",
+            "title": "visit"
+        },
+        {
+            "url": "https://github.com/ryqndev/learn-ryqn-dev",
+            "title": "code"
+        }
+    ]
 }, {
     "name": "Data Vis",
     "displayName": "Data Vis Ref",
@@ -41,10 +50,19 @@
         "end": "2022-01-16"
     },
     "url": "https://data-vis.learn.ryqn.dev",
+    "image": {
+        "src": "https://data-vis.learn.ryqn.dev/assets/splash.png",
+        "alt": "Data Vis Reference Heatmap page"
+    },
     "links": [{
-        "url": "https://data-vis.learn.ryqn.dev",
-        "title": "visit"
-    }]
+            "url": "https://data-vis.learn.ryqn.dev",
+            "title": "visit"
+        },
+        {
+            "url": "https://github.com/ryqndev/learn-data-vis",
+            "title": "code"
+        }
+    ]
 }, {
     "name": "Pick Ban Pro",
     "displayName": "Pick Ban Pro",
@@ -53,8 +71,17 @@
         "end": "2021-11-21"
     },
     "url": "https://pickban.pro",
+    "image": {
+        "src": "./assets/pickbanpro.png",
+        "alt": "Pick Ban Pro product display"
+    },
     "links": [{
-        "url": "https://pickban.pro",
-        "title": "visit"
-    }]
+            "url": "https://pickban.pro",
+            "title": "visit"
+        },
+        {
+            "url": "https://github.com/ryqndev/pick-ban-pro",
+            "title": "code"
+        }
+    ]
 }]

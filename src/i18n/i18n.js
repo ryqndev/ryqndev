@@ -3,10 +3,12 @@ import LanguageDetector from 'i18next-browser-languagedetector';
 import {initReactI18next} from 'react-i18next';
 import en from './translations/en.json';
 import es from './translations/es.json';
+import zh from './translations/zh.json';
 
 const resources = { 
     en: en,
     es: es,
+    zh: zh,
 };
 const detectOptions = {
     order: ['localStorage', 'navigator'],

@@ -1,3 +1,4 @@
+import { memo } from 'react';
 import cn from './ProjectName.module.scss';
 
 function ProjectName({ name }) {
@@ -12,4 +13,4 @@ function ProjectName({ name }) {
 	);
 }
 
-export default ProjectName;
+export default memo(ProjectName);
