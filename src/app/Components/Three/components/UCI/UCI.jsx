@@ -1,4 +1,4 @@
-import { Suspense, useEffect, useRef } from 'react';
+import { Suspense, memo, useRef } from 'react';
 import { usePlane } from '@react-three/cannon';
 import { useLoader } from '@react-three/fiber';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
@@ -9,16 +9,13 @@ function UCI({ y }) {
 	const [ref] = usePlane(() => ({
 		rotation: [-Math.PI / 2, 0, 0],
 		position: [0, 0.2, 0],
-		
 	}));
-
-	useEffect(() => {
-		primitive.current.rotation.y = y / window.innerHeight / 2;
-	}, [y]);
 
 	return (
 		<Suspense fallback={null}>
 			<primitive
+				receiveShadow
+				position={[0, 0, 0]}
 				ref={primitive}
 				object={scene}
 				rotation={[0, 0, 0]}
@@ -28,4 +25,4 @@ function UCI({ y }) {
 	);
 }
 
-export default UCI;
+export default memo(UCI);

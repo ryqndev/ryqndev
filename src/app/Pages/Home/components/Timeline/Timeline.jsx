@@ -3,10 +3,10 @@ import { ThreeContainer, ProjectBall, UCI } from '../../../../components';
 import PROJECTS from '../../../../assets/projects.json';
 import cn from './Timeline.module.scss';
 
-function Timeline({ theme, y, project, children, ...props }) {
+function Timeline({ theme, project, y, children, ...props }) {
 	return (
 		<div className={cn.container} {...props}>
-			<ThreeContainer className={cn.container} theme={theme}>
+			<ThreeContainer className={cn.container} theme={theme} project={project} y={y}>
 				{PROJECTS.map((data, index) => (
 					<ProjectBall
 						key={data.name}
@@ -14,7 +14,7 @@ function Timeline({ theme, y, project, children, ...props }) {
 						selected={project === index}
 					/>
 				))}
-				<UCI y={y} />
+				<UCI />
 			</ThreeContainer>
 			{children}
 		</div>

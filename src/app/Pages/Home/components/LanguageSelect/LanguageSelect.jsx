@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, memo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ReactComponent as LanguageIcon } from './assets/globe.svg';
 import cn from './LanguageSelect.module.scss';
@@ -29,4 +29,4 @@ function LanguageSelect() {
 	);
 }
 
-export default LanguageSelect;
+export default memo(LanguageSelect);

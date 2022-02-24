@@ -1,24 +1,21 @@
 import { OrbitControls, OrthographicCamera } from '@react-three/drei';
-import { useEffect, useState } from 'react';
+import { useFrame } from '@react-three/fiber';
+import { Vector3 } from 'three';
+import { useEffect, useMemo, useState, memo } from 'react';
+import PROJECTS from '../../../../assets/projects.json';
 
-function CameraControls() {
+function CameraControls({ project }) {
+	const cameraVec = useMemo(() => new Vector3(20, 2, 0), []);
 	const [zoom, setZoom] = useState(45);
 
 	function resize() {
-		if (window.innerWidth > 1200) {
-			setZoom(45);
-		} else if (window.innerWidth > 950) {
-			setZoom(38);
-		} else if (window.innerWidth > 700) {
-			setZoom(30);
-		} else if (window.innerWidth > 550) {
-			setZoom(25);
-		} else if (window.innerWidth > 440) {
-			setZoom(20);
-		} else {
-			setZoom(15);
-		}
+		setZoom(Math.sqrt(1.5 * window.innerWidth - 300));
 	}
+
+	useEffect(() => {
+		let completion = (project / PROJECTS.length) * 20;
+		cameraVec.set(20 - completion, 2, completion);
+	}, [project, cameraVec]);
 
 	useEffect(() => {
 		resize();
@@ -26,18 +23,22 @@ function CameraControls() {
 		return () => window.removeEventListener('resize', resize);
 	}, []);
 
+	useFrame(state => {
+		state.camera.position.lerp(cameraVec, 0.02);
+	});
+
 	return (
 		<>
 			<OrbitControls
-				enable={false}
+				// enable={false}
 				enableZoom={false}
 				enablePan={false}
 				enableRotate={false}
-				target={[0, 1, 0]}
+				target={[0, 0, 0]}
 			/>
-			<OrthographicCamera makeDefault zoom={zoom} position={[10, 2, 0]} />
+			<OrthographicCamera makeDefault zoom={zoom} />
 		</>
 	);
 }
 
-export default CameraControls;
+export default memo(CameraControls);

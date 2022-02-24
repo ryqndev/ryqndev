@@ -32,7 +32,7 @@ const Home = ({ theme }) => {
 				style={{ height: (PROJECTS.length - 1) * 200 + 'vh' }}
 				ref={projectsRef}
 			>
-				<Timeline theme={theme} y={y} project={project}>
+				<Timeline theme={theme} project={project} y={y}>
 					{(window.innerWidth > 680) && <PageOverlay
 						pages={PROJECTS}
 						project={project}

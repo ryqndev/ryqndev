@@ -5,13 +5,14 @@ import { Physics } from '@react-three/cannon';
 import { CameraControls } from './components';
 import cn from './ThreeContainer.module.scss';
 
-function ThreeContainer({ className, children, theme, y }) {
+function ThreeContainer({ className, children, theme, project, y }) {
 	return (
 		<Suspense fallback={null}>
-			<Canvas className={clsx(cn.container, className)}>
-				<CameraControls y={y}/>
+			<Canvas className={clsx(cn.container, className)} shadowMap>
+				<CameraControls project={project} y={y}/>
 				<Physics gravity={[0, -9.8, 0]}>
 					<directionalLight
+						castShadow
 						intensity={0.8}
 						position={[0, 1, 1]}
 						color={theme ? '#6633dd' : '#ffff00'}
