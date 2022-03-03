@@ -7,6 +7,10 @@
     transform: scale(1.5) translate(50%);
     mix-blend-mode: difference;
 
+    @media screen and (max-width: 768px) {
+        bottom: 40px;
+    }
+
     & .mouse {
         transition: border-color 350ms;
         height: 1.375em;

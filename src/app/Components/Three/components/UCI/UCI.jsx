@@ -6,7 +6,8 @@ import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
 function UCI({ y }) {
 	const primitive = useRef();
 	const { scene } = useLoader(GLTFLoader, '/assets/island/island.gltf');
-	const [ref] = usePlane(() => ({
+	
+	usePlane(() => ({
 		rotation: [-Math.PI / 2, 0, 0],
 		position: [0, 0.2, 0],
 	}));

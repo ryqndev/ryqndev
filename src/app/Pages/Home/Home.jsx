@@ -26,7 +26,7 @@ const Home = ({ theme }) => {
 			<div className={cn.header}>
 				{y < window.innerHeight * 1.5 && <Curtain y={y} />}
 			</div>
-			<BackgroundText y={y}/>
+			<BackgroundText visible={y > window.innerHeight/2}/>
 			<div
 				className={cn.content}
 				style={{ height: (PROJECTS.length - 1) * 200 + 'vh' }}
@@ -42,7 +42,7 @@ const Home = ({ theme }) => {
 					{PROJECTS?.[project] && (
 						<>
 							<Timespan {...PROJECTS[project].date} />
-							<ProjectName name={PROJECTS[project].displayName} />
+							<ProjectName name={PROJECTS[project].displayName} y={y} />
 						</>
 					)}
 					<Socials />

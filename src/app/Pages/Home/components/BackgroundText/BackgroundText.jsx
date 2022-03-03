@@ -2,9 +2,9 @@ import clsx from 'clsx';
 import { memo } from 'react';
 import cn from './BackgroundText.module.scss';
 
-function BackgroundText({ y }) {
+function BackgroundText({ visible }) {
 	return (
-		<div className={clsx(cn.container, y > window.innerHeight/2 && cn.visible)}>
+		<div className={clsx(cn.container, visible && cn.visible)}>
 			ryan
 			<br />
 			yang

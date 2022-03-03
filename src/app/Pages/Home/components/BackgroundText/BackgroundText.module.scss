@@ -17,6 +17,10 @@
     opacity: 0;
     transition: opacity 500ms;
 
+    @media screen and (max-aspect-ratio: 1/1){
+        top: 40vh;
+    }
+
     &.visible {
         opacity: 1;
     }

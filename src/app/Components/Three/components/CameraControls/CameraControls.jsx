@@ -5,11 +5,11 @@ import { useEffect, useMemo, useState, memo } from 'react';
 import PROJECTS from '../../../../assets/projects.json';
 
 function CameraControls({ project }) {
-	const cameraVec = useMemo(() => new Vector3(20, 2, 0), []);
-	const [zoom, setZoom] = useState(45);
+	const cameraVec = useMemo(() => new Vector3(15, 2, 5), []);
+	const [zoom, setZoom] = useState(() => Math.sqrt(1.3 * window.innerWidth - 350));
 
 	function resize() {
-		setZoom(Math.sqrt(1.5 * window.innerWidth - 300));
+		setZoom(Math.sqrt(1.3 * window.innerWidth - 350));
 	}
 
 	useEffect(() => {
@@ -36,7 +36,11 @@ function CameraControls({ project }) {
 				enableRotate={false}
 				target={[0, 0, 0]}
 			/>
-			<OrthographicCamera makeDefault zoom={zoom} />
+			<OrthographicCamera 
+				makeDefault 
+				position={cameraVec} 
+				zoom={zoom} 
+			/>
 		</>
 	);
 }

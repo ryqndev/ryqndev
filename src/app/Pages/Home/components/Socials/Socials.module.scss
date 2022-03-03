@@ -9,6 +9,16 @@
     column-gap: 20px;
     place-content: center;
 
+    @media screen and (max-width: 768px) {
+        // column-gap: 8px;
+        grid-auto-flow: row;
+        height: auto;
+        row-gap: 10px;
+        left: calc(2vw + 2px);
+        bottom: 30px;
+        // bottom: calc(1.5vw + 10px);
+    }
+
     &>a {
         display: grid;
 
@@ -22,6 +32,11 @@
             width: 35px;
             fill: #7D46C2;
             transition: fill 350ms;
+
+            @media screen and (max-width: 768px) {
+                height: 30px;
+                width: 30px;
+            }
         }
     }
 }

@@ -10,7 +10,7 @@ const LoadingSplash = ({ className, children }) => {
 	const location = useLocation();
 
 	useEffect(() => {
-		setClose(false);
+		setClose(true);
 		// if (location.pathname === '/') return;
 		setTimeout(() => {
 			setClose(true);
