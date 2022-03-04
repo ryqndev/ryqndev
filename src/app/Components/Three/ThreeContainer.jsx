@@ -7,8 +7,8 @@ import cn from './ThreeContainer.module.scss';
 
 function ThreeContainer({ className, children, theme, project, y }) {
 	return (
-		<Suspense fallback={null}>
-			<Canvas className={clsx(cn.container, className)} shadowMap>
+		<Suspense fallback={<div></div>}>
+			<Canvas className={clsx(className)} id={cn.container} shadowMap>
 				<CameraControls project={project} y={y}/>
 				<Physics gravity={[0, -9.8, 0]}>
 					<directionalLight

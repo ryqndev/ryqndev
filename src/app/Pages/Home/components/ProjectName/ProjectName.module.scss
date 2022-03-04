@@ -1,16 +1,13 @@
 .container {
+    display: grid;
     position: absolute;
-    // bottom: 5vw;
-    // left: 2vw;
-    bottom: 2vw;
+    bottom: calc(2vw + 20px);
     left: calc(2vw);
     width: calc(80vh - 250px);
     white-space: nowrap;
     transform-origin: top left;
     transform: rotateZ(-90deg);
-    display: grid;
     grid-template-columns: min-content 1fr;
-    // height: 50px;
 
     &>p {
         text-transform: uppercase;
@@ -31,8 +28,11 @@
         height: auto;
         position: relative;
         width: 100%;
+        overflow: visible;
+
 
         &>.bar {
+            overflow: visible;
             position: absolute;
             width: 100%;
             top: 18px;            
@@ -47,29 +47,17 @@
                 &.empty {
                     width: 100%;
                 }
-                &.full {
-                    width: 10%;
+                &.filled {
+                    filter: drop-shadow(0px 0px 2px #00ffff);
                 }
             }
         }
     }
 
-    @media screen and (max-width: 550px) {
-        // top: 4vw;
+    @media screen and (max-width: 768px) {
         font-size: 0.8em;
         bottom: calc(5vw + 150px);
         left: calc(2vw);
-        width: calc(100vh - 250px);
-
-    //     top: max(2vw, 15px);
-    //     transform: rotateZ(0deg);
-    //     left: 20px;
-
-    //     font-size: 0.6em;
+        width: calc(90vh - 250px);
     }
-
-    // @media screen and (max-width: 340px) {
-    //     left: 20px;
-    //     font-size: 0.5em;
-    // }
 }

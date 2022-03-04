@@ -1,13 +1,12 @@
 import { memo, useRef } from 'react';
 import { useScroll } from '../../controller';
 import { useProject } from './controller';
-import { ScrollableNotice } from '../../components';
+import { ScrollableNotice, ActionList } from '../../components';
 import {
 	BackgroundText,
 	Curtain,
 	LanguageSelect,
 	PageOverlay,
-	Project,
 	ProjectName,
 	Socials,
 	Timeline,
@@ -26,23 +25,38 @@ const Home = ({ theme }) => {
 			<div className={cn.header}>
 				{y < window.innerHeight * 1.5 && <Curtain y={y} />}
 			</div>
-			<BackgroundText visible={y > window.innerHeight/2}/>
+			<BackgroundText visible={y > window.innerHeight / 2} />
 			<div
 				className={cn.content}
 				style={{ height: (PROJECTS.length - 1) * 200 + 'vh' }}
 				ref={projectsRef}
 			>
 				<Timeline theme={theme} project={project} y={y}>
-					{(window.innerWidth > 680) && <PageOverlay
+					<PageOverlay
+						visible={y > window.innerHeight && window.innerWidth > 680}
 						pages={PROJECTS}
 						project={project}
 						setProject={setProject}
-					/>}
-					<LanguageSelect />
+					/>
+					<div className={cn.project}>
+						{PROJECTS.map((data, index) => (
+							<ActionList
+								key={data.name}
+								data={data}
+								selected={project === index}
+								className={cn.item}
+								selectedClassName={cn.selected}
+							/>
+						))}
+					</div>
+					<LanguageSelect visible={y > window.innerHeight}/>
 					{PROJECTS?.[project] && (
 						<>
-							<Timespan {...PROJECTS[project].date} />
-							<ProjectName name={PROJECTS[project].displayName} y={y} />
+							<Timespan {...PROJECTS[project].date} visible={y > window.innerHeight }/>
+							<ProjectName
+								name={PROJECTS[project].displayName}
+								y={y}
+							/>
 						</>
 					)}
 					<Socials />

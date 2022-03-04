@@ -1,4 +1,5 @@
 .container {
+    // position: fixed;
     position: absolute;
     bottom: 1.5vw;
     left: 2.3vw;
@@ -10,13 +11,11 @@
     place-content: center;
 
     @media screen and (max-width: 768px) {
-        // column-gap: 8px;
         grid-auto-flow: row;
         height: auto;
         row-gap: 10px;
         left: calc(2vw + 2px);
         bottom: 30px;
-        // bottom: calc(1.5vw + 10px);
     }
 
     &>a {

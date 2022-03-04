@@ -1,5 +1,6 @@
 import { useTranslation } from 'react-i18next';
 import { memo } from 'react';
+import clsx from 'clsx';
 import cn from './Timespan.module.scss';
 
 const dateDisplayOptions = {
@@ -8,16 +9,16 @@ const dateDisplayOptions = {
 	day: 'numeric',
 };
 
-function Timespan({ start, end }) {
+function Timespan({ start, end, visible }) {
 	const { t, i18n } = useTranslation();
 
 	return (
-		<aside className={cn.container}>
+		<aside className={clsx(cn.container, visible && cn.visible)}>
 			{new Date(start).toLocaleDateString(
 				i18n.language,
 				dateDisplayOptions
 			)}
-			<span>⎯⎯⎯⎯⎯⎯⎯⎯</span>
+			<span>⎯⎯⎯⎯⎯</span>
 			{end
 				? new Date(end).toLocaleDateString(
 						i18n.language,

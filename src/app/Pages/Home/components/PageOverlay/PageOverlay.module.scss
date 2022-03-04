@@ -1,12 +1,21 @@
 .container {
     z-index: 1000;
-    position: absolute;
+    position: fixed;
     top: 50vh;
     right: max(2.5vw, 20px);
     transform: translateY(-50%);
     display: grid;
     row-gap: 15px;
+    opacity: 0;
+    transition: opacity 350ms;
 
+    &.visible {
+        opacity: 1;
+    }
+    
+    @media screen and (max-width: 768px) {
+        display: none;
+    }
     &>.item {
         display: grid;
         grid-template-columns: 1fr auto;

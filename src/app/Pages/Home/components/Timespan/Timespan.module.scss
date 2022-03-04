@@ -1,11 +1,17 @@
 .container {
-    position: absolute;
+    position: fixed;
     font-size: 1.1em;
     bottom: 1.5vw;
     right: 3vw;
     color: #7D46C2;
     mix-blend-mode: difference;
     font-weight: bold;
+    opacity: 0;
+    transition: opacity 350ms;
+
+    &.visible {
+        opacity: 1;
+    }
 
     &>span {
         color: #649BFF;

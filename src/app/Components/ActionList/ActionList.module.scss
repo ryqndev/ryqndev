@@ -5,14 +5,15 @@
     height: auto;
     overflow: hidden;
     transition: max-width 350ms;
+    width: 250px;
 
     &.selected {
-        max-width: 200px;
+        max-width: 250px;
     }
 
     &>.content {
         border: 1px solid #649BFF;
-        width: 200px;
+        width: 100%;
 
         &>img {
             width: calc(100% - 10px);
@@ -23,7 +24,7 @@
         &>.item {
             margin: 5px;
             padding: 8px 12px;
-            background-color: #649BFF33;
+            background-color: #447BDF88;
             transition: background-color 50ms;
             letter-spacing: 1px;
             cursor: pointer;

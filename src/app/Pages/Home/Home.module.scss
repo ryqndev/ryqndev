@@ -1,6 +1,6 @@
 .container {
     background: var(--background-color);
-    transition: background 350ms; 
+    transition: background 350ms;
 
     &>.header {
         height: 150vh;
@@ -11,5 +11,24 @@
         width: 100vw;
         height: 400vh;
         position: relative;
+    }
+
+    & .project {
+        @media screen and (min-aspect-ratio: 1/1), (min-width: 768px) {
+            display: none;
+        }
+
+        &>.item {
+            position: absolute;
+            top: 12vh;
+            left: 70px;
+            width: 100vw;
+            max-width: 0;
+            z-index: 1000;
+
+            &.selected {
+                max-width: calc(100vw - 140px);
+            }
+        }
     }
 }

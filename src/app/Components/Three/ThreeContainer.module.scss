@@ -1,4 +1,10 @@
-.container {
-    height: 100vh;
+#container {
     width: 100vw;
+    top: 13vh;
+
+    @media screen and (max-aspect-ratio: 1/1) and (max-width: 767px){
+        height: 45vh !important;
+        top: 55vh;
+        pointer-events: none;
+    }
 }

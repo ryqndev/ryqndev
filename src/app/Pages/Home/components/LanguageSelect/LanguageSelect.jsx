@@ -1,3 +1,4 @@
+import clsx from 'clsx';
 import { useEffect, useState, memo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ReactComponent as LanguageIcon } from './assets/globe.svg';
@@ -5,7 +6,7 @@ import cn from './LanguageSelect.module.scss';
 
 const supportedLanguages = ['en', 'es', 'zh'];
 
-function LanguageSelect() {
+function LanguageSelect({visible}) {
 	const { t, i18n } = useTranslation();
 	const [language, setLanguage] = useState(
 		supportedLanguages.indexOf(i18n.language) < 0
@@ -22,7 +23,7 @@ function LanguageSelect() {
 	}
 
 	return (
-		<div className={cn.container} onClick={toggle}>
+		<div className={clsx(cn.container, visible && cn.visible)} onClick={toggle}>
 			<LanguageIcon />
 			{t('en')}
 		</div>

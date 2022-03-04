@@ -9,8 +9,26 @@ function ProjectName({ name, y }) {
 			</p>
 			<div className={cn.progress}>
 				<svg className={cn.bar} fill='none'>
-					<rect className={cn.empty} width='100%' height='4' rx='2' fill='#7D46C2'/>
-					<rect className={cn.filled} width={((y % window.innerHeight) / window.innerHeight * 100) + '%'} height='4' rx='2' fill='#00ffff'/>
+					<rect
+						className={cn.empty}
+						width='100%'
+						height='4'
+						rx='2'
+						fill='#7D46C2'
+					/>
+					<rect
+						className={cn.filled}
+						width={
+							(((y + window.innerHeight * 1.45) %
+								window.innerHeight) /
+								window.innerHeight) *
+								100 +
+							'%'
+						}
+						height='4'
+						rx='2'
+						fill='#64ABFF'
+					/>
 				</svg>
 			</div>
 		</aside>

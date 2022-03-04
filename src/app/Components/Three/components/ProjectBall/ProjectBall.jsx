@@ -1,6 +1,8 @@
 import { memo, useEffect } from 'react';
 import { useBox } from '@react-three/cannon';
-import { ActionList } from './components';
+import ActionList from '../../../ActionList';
+import { Html } from '@react-three/drei';
+import cn from './ProjectBall.module.scss';
 
 function ProjectBall({ data, selected }) {
 	const [ref] = useBox(() => ({
@@ -32,7 +34,9 @@ function ProjectBall({ data, selected }) {
 			layers={[0, 1]}
 			castShadow
 		>
-			<ActionList data={data} selected={selected} />
+			{window.innerWidth > 768 && <Html className={cn.container}>
+				<ActionList data={data} selected={selected} />
+			</Html>}
 			<sphereBufferGeometry args={[0.7, 16, 16]} />
 			<meshStandardMaterial color={0xffffff} />
 		</mesh>

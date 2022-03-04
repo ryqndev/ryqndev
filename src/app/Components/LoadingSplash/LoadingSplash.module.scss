@@ -15,6 +15,12 @@
         border-left: 150px solid transparent;
     }
 
+    & p {
+        font-size: min(10vw, 100px);
+        font-family: Poppins;
+        font-weight: bold;
+    }
+
     &.close {
         left: calc(100vw + 150px);
 

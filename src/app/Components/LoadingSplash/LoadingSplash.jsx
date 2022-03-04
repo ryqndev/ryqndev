@@ -10,7 +10,7 @@ const LoadingSplash = ({ className, children }) => {
 	const location = useLocation();
 
 	useEffect(() => {
-		setClose(true);
+		setClose(false);
 		// if (location.pathname === '/') return;
 		setTimeout(() => {
 			setClose(true);
@@ -30,7 +30,7 @@ const LoadingSplash = ({ className, children }) => {
 			<div className={clsx(cn.container, close && cn.close)}></div>
 			<div className={clsx(cn.container, close && cn.close)}>
 				<div className={cn.content}>
-					{/* <h2>{progress}%</h2> */}
+					<p>{progress}%</p>
 				</div>
 			</div>
 			<div className={clsx(className)}>{children}</div>

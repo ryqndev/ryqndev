@@ -6,10 +6,10 @@ import PROJECTS from '../../../../assets/projects.json';
 
 function CameraControls({ project }) {
 	const cameraVec = useMemo(() => new Vector3(15, 2, 5), []);
-	const [zoom, setZoom] = useState(() => Math.sqrt(1.3 * window.innerWidth - 350));
+	const [zoom, setZoom] = useState(() => Math.sqrt(1.3 * window.innerWidth - 300));
 
 	function resize() {
-		setZoom(Math.sqrt(1.3 * window.innerWidth - 350));
+		setZoom(Math.sqrt(1.3 * window.innerWidth - 300));
 	}
 
 	useEffect(() => {

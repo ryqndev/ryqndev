@@ -1,5 +1,5 @@
 .container {
-    position: absolute;
+    position: fixed;
     height: 35px;
     top: max(calc(2vw - 3px), 15px);
     right: max(calc(3vw + 30px), 120px);
@@ -11,6 +11,8 @@
     transition: color 350ms;
     cursor: pointer;
     letter-spacing: 1px;
+    opacity: 0;
+    transition: opacity 350ms;
 
     &:hover,
     &:active {
@@ -19,6 +21,10 @@
         &>svg {
             fill: #649BFF;
         }
+    }
+    
+    &.visible {
+        opacity: 1;    
     }
 
     @media screen and (max-width: 600px) {

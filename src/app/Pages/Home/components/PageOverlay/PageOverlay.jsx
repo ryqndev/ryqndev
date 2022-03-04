@@ -2,9 +2,9 @@ import clsx from 'clsx';
 import { memo } from 'react';
 import cn from './PageOverlay.module.scss';
 
-function PageOverlay({ className, pages, project, setProject }) {
+function PageOverlay({ visible, className, pages, project, setProject }) {
 	return (
-		<div className={clsx(cn.container, className)}>
+		<div className={clsx(cn.container, className, visible && cn.visible)}>
 			{pages.map((page, index) => (
 				<div
 					className={clsx(project === index && cn.selected, cn.item)}
