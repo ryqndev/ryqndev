@@ -1,7 +1,7 @@
 {
   "files": {
-    "main.css": "/static/css/main.eadba224.css",
-    "main.js": "/static/js/main.652b5882.js",
+    "main.css": "/static/css/main.37d4a6d4.css",
+    "main.js": "/static/js/main.f19a6415.js",
     "static/media/Hyperwave-Two.ttf": "/static/media/Hyperwave-Two.cd251d4ab3e5698f9204.ttf",
     "static/media/Poppins-Regular.ttf": "/static/media/Poppins-Regular.ccfdd78d095fe3607726.ttf",
     "static/media/Poppins-ExtraBold.ttf": "/static/media/Poppins-ExtraBold.2156e69bc095ee0ad41d.ttf",
@@ -12,11 +12,11 @@
     "static/media/instagram.svg": "/static/media/instagram.359d7d3f391888ab26c855bd50b5e657.svg",
     "static/media/launch.svg": "/static/media/launch.f17b44b21a84e1e26baad4a993b36b51.svg",
     "static/media/globe.svg": "/static/media/globe.69dfab2a8130b6e8c0994e561b146dfd.svg",
-    "main.eadba224.css.map": "/static/css/main.eadba224.css.map",
-    "main.652b5882.js.map": "/static/js/main.652b5882.js.map"
+    "main.37d4a6d4.css.map": "/static/css/main.37d4a6d4.css.map",
+    "main.f19a6415.js.map": "/static/js/main.f19a6415.js.map"
   },
   "entrypoints": [
-    "static/css/main.eadba224.css",
-    "static/js/main.652b5882.js"
+    "static/css/main.37d4a6d4.css",
+    "static/js/main.f19a6415.js"
   ]
 }
