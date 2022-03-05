@@ -2,7 +2,7 @@ import { memo, Suspense } from 'react';
 import { Routes, Route } from 'react-router-dom';
 import Toggle from 'react-toggle';
 import { useTheme } from './controller';
-import LoadingSplash from './components/LoadingSplash';
+import {LoadingSplash, CustomMouseCursor} from './components';
 import './styles/main.scss';
 
 import Home from './pages/Home';
@@ -17,7 +17,9 @@ const App = () => {
 				checked={!!theme}
 				icons={false}
 				onChange={toggle}
+				data-mouse-hover='button'
 			/>
+			<CustomMouseCursor />
 			<LoadingSplash>
 				<Suspense fallback={<div>loading...</div>}>
 					<Routes>
@@ -26,13 +28,6 @@ const App = () => {
 							element={<Home theme={theme} />}
 							exact
 						/>
-						{/* <Route path='boba-watch' element={<BobaWatch />} /> */}
-						{/* <Route path='pick-ban-pro' element={<PickBanPro />} />
-					<Route path='boba-watch' element={<BobaWatch />} />
-					<Route
-						path='learn-ryqn-dev'
-						element={<Redirect to='https://learn.ryqn.dev/' />}
-					/> */}
 					</Routes>
 				</Suspense>
 			</LoadingSplash>

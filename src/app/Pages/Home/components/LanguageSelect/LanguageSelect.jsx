@@ -6,7 +6,7 @@ import cn from './LanguageSelect.module.scss';
 
 const supportedLanguages = ['en', 'es', 'zh'];
 
-function LanguageSelect({visible}) {
+function LanguageSelect({ visible }) {
 	const { t, i18n } = useTranslation();
 	const [language, setLanguage] = useState(
 		supportedLanguages.indexOf(i18n.language) < 0
@@ -23,8 +23,16 @@ function LanguageSelect({visible}) {
 	}
 
 	return (
-		<div className={clsx(cn.container, visible && cn.visible)} onClick={toggle}>
-			<LanguageIcon />
+		<div
+			className={clsx(cn.container, visible && cn.visible)}
+			onClick={toggle}
+			data-mouse-hover='button'
+			data-mouse-hover-text='change the language'
+		>
+			<LanguageIcon
+				data-mouse-hover='button'
+				data-mouse-hover-text='change the language'
+			/>
 			{t('en')}
 		</div>
 	);

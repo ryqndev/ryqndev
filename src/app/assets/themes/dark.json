@@ -2,7 +2,7 @@
     "themeName": "Dark",
     "themeStyles": {
         "--dark-mode": "1",
-        "--background-color": "#151515",
+        "--background-color": "#0a0a0a",
         "--sky-color": "#000000",
         "--model-bg-fallback": "#151515",
         "--model-bg": "linear-gradient(180deg, #151515 0%, #000000 92%)",

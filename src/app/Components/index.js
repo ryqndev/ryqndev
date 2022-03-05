@@ -1,5 +1,15 @@
-import ScrollableNotice from './ScrollableNotice';
 import ActionList from './ActionList';
+import CustomMouseCursor from './CustomMouseCursor';
+import LoadingSplash from './LoadingSplash';
+import ScrollableNotice from './ScrollableNotice';
 import ThreeContainer, { ProjectBall, UCI } from './Three';
 
-export { ActionList, ProjectBall, ScrollableNotice, ThreeContainer, UCI };
+export {
+	ActionList,
+	CustomMouseCursor,
+	LoadingSplash,
+	ProjectBall,
+	ScrollableNotice,
+	ThreeContainer,
+	UCI,
+};

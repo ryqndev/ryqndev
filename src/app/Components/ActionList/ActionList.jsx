@@ -25,6 +25,8 @@ function ActionList({ data, selected, className, selectedClassName }) {
 						rel='noopener noreferrer'
 						href={link.url}
 						className={cn.item}
+						data-mouse-hover='link'
+						data-mouse-hover-text='open link in new tab'
 					>
 						{t(link.title)}
 						{!link?.internal && <LaunchIcon />}

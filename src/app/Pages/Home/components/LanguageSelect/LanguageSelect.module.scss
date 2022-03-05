@@ -41,6 +41,9 @@
         width: 27px;
         fill: #7D46C2;
         transition: fill 350ms;
+        & path {
+            pointer-events: none;
+        }
         
         @media screen and (max-width: 600px) {
             left: -1.5em;

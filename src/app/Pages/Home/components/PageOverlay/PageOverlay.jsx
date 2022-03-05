@@ -11,7 +11,10 @@ function PageOverlay({ visible, className, pages, project, setProject }) {
 					onClick={() => setProject(index)}
 					key={index}
 				>
-					<span>
+					<span
+						data-mouse-hover='button'
+						data-mouse-hover-text='scroll to project'
+					>
 						{project === index ? '0' + (index + 1) : page.name}
 					</span>
 					<svg className={cn.icon} viewBox='0 0 14 100' fill='none'>
