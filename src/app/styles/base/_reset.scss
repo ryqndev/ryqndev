@@ -161,6 +161,15 @@ a {
 	display: block;
 }
 
+html, body {
+	-ms-overflow-style: none; /* for Internet Explorer, Edge */
+    scrollbar-width: none; /* for Firefox */
+
+	&::-webkit-scrollbar {
+		display: none;
+	}
+}
+
 footer {
 	z-index: 1000 !important;
 }

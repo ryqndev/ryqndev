@@ -5,7 +5,7 @@ import cn from './CustomMouseCursor.module.scss';
 
 function CustomMouseCursor() {
 	const { t } = useTranslation();
-	const [mouse, setMouse] = useState({ pos: [0, 0], target: 'none', message: '' });
+	const [mouse, setMouse] = useState({ pos: [-100, -100], target: 'none', message: '' });
 
 	useEffect(() => {
 		const handleMouseMove = e => {

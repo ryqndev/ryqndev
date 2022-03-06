@@ -2,7 +2,7 @@
     z-index: 1000;
     position: fixed;
     top: 50vh;
-    right: max(2.5vw, 20px);
+    right: max(6vw, 20px);
     transform: translateY(-50%);
     display: grid;
     row-gap: 15px;
@@ -12,10 +12,11 @@
     &.visible {
         opacity: 1;
     }
-    
+
     @media screen and (max-width: 768px) {
         display: none;
     }
+
     &>.item {
         display: grid;
         grid-template-columns: 1fr auto;

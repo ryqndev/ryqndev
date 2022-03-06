@@ -9,7 +9,7 @@ function CameraControls({ project }) {
 	const [zoom, setZoom] = useState(() => Math.sqrt(1.3 * window.innerWidth - 300));
 
 	function resize() {
-		setZoom(Math.sqrt(1.3 * window.innerWidth - 300));
+		setZoom(Math.sqrt(1.2 * window.innerWidth - 300));
 	}
 
 	useEffect(() => {

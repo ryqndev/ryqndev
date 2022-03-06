@@ -1,11 +1,14 @@
+:root {
+    --scrollable-color: #7D46C2;
+}
 .scrollable-notice--wrapper {
     position: fixed;
-    bottom: max(2vw, 30px);
+    bottom: max(calc(6vw), 30px);
     right: 50%;
     width: 1em;
     z-index: 950;
-    transform: scale(1.5) translate(50%);
-    mix-blend-mode: difference;
+    transform: scale(1.5) translate(50%, 20%);
+    // mix-blend-mode: difference;
 
     @media screen and (max-width: 768px) {
         bottom: 40px;
@@ -15,9 +18,9 @@
         transition: border-color 350ms;
         height: 1.375em;
         width: .875em;
-        border: 1px solid white;
+        border: 1px solid var(--scrollable-color);
         border-radius: 2em;
-        opacity: 0.7;
+        opacity: 1;
 
         & .wheel {
             transition: background-color 350ms;
@@ -26,7 +29,7 @@
             height: 0.1875rem;
             width: 0.1875rem;
             margin: 0.1875rem auto 0;
-            background-color: white;
+            background-color: var(--scrollable-color);
             animation: mouse-wheel 1.2s ease infinite;
             border-radius: 50%;
         }

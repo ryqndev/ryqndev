@@ -17,6 +17,7 @@
     opacity: 0;
     transition: opacity 500ms;
     overflow: visible;
+    pointer-events: none;
 
     @media screen and (max-aspect-ratio: 1/1) and (max-width: 767px){
         top: 63vh;

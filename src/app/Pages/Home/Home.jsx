@@ -33,7 +33,7 @@ const Home = ({ theme }) => {
 			>
 				<Timeline theme={theme} project={project} y={y}>
 					<PageOverlay
-						visible={y > window.innerHeight && window.innerWidth > 680}
+						visible={y > window.innerHeight}
 						pages={PROJECTS}
 						project={project}
 						setProject={setProject}
