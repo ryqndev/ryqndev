@@ -1,4 +1,6 @@
 .container {
+    position: relative;
+    z-index: 10;
     background: var(--background-color);
     transition: background 350ms;
 

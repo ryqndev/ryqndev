@@ -13,16 +13,16 @@ function ThreeContainer({ className, children, theme, project, y }) {
 				<Physics gravity={[0, -9.8, 0]}>
 					<directionalLight
 						castShadow
-						intensity={0.8}
-						position={[0, 1, 1]}
+						intensity={1}
+						position={[0, 50, 100]}
 						color={theme ? '#6633dd' : '#ffff00'}
 					/>
 					<directionalLight
-						intensity={0.05}
-						position={[0, -2, 0]}
-						color={theme ? '#888888' : '#ffff00'}
+						intensity={theme ? 1 : 1}
+						position={[0, -100, 50]}
+						color={theme ? '#a66B33' : '#ffff00'}
 					/>
-					<ambientLight intensity={theme ? 0.02 : 0.4} />
+					<ambientLight intensity={theme ? 0.8 : 0.4} color={theme? '#6633dd': 'white'} />
 					{children}
 				</Physics>
 			</Canvas>

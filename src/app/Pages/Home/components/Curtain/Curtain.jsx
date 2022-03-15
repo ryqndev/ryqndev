@@ -26,7 +26,11 @@ function Curtain({ y }) {
 				<ChineseName />
 			</h1>
 			<div id={cn.border}>
-				<div id={cn.content}>
+				<div
+					id={cn.content}
+					data-mouse-hover='button'
+					data-mouse-hover-text='Scroll down'
+				>
 					<h1 className={cn.name} id={cn.front}>
 						<ChineseName />
 					</h1>

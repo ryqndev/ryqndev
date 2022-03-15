@@ -8,9 +8,9 @@ function ProjectBall({ data, selected }) {
 	const [ref] = useBox(() => ({
 		mass: 1,
 		position: [
-			Math.random() * 10 - 5,
-			Math.random() * 5 + 10,
-			Math.random() * 10 - 5,
+			Math.random() * 100 - 50,
+			Math.random() * 50 + 100,
+			Math.random() * 100 - 50,
 		],
 	}));
 
@@ -37,7 +37,7 @@ function ProjectBall({ data, selected }) {
 			{window.innerWidth > 768 && <Html className={cn.container}>
 				<ActionList data={data} selected={selected} />
 			</Html>}
-			<sphereBufferGeometry args={[0.7, 16, 16]} />
+			<sphereBufferGeometry args={[8, 20, 20]} />
 			<meshStandardMaterial color={0xffffff} />
 		</mesh>
 	);

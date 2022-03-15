@@ -1,5 +1,4 @@
 import { memo } from 'react';
-import { useTranslation } from 'react-i18next';
 import { ReactComponent as Github } from './assets/github.svg';
 import { ReactComponent as Instagram } from './assets/instagram.svg';
 import { ReactComponent as Linkedin } from './assets/linkedin.svg';
@@ -13,8 +12,6 @@ const socials = [
 ];
 
 function Socials() {
-	const { t } = useTranslation();
-
 	return (
 		<div className={cn.container}>
 			{socials.map(({link, Icon}) => (
