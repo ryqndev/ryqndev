@@ -30,7 +30,6 @@ const App = () => {
 							<Route
 								path='/'
 								element={<Home theme={theme} />}
-								exact
 							/>
 						</Routes>
 					</Suspense>
