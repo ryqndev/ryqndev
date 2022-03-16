@@ -1,16 +1,16 @@
-import { OrbitControls, OrthographicCamera, PerspectiveCamera } from '@react-three/drei';
+import { OrbitControls, OrthographicCamera } from '@react-three/drei';
 import { useFrame } from '@react-three/fiber';
 import { Vector3 } from 'three';
-import { useEffect, useMemo, useState, memo } from 'react';
+import { useEffect, useMemo, useState, useCallback, memo } from 'react';
 import PROJECTS from '../../../../assets/projects.json';
 
-function CameraControls({ project }) {
+function CameraControls({ project, allowRotate=false }) {
 	const cameraVec = useMemo(() => new Vector3(200, 15, 5), []);
 	const [zoom, setZoom] = useState(() => Math.sqrt(0.005 * window.innerWidth));
 
-	function resize() {
+	const resize = useCallback(() => {
 		setZoom(Math.sqrt(0.005 * window.innerWidth));
-	}
+	}, [setZoom]);
 
 	useEffect(() => {
 		let completion = (project / PROJECTS.length) * 200;
@@ -21,7 +21,7 @@ function CameraControls({ project }) {
 		resize();
 		window.addEventListener('resize', resize);
 		return () => window.removeEventListener('resize', resize);
-	}, []);
+	}, [resize]);
 
 	useFrame(state => {
 		state.camera.position.lerp(cameraVec, 0.02);
@@ -30,13 +30,14 @@ function CameraControls({ project }) {
 	return (
 		<>
 			<OrbitControls
-				enableZoom={false}
+				enableZoom={allowRotate}
 				enablePan={false}
-				enableRotate={false}
+				enableRotate={allowRotate}
 				target={[0, -10, 0]}
 			/>
 			<OrthographicCamera 
 				makeDefault 
+				near={-100}
 				position={cameraVec} 
 				zoom={zoom} 
 			/>

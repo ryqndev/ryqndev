@@ -11,8 +11,8 @@ function CustomMouseCursor() {
 		const handleMouseMove = e => {
 			setMouse({
 				pos: [e.clientX, e.clientY],
-				target: e.target.dataset.mouseHover,
-				message: e.target.dataset.mouseHoverText
+				target: e.target.dataset?.mouseHover,
+				message: e.target.dataset?.mouseHoverText
 			});
 		};
 
