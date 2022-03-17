@@ -6,6 +6,8 @@ import App from './app';
 import * as serviceWorker from './serviceWorker';
 import './i18n';
 
+console.log('v.2.0.2');
+
 Plausible({
 	domain: 'ryqn.dev',
 });

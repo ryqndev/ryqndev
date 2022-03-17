@@ -15,7 +15,6 @@ function LanguageSelect({ visible }) {
 	);
 
 	useEffect(() => {
-		console.log(i18n);
 		i18n.changeLanguage(supportedLanguages[language]);
 	}, [i18n, language]);
 
