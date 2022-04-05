@@ -3,14 +3,15 @@ import { Routes, Route } from 'react-router-dom';
 import Toggle from 'react-toggle';
 import { useTheme } from './controller';
 import { LoadingSplash, CustomMouseCursor } from './components';
-import cn from './App.module.scss';
 import './styles/main.scss';
+import Footer from '@ryqndev/footer';
 
 import Home from './pages/Home';
+import DigitalAudio from './pages/DigitalAudio';
 
 const App = () => {
 	const { theme, toggle } = useTheme();
-
+	
 	return (
 		<>
 			<div
@@ -31,12 +32,16 @@ const App = () => {
 								path='/'
 								element={<Home theme={theme} />}
 							/>
+							<Route
+								path='/digital-audio'
+								element={<DigitalAudio />}
+							/>
 						</Routes>
 					</Suspense>
 				</>
 			</LoadingSplash>
 
-			<footer
+			{/* <footer
 				style={{
 					height: '100vh',
 					width: '100vw',
@@ -56,8 +61,8 @@ const App = () => {
 				>
 					RYAN YANG
 				</p>
-			</footer>
-			{/* <Footer /> */}
+			</footer> */}
+			<Footer />
 		</>
 	);
 };

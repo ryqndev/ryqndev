@@ -6,18 +6,16 @@ import App from './app';
 import * as serviceWorker from './serviceWorker';
 import './i18n';
 
-console.log('v.2.0.2');
+console.log('v.2.0.5');
 
 Plausible({
 	domain: 'ryqn.dev',
 });
 
 render(
-	<React.StrictMode>
-		<Router basename={process.env.PUBLIC_URL}>
-			<App />
-		</Router>
-	</React.StrictMode>,
+	<Router basename={process.env.PUBLIC_URL}>
+		<App />
+	</Router>,
 	document.getElementById('root')
 );
 

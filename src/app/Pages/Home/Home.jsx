@@ -28,7 +28,7 @@ const Home = ({ theme }) => {
 			<div className={cn.header}>
 				{y < window.innerHeight * 1.5 && <Curtain y={y} />}
 			</div>
-			<BackgroundText visible={y > window.innerHeight / 2} />
+			<BackgroundText visible={y > window.innerHeight / 2 && y < window.innerHeight * 6} />
 			<div
 				className={cn.content}
 				style={{ height: (PROJECTS.length - 1) * 200 + 'vh' }}
@@ -43,7 +43,7 @@ const Home = ({ theme }) => {
 					<button
 						className={clsx(
 							cn.view,
-							y > window.innerHeight &&
+							y > window.innerHeight * 1.5 &&
 								window.innerWidth > 768 &&
 								cn.visible
 						)}
@@ -65,7 +65,7 @@ const Home = ({ theme }) => {
 						)}
 					>
 						<PageOverlay
-							visible={y > window.innerHeight}
+							visible={y > window.innerHeight * 1.5}
 							pages={PROJECTS}
 							project={project}
 							setProject={setProject}
@@ -81,7 +81,7 @@ const Home = ({ theme }) => {
 								/>
 							))}
 						</div>
-						<LanguageSelect visible={y > window.innerHeight} />
+						<LanguageSelect visible={y > window.innerHeight * 1.5} />
 						{PROJECTS?.[project] && (
 							<>
 								<Timespan
@@ -98,7 +98,7 @@ const Home = ({ theme }) => {
 					</div>
 				</Timeline>
 			</div>
-			<ScrollableNotice />
+			{ y < window.innerHeight * 6 && <ScrollableNotice />}
 		</main>
 	);
 };

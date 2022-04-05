@@ -17,7 +17,7 @@
 
         & .view {
             cursor: pointer;
-            position: fixed;
+            position: absolute;
             top: max(5vw, 20px);
             left: max(6vw, 20px);
             z-index: 500;

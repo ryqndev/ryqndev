@@ -9,6 +9,8 @@
         "present": "现在",
         "open link in new tab": "在新标签页打开链接",
         "change the language": "更改语言",
-        "scroll to project": "滚动到项目"
+        "scroll to project": "滚动到项目",
+        "stop viewing model": "stop viewing model",
+        "inspect island model": "look at island model"
     }
 }
