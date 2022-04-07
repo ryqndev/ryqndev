@@ -1,6 +1,6 @@
 {
   "files": {
-    "main.css": "/static/css/main.8bba5483.css",
+    "main.css": "/static/css/main.13ab4463.css",
     "main.js": "/static/js/main.37bf99d6.js",
     "static/media/Hyperwave-Two.ttf": "/static/media/Hyperwave-Two.cd251d4ab3e5698f9204.ttf",
     "static/media/Poppins-Regular.ttf": "/static/media/Poppins-Regular.ccfdd78d095fe3607726.ttf",
@@ -15,11 +15,11 @@
     "static/media/swipe.svg": "/static/media/swipe.60c1b1f962beacafa0416e35061de94a.svg",
     "static/media/launch.svg": "/static/media/launch.f17b44b21a84e1e26baad4a993b36b51.svg",
     "static/media/globe.svg": "/static/media/globe.69dfab2a8130b6e8c0994e561b146dfd.svg",
-    "main.8bba5483.css.map": "/static/css/main.8bba5483.css.map",
+    "main.13ab4463.css.map": "/static/css/main.13ab4463.css.map",
     "main.37bf99d6.js.map": "/static/js/main.37bf99d6.js.map"
   },
   "entrypoints": [
-    "static/css/main.8bba5483.css",
+    "static/css/main.13ab4463.css",
     "static/js/main.37bf99d6.js"
   ]
 }
