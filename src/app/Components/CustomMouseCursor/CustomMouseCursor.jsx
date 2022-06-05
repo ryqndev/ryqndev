@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { useEffect, useState } from 'react';
 import cn from './CustomMouseCursor.module.scss';
 
-function CustomMouseCursor() {
+const CustomMouseCursor = () => {
 	const { t } = useTranslation();
 	const [mouse, setMouse] = useState({ pos: [-100, -100], target: 'none', message: '' });
 

@@ -22,7 +22,6 @@ const App = () => {
 			>
 				<Toggle checked={!!theme} icons={false} onChange={toggle} />
 			</div>
-
 			<CustomMouseCursor />
 			<LoadingSplash>
 				<>
@@ -40,28 +39,6 @@ const App = () => {
 					</Suspense>
 				</>
 			</LoadingSplash>
-
-			{/* <footer
-				style={{
-					height: '100vh',
-					width: '100vw',
-					backgroundColor: 'var(--background-emphasis)',
-					position: 'relative',
-					display: 'grid',
-					placeContent: 'center',
-					zIndex: 1000,
-				}}
-			>
-				<p
-					style={{
-						fontWeight: 'bold',
-						fontSize: 'min(10vw, 100px)',
-						color: 'var(--background-color)',
-					}}
-				>
-					RYAN YANG
-				</p>
-			</footer> */}
 			<Footer />
 		</>
 	);
