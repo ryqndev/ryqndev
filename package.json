@@ -3,27 +3,27 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
-    "@react-three/cannon": "^4.9.0",
-    "@react-three/drei": "^8.12.0",
-    "@react-three/fiber": "^7.0.26",
+    "@react-three/cannon": "^6.6.0",
+    "@react-three/drei": "^9.88.13",
+    "@react-three/fiber": "^8.15.10",
     "@ryqndev/footer": "^3.1.1",
-    "clsx": "^1.1.1",
-    "i18next": "^20.3.1",
-    "i18next-browser-languagedetector": "^6.1.1",
-    "plausible-tracker": "^0.3.5",
-    "react": "^17.0.2",
-    "react-dom": "^17.0.2",
-    "react-i18next": "^11.10.0",
-    "react-router-dom": "^6.2.2",
-    "react-scripts": "^5.0.0",
-    "react-toggle": "^4.1.2",
-    "sass": "^1.49.9"
+    "@vitejs/plugin-react-swc": "^3.4.1",
+    "clsx": "^2.0.0",
+    "i18next": "^23.7.3",
+    "i18next-browser-languagedetector": "^6.1.8",
+    "plausible-tracker": "^0.3.8",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "react-i18next": "^13.4.1",
+    "react-router-dom": "^6.18.0",
+    "react-toggle": "^4.1.3",
+    "sass": "^1.69.5",
+    "typescript": "^5.2.2"
   },
   "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build && cp build/index.html build/404.html",
-    "test": "react-scripts test",
-    "eject": "react-scripts eject",
+    "start": "vite",
+    "build": "tsc && vite build && cp build/index.html build/404.html",
+    "serve": "vite preview",
     "predeploy": "npm run build",
     "deploy": "gh-pages -d build"
   },
@@ -44,6 +44,13 @@
   },
   "homepage": "https://ryqn.dev",
   "devDependencies": {
-    "gh-pages": "^3.2.3"
+    "@types/node": "^20.9.0",
+    "@types/react-dom": "^18.2.15",
+    "@types/react-toggle": "^4.0.5",
+    "@vitejs/plugin-react": "^4.1.1",
+    "gh-pages": "^3.2.3",
+    "vite": "^4.5.0",
+    "vite-plugin-svgr": "^4.1.0",
+    "vite-tsconfig-paths": "^4.2.1"
   }
 }
