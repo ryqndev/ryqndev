@@ -12,14 +12,6 @@ interface ProjectBallProps {
 
 export function ProjectBall({ data, selected }: ProjectBallProps) {
   const [hovered, setHovered] = useState(false);
-  const [ref] = useBox(() => ({
-    mass: 1,
-    position: [
-      Math.random() * 100 - 50,
-      Math.random() * 50 + 100,
-      Math.random() * 100 - 50,
-    ],
-  }));
 
   const hover = useCallback(() => {
     setHovered(true);
@@ -30,8 +22,6 @@ export function ProjectBall({ data, selected }: ProjectBallProps) {
 
   return (
     <mesh
-      // @ts-ignore: fix later
-      ref={ref}
       onPointerOver={hover}
       onPointerOut={unhover}
       layers={[0, 1] as unknown as Layers}

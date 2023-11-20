@@ -11,7 +11,7 @@ interface CameraControlsProps {
 
 export function CameraControls({
   project,
-  allowRotate = false,
+  allowRotate = true,
 }: CameraControlsProps) {
   const cameraVec = useMemo(() => new Vector3(200, 15, 5), []);
   const [zoom, setZoom] = useState(() => Math.sqrt(0.005 * window.innerWidth));

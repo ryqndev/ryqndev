@@ -2,6 +2,8 @@ import { ReactNode, memo } from "react";
 import { ThreeContainer, ProjectBall, UCI } from "../../../../components";
 import PROJECTS from "../../../../assets/projects.json";
 import cn from "./Timeline.module.scss";
+import { Zotbot } from "../../../../components/Three/components/Zotbot";
+import { DrivableZotbot } from "../../../../components/Three/components/DrivableZotbot";
 
 interface TimelineProps {
   theme: any;
@@ -27,14 +29,16 @@ export const Timeline = ({
       allowRotate={viewModelState}
       y={y}
     >
-      {!viewModelState &&
+      <Zotbot />
+      {/* {!viewModelState &&
         PROJECTS.map((data, index) => (
           <ProjectBall
             key={data.name}
             data={data}
             selected={project === index}
           />
-        ))}
+        ))} */}
+      <DrivableZotbot />
       <UCI />
     </ThreeContainer>
     {children}
