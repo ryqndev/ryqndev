@@ -31,8 +31,8 @@ export function PageOverlay({
           >
             {project === index ? "0" + (index + 1) : page.name}
           </span>
-          <svg className={cn.icon} viewBox="0 0 14 100" fill="none">
-            <rect width="14" height="100" rx="7" />
+          <svg className={cn.icon} viewBox="0 0 14 14" fill="none">
+            {project === index && <rect width="14" height="14" rx="7" />}
           </svg>
         </div>
       ))}

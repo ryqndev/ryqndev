@@ -6,6 +6,7 @@ import { CameraControls } from "./components";
 import cn from "./ThreeContainer.module.scss";
 import { KeyboardControls, useKeyboardControls } from "@react-three/drei";
 import { useCustomKeyMapping } from "./controllers/useCustomKeyMapping";
+import { Stars } from "./Stars";
 
 interface ThreeContainerProps {
   className: string;
@@ -21,7 +22,6 @@ export const ThreeContainer = ({
   children,
   theme,
   project,
-  y,
   allowRotate = false,
 }: ThreeContainerProps) => {
   const map = useCustomKeyMapping();

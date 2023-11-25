@@ -16,6 +16,8 @@ import {
 import PROJECTS from "../../assets/projects.json";
 import SwipeIcon from "../../assets/icons/swipe.svg?react";
 import cn from "./Home.module.scss";
+import { Canvas } from "@react-three/fiber";
+import { Stars } from "../../components/Three/Stars";
 
 export const Home = ({ theme }: { theme: any }) => {
   const projectsRef = useRef<HTMLDivElement>(null);
@@ -25,9 +27,10 @@ export const Home = ({ theme }: { theme: any }) => {
 
   return (
     <main className={cn.container}>
-      <div className={cn.header}>
+      <div className={clsx(cn.header, y > window.innerHeight && cn.disappear)}>
         {y < window.innerHeight * 1.5 && <Curtain y={y} />}
       </div>
+      <Stars project={project} />
       <BackgroundText
         visible={y > window.innerHeight / 2 && y < window.innerHeight * 6}
       />
