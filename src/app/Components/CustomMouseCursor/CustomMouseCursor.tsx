@@ -18,7 +18,7 @@ export const CustomMouseCursor = () => {
         // @ts-ignore: Implement custom event later
         target: e.target.dataset?.mouseHover,
         // @ts-ignore: Implement custom event later
-        message: e.target.dataset?.mouseHoverText,
+        message: e.target.dataset?.mouseHoverText ?? "",
       });
     };
     // @ts-ignore: Implement custom event later

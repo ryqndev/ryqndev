@@ -33,7 +33,7 @@ export const LoadingSplash = ({
       <div className={clsx(cn.container, close && cn.close)}></div>
       <div className={clsx(cn.container, close && cn.close)}>
         <div className={cn.content}>
-          <p>{progress}%</p>
+          <p>{Math.round(progress)}%</p>
         </div>
       </div>
       <div className={clsx(className)}>{children}</div>

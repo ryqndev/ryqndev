@@ -5,6 +5,7 @@ export const Bushes = () => {
   const { nodes, materials } = useGLTF(
     "/assets/updated_island/floating island.gltf"
   ) as GLTFResult;
+
   return (
     <>
       <mesh

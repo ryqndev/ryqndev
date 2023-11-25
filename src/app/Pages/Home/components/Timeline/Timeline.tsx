@@ -3,7 +3,7 @@ import { ThreeContainer, ProjectBall, UCI } from "../../../../components";
 import PROJECTS from "../../../../assets/projects.json";
 import cn from "./Timeline.module.scss";
 import { Zotbot } from "../../../../components/Three/components/Zotbot";
-import { DrivableZotbot } from "../../../../components/Three/components/DrivableZotbot";
+import { DrivableZotbot } from "../../../../components/Three/components/Zotbot/DrivableZotbot";
 
 interface TimelineProps {
   theme: any;

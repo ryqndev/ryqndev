@@ -20,7 +20,7 @@ import cn from "./Home.module.scss";
 export const Home = ({ theme }: { theme: any }) => {
   const projectsRef = useRef<HTMLDivElement>(null);
   const [viewModelState, setViewModelState] = useState(false);
-  const { y } = useScroll();
+  const y = useScroll();
   const { project, setProject } = useProjects(y, projectsRef);
 
   return (

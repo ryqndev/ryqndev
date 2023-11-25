@@ -13,7 +13,7 @@ export function Island(props: JSX.IntrinsicElements["group"]) {
   ) as GLTFResult;
   return (
     <group {...props} dispose={null}>
-      <RigidBody colliders="trimesh" type="fixed">
+      <RigidBody colliders="trimesh" type="fixed" friction={0}>
         <Lamps />
         <Bushes />
         <mesh

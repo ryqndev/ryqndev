@@ -31,7 +31,7 @@ export const ThreeContainer = ({
       <KeyboardControls map={map}>
         <Canvas className={clsx(className)} id={cn.container} shadows>
           <CameraControls project={project} allowRotate={allowRotate} />
-          <Physics debug>
+          <Physics>
             <directionalLight
               castShadow
               intensity={2}

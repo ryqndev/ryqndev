@@ -20,15 +20,15 @@ export const App = memo(function App() {
         <Toggle checked={!!theme} icons={false} onChange={toggle} />
       </div>
       <CustomMouseCursor />
-      {/* <LoadingSplash> */}
-      <>
-        <Suspense fallback={<div>loading...</div>}>
-          <Routes>
-            <Route path="/" element={<Home theme={theme} />} />
-          </Routes>
-        </Suspense>
-      </>
-      {/* </LoadingSplash> */}
+      <LoadingSplash>
+        <>
+          <Suspense fallback={<div>loading...</div>}>
+            <Routes>
+              <Route path="/" element={<Home theme={theme} />} />
+            </Routes>
+          </Suspense>
+        </>
+      </LoadingSplash>
     </>
   );
 });

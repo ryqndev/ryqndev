@@ -16,6 +16,8 @@ export function CameraControls({
   const cameraVec = useMemo(() => new Vector3(200, 15, 5), []);
   const [zoom, setZoom] = useState(() => Math.sqrt(0.005 * window.innerWidth));
 
+  const [firstPOV, setFirstPOV] = useState(false);
+
   const resize = useCallback(() => {
     setZoom(Math.sqrt(0.005 * window.innerWidth));
   }, [setZoom]);
@@ -44,7 +46,7 @@ export function CameraControls({
         target={[0, -10, 0]}
       />
       <OrthographicCamera
-        makeDefault
+        makeDefault={!firstPOV}
         near={-100}
         position={cameraVec}
         zoom={zoom}
