@@ -5,11 +5,5 @@
 	width: 100vw;
 	position: sticky;
 	transition: background-color 350ms;
-	
-    @media screen and (max-aspect-ratio: 1/1) and (max-width: 768px) {
-        // height: 60vh;
-		// padding-top: 40vh;
-		// top: 0vh;
-    }
 
 }

@@ -6,7 +6,7 @@ import { Zotbot } from "../../../../components/Three/components/Zotbot";
 import { DrivableZotbot } from "../../../../components/Three/components/Zotbot/DrivableZotbot";
 
 interface TimelineProps {
-  theme: any;
+  theme: number;
   project: any;
   y: number;
   children: ReactNode;
