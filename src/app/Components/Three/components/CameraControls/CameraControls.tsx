@@ -1,8 +1,8 @@
 import { OrbitControls, OrthographicCamera } from '@react-three/drei';
 import { useFrame } from '@react-three/fiber';
 import { Vector3 } from 'three';
-import { useEffect, useMemo, useState, useCallback, memo } from 'react';
-import PROJECTS from '../../../../assets/projects.json';
+import { useEffect, useMemo, useState, useCallback } from 'react';
+import PROJECTS from '@assets/projects.json';
 
 interface CameraControlsProps {
     project: any;

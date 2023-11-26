@@ -26,17 +26,17 @@
         }
 
         & #layer-1 {
-            background-image: url('../../assets/layer3.png');
+            background-image: url('../../../assets/layer3.png');
             margin-top: 0;
         }
 
         & #layer-2 {
-            background-image: url('../../assets/layer2.png');
+            background-image: url('../../../assets/layer2.png');
             margin-bottom: calc(10vh * var(--scroll-small) + 5vh);
         }
 
         & #layer-3 {
-            background-image: url('../../assets/layer1.png');
+            background-image: url('../../../assets/layer1.png');
             margin-bottom: calc(20vh * var(--scroll-small) + 10vh);
         }
     }

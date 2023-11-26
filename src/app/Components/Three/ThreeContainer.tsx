@@ -1,19 +1,20 @@
-import clsx from 'clsx'
-import { ReactNode, Suspense, memo, useEffect, useRef } from 'react'
-import { Canvas, useFrame } from '@react-three/fiber'
-import { Physics } from '@react-three/rapier'
-import { CameraControls } from './components'
-import cn from './ThreeContainer.module.scss'
-import { KeyboardControls, useKeyboardControls } from '@react-three/drei'
-import { useCustomKeyMapping } from './controllers/useCustomKeyMapping'
-import { Lights } from './components/Lights/Lights'
+import clsx from 'clsx';
+import { ReactNode, Suspense, memo, useEffect, useRef } from 'react';
+import { Canvas } from '@react-three/fiber';
+import { Physics } from '@react-three/rapier';
+
+import cn from './ThreeContainer.module.scss';
+import { KeyboardControls } from '@react-three/drei';
+import { useCustomKeyMapping } from './controllers/useCustomKeyMapping';
+import { Lights } from './components/Lights/Lights';
+import { CameraControls } from './components/CameraControls/CameraControls';
 
 interface ThreeContainerProps {
-    className: string
-    children: ReactNode
-    theme: number
-    project: any
-    y: number
+    className: string;
+    children: ReactNode;
+    theme: number;
+    project: any;
+    y: number;
 }
 
 export const ThreeContainer = ({
@@ -22,7 +23,7 @@ export const ThreeContainer = ({
     theme,
     project,
 }: ThreeContainerProps) => {
-    const map = useCustomKeyMapping()
+    const map = useCustomKeyMapping();
 
     return (
         <Suspense fallback={<div></div>}>
@@ -36,5 +37,5 @@ export const ThreeContainer = ({
                 </Canvas>
             </KeyboardControls>
         </Suspense>
-    )
-}
+    );
+};

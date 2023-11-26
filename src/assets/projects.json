@@ -1,0 +1,96 @@
+[
+    {
+        "name": "Boba Watch",
+        "displayName": "Boba Watch",
+        "date": {
+            "start": "2019-10-23"
+        },
+        "url": "https://boba.watch/",
+        "image": {
+            "src": "https://boba.watch/bobawatch.png",
+            "alt": "Collection of Boba Watch app screens"
+        },
+        "links": [
+            {
+                "url": "https://boba.watch",
+                "title": "visit"
+            },
+            {
+                "url": "https://nextshark.com/boba-watch-app-college-students/",
+                "title": "article #1"
+            },
+            {
+                "url": "https://www.cs.uci.edu/student-spotlight-ryan-yang-and-the-instant-popularity-of-boba-watch/",
+                "title": "article #2"
+            }
+        ]
+    },
+    {
+        "name": "Learn",
+        "displayName": "learn.ryqn.dev",
+        "date": {
+            "start": "2021-02-21"
+        },
+        "url": "https://learn.ryqn.dev",
+        "image": {
+            "src": "/assets/learn.png",
+            "alt": "Screenshot of Learn article"
+        },
+        "links": [
+            {
+                "url": "https://learn.ryqn.dev",
+                "title": "visit"
+            },
+            {
+                "url": "https://github.com/ryqndev/learn-ryqn-dev",
+                "title": "code"
+            }
+        ]
+    },
+    {
+        "name": "Data Vis",
+        "displayName": "Data Vis Ref",
+        "date": {
+            "start": "2022-01-03",
+            "end": "2022-01-16"
+        },
+        "url": "https://data-vis.learn.ryqn.dev",
+        "image": {
+            "src": "https://data-vis.learn.ryqn.dev/assets/splash.png",
+            "alt": "Data Vis Reference Heatmap page"
+        },
+        "links": [
+            {
+                "url": "https://data-vis.learn.ryqn.dev",
+                "title": "visit"
+            },
+            {
+                "url": "https://github.com/ryqndev/learn-data-vis",
+                "title": "code"
+            }
+        ]
+    },
+    {
+        "name": "Pick Ban Pro",
+        "displayName": "Pick Ban Pro",
+        "date": {
+            "start": "2021-05-21",
+            "end": "2021-11-21"
+        },
+        "url": "https://pickban.pro",
+        "image": {
+            "src": "@assets/pickbanpro.png",
+            "alt": "Pick Ban Pro product display"
+        },
+        "links": [
+            {
+                "url": "https://pickban.pro",
+                "title": "visit"
+            },
+            {
+                "url": "https://github.com/ryqndev/pick-ban-pro",
+                "title": "code"
+            }
+        ]
+    }
+]

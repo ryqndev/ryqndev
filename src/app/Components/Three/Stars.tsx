@@ -1,9 +1,9 @@
-import { Canvas, useFrame, useLoader } from '@react-three/fiber'
-import { memo, useRef, useState } from 'react'
-import { BackSide, Mesh, TextureLoader, Vector3 } from 'three'
-import GALAXY from './components/darker_eso.jpg'
-import cn from './ThreeContainer.module.scss'
-import { CameraControls } from './components'
+import { Canvas, useFrame, useLoader } from '@react-three/fiber';
+import { memo, useRef, useState } from 'react';
+import { BackSide, Mesh, TextureLoader, Vector3 } from 'three';
+import GALAXY from './components/darker_eso.jpg';
+import cn from './ThreeContainer.module.scss';
+import { CameraControls } from './components/CameraControls/CameraControls';
 
 const Container = ({ project }: { project: any }) => {
     return (
@@ -11,12 +11,12 @@ const Container = ({ project }: { project: any }) => {
             <CameraControls project={project} />
             <Stars />
         </Canvas>
-    )
-}
+    );
+};
 
 const Stars = memo(() => {
-    const loader = useLoader(TextureLoader, GALAXY)
-    const galaxyRef = useRef<Mesh>(null)
+    const loader = useLoader(TextureLoader, GALAXY);
+    const galaxyRef = useRef<Mesh>(null);
     const [stars] = useState(() =>
         new Array(150)
             .fill(undefined)
@@ -28,12 +28,12 @@ const Stars = memo(() => {
                         Math.random() * 800 - 400
                     )
             )
-    )
+    );
 
     useFrame(() => {
-        if (!galaxyRef.current) return
-        galaxyRef.current.rotation.y += 0.0001
-    })
+        if (!galaxyRef.current) return;
+        galaxyRef.current.rotation.y += 0.0001;
+    });
 
     // Credit goes to "ESO/S. Brunier (http://www.sergebrunier.com/gallerie/pleinciel/index-eng.html)"
     return (
@@ -49,7 +49,7 @@ const Stars = memo(() => {
                 ))}
             </>
         </mesh>
-    )
-})
+    );
+});
 
-export { Container as Stars }
+export { Container as Stars };

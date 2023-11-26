@@ -1,9 +1,10 @@
 import { ReactNode, memo } from 'react';
-import { ThreeContainer, UCI } from '../../../../components';
-import PROJECTS from '../../../../assets/projects.json';
+// import PROJECTS from '@assets/projects.json';
 import cn from './Experience.module.scss';
-import { Zotbot } from '../../../../components/Three/components/Zotbot';
-import { DrivableZotbot } from '../../../../components/Three/components/Zotbot/DrivableZotbot';
+import { Zotbot } from '@components/Three/components/Zotbot';
+import { DrivableZotbot } from '@components/Three/components/Zotbot/DrivableZotbot';
+import { UCI } from '@components/Three/components/UCI';
+import { ThreeContainer } from '@components/Three/ThreeContainer';
 
 interface ExperienceProps {
     theme: number;

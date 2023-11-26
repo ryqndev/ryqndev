@@ -1,5 +1,5 @@
-import { memo } from "react";
-import "./ScrollableNotice.scss";
+import { memo } from 'react';
+import './ScrollableNotice.scss';
 
 /**
  * Animated scroll suggestion set to bottom of screen. If additional customizing is needed,
@@ -7,16 +7,18 @@ import "./ScrollableNotice.scss";
  *
  * @param {boolean} flipped - if set to true, will invert the dark/light theme
  */
-export const ScrollableNotice = ({
-  flipped = false,
+export const ScrollableNotice = memo(function ScrollableNotice({
+    flipped = false,
 }: {
-  flipped?: boolean;
-}) => {
-  return (
-    <div className={`scrollable-notice--wrapper ${flipped ? "flipped" : ""}`}>
-      <div className="mouse">
-        <div className="wheel"></div>
-      </div>
-    </div>
-  );
-};
+    flipped?: boolean;
+}) {
+    return (
+        <div
+            className={`scrollable-notice--wrapper ${flipped ? 'flipped' : ''}`}
+        >
+            <div className="mouse">
+                <div className="wheel"></div>
+            </div>
+        </div>
+    );
+});

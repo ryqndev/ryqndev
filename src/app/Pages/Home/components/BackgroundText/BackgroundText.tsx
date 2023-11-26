@@ -1,5 +1,4 @@
 import clsx from 'clsx';
-import { memo } from 'react';
 import cn from './BackgroundText.module.scss';
 
 export function BackgroundText({ visible }: { visible: boolean }) {
