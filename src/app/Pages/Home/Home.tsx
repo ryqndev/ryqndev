@@ -1,8 +1,8 @@
-import clsx from 'clsx'
-import { useRef, useState } from 'react'
-import { useScroll } from '../../controller'
-import { useProjects } from './controller/useProjects'
-import { ScrollableNotice, ActionList } from '../../components'
+import clsx from 'clsx';
+import { useRef, useState } from 'react';
+import { useScroll } from '../../controller';
+import { useProjects } from './controller/useProjects';
+import { ScrollableNotice } from '../../components';
 import {
     BackgroundText,
     Curtain,
@@ -10,20 +10,17 @@ import {
     PageOverlay,
     ProjectName,
     Socials,
-    Timeline,
+    Experience,
     Timespan,
-} from './components'
-import PROJECTS from '../../assets/projects.json'
-import SwipeIcon from '../../assets/icons/swipe.svg?react'
-import cn from './Home.module.scss'
-import { Canvas } from '@react-three/fiber'
-import { Stars } from '../../components/Three/Stars'
+} from './components';
+import PROJECTS from '../../assets/projects.json';
+import cn from './Home.module.scss';
+import { Stars } from '../../components/Three/Stars';
 
 export const Home = ({ theme }: { theme: number }) => {
-    const projectsRef = useRef<HTMLDivElement>(null)
-    const [viewModelState, setViewModelState] = useState(false)
-    const y = useScroll()
-    const { project, setProject } = useProjects(y, projectsRef)
+    const projectsRef = useRef<HTMLDivElement>(null);
+    const y = useScroll();
+    const { project, setProject } = useProjects(y, projectsRef);
 
     return (
         <main className={cn.container}>
@@ -46,55 +43,14 @@ export const Home = ({ theme }: { theme: number }) => {
                 style={{ height: (PROJECTS.length - 1) * 200 + 'vh' }}
                 ref={projectsRef}
             >
-                <Timeline
-                    theme={theme}
-                    project={project}
-                    y={y}
-                    viewModelState={viewModelState}
-                >
-                    <button
-                        className={clsx(
-                            cn.view,
-                            y > window.innerHeight * 1.5 &&
-                                window.innerWidth > 768 &&
-                                cn.visible
-                        )}
-                        onClick={() => {
-                            setViewModelState((prev) => !prev)
-                        }}
-                        data-mouse-hover="button"
-                        data-mouse-hover-text={
-                            viewModelState
-                                ? 'stop viewing model'
-                                : 'inspect island model'
-                        }
-                    >
-                        <SwipeIcon />
-                    </button>
-
-                    <div
-                        className={clsx(
-                            cn.controls,
-                            viewModelState && cn.viewing
-                        )}
-                    >
+                <Experience theme={theme} project={project} y={y}>
+                    <div className={clsx(cn.controls)}>
                         <PageOverlay
                             visible={y > window.innerHeight * 1.5}
                             pages={PROJECTS}
                             project={project}
                             setProject={setProject}
                         />
-                        <div className={cn.project}>
-                            {PROJECTS.map((data, index) => (
-                                <ActionList
-                                    key={data.name}
-                                    data={data}
-                                    selected={project === index}
-                                    className={cn.item}
-                                    selectedClassName={cn.selected}
-                                />
-                            ))}
-                        </div>
                         <LanguageSelect
                             visible={y > window.innerHeight * 1.5}
                         />
@@ -112,9 +68,9 @@ export const Home = ({ theme }: { theme: number }) => {
                         )}
                         <Socials />
                     </div>
-                </Timeline>
+                </Experience>
             </div>
             {y < window.innerHeight * 6 && <ScrollableNotice />}
         </main>
-    )
-}
+    );
+};

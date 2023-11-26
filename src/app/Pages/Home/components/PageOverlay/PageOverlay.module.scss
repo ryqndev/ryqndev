@@ -57,12 +57,12 @@
             filter: drop-shadow(0px 0px 5px #00ffff);
 
             &>span {
-                color: #649BFF;
+                color: var(--accent-secondary);
                 font-size: 1.5rem;
             }
 
             &>svg {
-                fill: #649BFF;
+                fill: var(--accent-secondary);
             }
         }
     }

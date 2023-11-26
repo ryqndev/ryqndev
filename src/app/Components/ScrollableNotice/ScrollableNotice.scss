@@ -1,5 +1,5 @@
 :root {
-    --scrollable-color: #7D46C2;
+    --scrollable-color: var(--accent-primary);
 }
 .scrollable-notice--wrapper {
     position: fixed;
@@ -11,7 +11,7 @@
     // mix-blend-mode: difference;
 
     @media screen and (max-width: 768px) {
-        bottom: 40px;
+        bottom: 26px;
     }
 
     & .mouse {

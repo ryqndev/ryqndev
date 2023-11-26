@@ -12,13 +12,13 @@
     &>p {
         text-transform: uppercase;
         font-weight: bold;
-        color: #649BFF;
+        color: var(--accent-secondary);
         font-size: 1.8em;
 
         &>span {
             white-space: nowrap;
             width: auto;
-            color: #7D46C2;
+            color: var(--accent-primary);
             margin: 0 15px 0 10px;
             transition: width 350ms;
         }
@@ -56,8 +56,8 @@
 
     @media screen and (max-width: 768px) {
         font-size: 0.8em;
-        bottom: calc(5vw + 150px);
-        left: calc(2vw);
-        width: calc(90vh - 250px);
+        bottom: -14px;
+        left: 4px;
+        width: 60vh;
     }
 }

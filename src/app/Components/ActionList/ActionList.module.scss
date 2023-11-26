@@ -12,7 +12,7 @@
     }
 
     &>.content {
-        border: 1px solid #649BFF;
+        border: 1px solid var(--accent-secondary);
         width: 100%;
 
         &>img {
@@ -35,7 +35,7 @@
 
             &:hover {
                 background-color: #ffffff;
-                color: #7D46C2;
+                color: var(--accent-primary);
 
                 &>svg {
                     fill: black;
@@ -46,7 +46,7 @@
                 height: 20px;
                 margin-left: 8px;
                 transform: translateY(3px);
-                fill: #649BFF;
+                fill: var(--accent-secondary);
                 pointer-events: none;
             }
         }

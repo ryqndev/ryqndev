@@ -1,3 +1,5 @@
+
+
 .container {
     z-index: 0;
     top: 50vh;
@@ -7,21 +9,17 @@
     display: grid;
     place-content: center;
     background-color: transparent;
-    color: #7D46C2;
+    color: var(--accent-primary);
     font-family: Hyperwave;
     font-size: 30vw;
     text-align: center;
     line-height: 0.6em;
-    text-shadow: 5px 5px #649BFF;
+    text-shadow: 5px 5px var(--accent-secondary);
     transform: rotate(-10deg) translate(0%, -50%);
     opacity: 0;
     transition: opacity 500ms;
     overflow: visible;
     pointer-events: none;
-
-    @media screen and (max-aspect-ratio: 1/1) and (max-width: 767px){
-        top: 63vh;
-    }
 
     &.visible {
         opacity: 1;
@@ -29,10 +27,10 @@
     @media screen and (max-width: 768px) {
         left: 25vw;
         font-size: 40vw;
-        text-shadow: 3px 3px #649BFF;
+        text-shadow: 3px 3px var(--accent-secondary);
     }
     @media screen and (max-width: 550px) {
-        left: 26vw;
-        font-size: 40vw;
+        left: 20vw;
+        font-size: 50vw;
     }
 }

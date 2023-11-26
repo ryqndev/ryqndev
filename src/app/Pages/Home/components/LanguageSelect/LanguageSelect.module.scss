@@ -6,7 +6,7 @@
     font-size: 1.45em;
     text-transform: uppercase;
     font-weight: bold;
-    color: #7D46C2;
+    color: var(--accent-primary);
     margin: 0;
     transition: color 350ms;
     cursor: pointer;
@@ -17,10 +17,10 @@
 
     &:hover,
     &:active {
-        color: #649BFF;
+        color: var(--accent-secondary);
 
         &>svg {
-            fill: #649BFF;
+            fill: var(--accent-secondary);
         }
     }
     
@@ -40,7 +40,7 @@
         top: 4px;
         height: 27px;
         width: 27px;
-        fill: #7D46C2;
+        fill: var(--accent-primary);
         transition: fill 350ms;
         & path {
             pointer-events: none;
