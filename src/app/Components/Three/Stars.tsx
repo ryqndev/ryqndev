@@ -44,7 +44,7 @@ const Stars = memo(() => {
                 {stars.map((e, idx) => (
                     <mesh key={idx} position={e}>
                         <sphereGeometry args={[0.6, 5, 5]} />
-                        <meshBasicMaterial color="var(--accent-secondary)" />
+                        <meshBasicMaterial color="#00ffff" />
                     </mesh>
                 ))}
             </>

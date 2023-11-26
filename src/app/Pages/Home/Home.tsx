@@ -5,7 +5,6 @@ import { useProjects } from './controller/useProjects';
 
 import PROJECTS from '@assets/projects.json';
 import cn from './Home.module.scss';
-import { Stars } from '../../components/Three/Stars';
 import { BackgroundText } from './components/BackgroundText/BackgroundText';
 import { Curtain } from './components/Curtain/Curtain';
 import { PageOverlay } from './components/PageOverlay/PageOverlay';
@@ -18,6 +17,8 @@ import { lazily } from 'react-lazily';
 const { Experience } = lazily(
     () => import('./components/Experience/Experience')
 );
+
+const { Stars } = lazily(() => import('@components/Three/Stars'));
 
 export const Home = ({ theme }: { theme: number }) => {
     const projectsRef = useRef<HTMLDivElement>(null);

@@ -1,5 +1,6 @@
 import clsx from 'clsx';
-import { ReactNode, Suspense, memo, useEffect, useRef } from 'react';
+import { Suspense } from 'react';
+import type { ReactNode } from 'react';
 import { Canvas } from '@react-three/fiber';
 import { Physics } from '@react-three/rapier';
 

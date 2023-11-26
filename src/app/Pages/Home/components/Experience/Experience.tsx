@@ -1,10 +1,16 @@
-import { ReactNode, memo } from 'react';
+import { lazily } from 'react-lazily';
+import type { ReactNode } from 'react';
 // import PROJECTS from '@assets/projects.json';
 import cn from './Experience.module.scss';
-import { Zotbot } from '@components/Three/components/Zotbot';
-import { DrivableZotbot } from '@components/Three/components/Zotbot/DrivableZotbot';
-import { UCI } from '@components/Three/components/UCI';
-import { ThreeContainer } from '@components/Three/ThreeContainer';
+
+const { Zotbot } = lazily(() => import('@components/Three/components/Zotbot'));
+const { DrivableZotbot } = lazily(
+    () => import('@components/Three/components/Zotbot/DrivableZotbot')
+);
+const { UCI } = lazily(() => import('@components/Three/components/UCI'));
+const { ThreeContainer } = lazily(
+    () => import('@components/Three/ThreeContainer')
+);
 
 interface ExperienceProps {
     theme: number;

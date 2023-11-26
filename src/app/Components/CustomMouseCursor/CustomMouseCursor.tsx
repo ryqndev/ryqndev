@@ -1,6 +1,7 @@
 import clsx from 'clsx';
 import { useTranslation } from 'react-i18next';
-import { MouseEvent, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
+import type { MouseEvent } from 'react';
 import cn from './CustomMouseCursor.module.scss';
 
 export const CustomMouseCursor = () => {
