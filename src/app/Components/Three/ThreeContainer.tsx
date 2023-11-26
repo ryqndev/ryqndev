@@ -1,14 +1,16 @@
+import { lazily } from 'react-lazily';
+
 import clsx from 'clsx';
 import { Suspense } from 'react';
 import type { ReactNode } from 'react';
 import { Canvas } from '@react-three/fiber';
-import { Physics } from '@react-three/rapier';
 
 import cn from './ThreeContainer.module.scss';
 import { KeyboardControls } from '@react-three/drei';
 import { useCustomKeyMapping } from './controllers/useCustomKeyMapping';
 import { Lights } from './components/Lights/Lights';
 import { CameraControls } from './components/CameraControls/CameraControls';
+const { Physics } = lazily(() => import('@react-three/rapier'));
 
 interface ThreeContainerProps {
     className: string;

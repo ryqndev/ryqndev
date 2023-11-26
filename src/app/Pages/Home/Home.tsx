@@ -1,10 +1,12 @@
 import clsx from 'clsx';
+import { lazily } from 'react-lazily';
 import { useRef } from 'react';
-import { useScroll } from '../../controller';
-import { useProjects } from './controller/useProjects';
 
 import PROJECTS from '@assets/projects.json';
-import cn from './Home.module.scss';
+import { ScrollableNotice } from '@components/ScrollableNotice/ScrollableNotice';
+
+import { useScroll } from '../../controller';
+import { useProjects } from './controller/useProjects';
 import { BackgroundText } from './components/BackgroundText/BackgroundText';
 import { Curtain } from './components/Curtain/Curtain';
 import { PageOverlay } from './components/PageOverlay/PageOverlay';
@@ -12,13 +14,11 @@ import { LanguageSelect } from './components/LanguageSelect/LanguageSelect';
 import { Timespan } from './components/Timespan/Timespan';
 import { ProjectName } from './components/ProjectName/ProjectName';
 import { Socials } from './components/Socials/Socials';
-import { ScrollableNotice } from '@components/ScrollableNotice/ScrollableNotice';
-import { lazily } from 'react-lazily';
-const { Experience } = lazily(
-    () => import('./components/Experience/Experience')
-);
+
+import cn from './Home.module.scss';
 
 const { Stars } = lazily(() => import('@components/Three/Stars'));
+const { Content } = lazily(() => import('./components/Content/Content'));
 
 export const Home = ({ theme }: { theme: number }) => {
     const projectsRef = useRef<HTMLDivElement>(null);
@@ -42,36 +42,36 @@ export const Home = ({ theme }: { theme: number }) => {
             </div>
             <Stars project={project} />
             <BackgroundText visible={y > BACKGROUND_TEXT_BREAKPOINT} />
-            <div
-                className={cn.content}
-                style={{ height: (PROJECTS.length - 1) * 200 + 'vh' }}
-                ref={projectsRef}
+
+            <Content
+                theme={theme}
+                project={project}
+                y={y}
+                projectsRef={projectsRef}
             >
-                <Experience theme={theme} project={project} y={y}>
-                    <div className={clsx(cn.controls)}>
-                        <PageOverlay
-                            visible={y > CURTAIN_BREAKPOINT}
-                            pages={PROJECTS}
-                            project={project}
-                            setProject={setProject}
-                        />
-                        <LanguageSelect visible={y > CURTAIN_BREAKPOINT} />
-                        {PROJECTS?.[project] && (
-                            <>
-                                <Timespan
-                                    {...PROJECTS[project].date}
-                                    visible={y > window.innerHeight}
-                                />
-                                <ProjectName
-                                    name={PROJECTS[project].displayName}
-                                    y={y}
-                                />
-                            </>
-                        )}
-                        <Socials />
-                    </div>
-                </Experience>
-            </div>
+                <div className={clsx(cn.controls)}>
+                    <PageOverlay
+                        visible={y > CURTAIN_BREAKPOINT}
+                        pages={PROJECTS}
+                        project={project}
+                        setProject={setProject}
+                    />
+                    <LanguageSelect visible={y > CURTAIN_BREAKPOINT} />
+                    {PROJECTS?.[project] && (
+                        <>
+                            <Timespan
+                                {...PROJECTS[project].date}
+                                visible={y > window.innerHeight}
+                            />
+                            <ProjectName
+                                name={PROJECTS[project].displayName}
+                                y={y}
+                            />
+                        </>
+                    )}
+                    <Socials />
+                </div>
+            </Content>
             {y < PAGE_BOTTOM_BREAKPOINT && <ScrollableNotice />}
         </main>
     );

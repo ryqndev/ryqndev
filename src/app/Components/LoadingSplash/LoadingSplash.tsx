@@ -22,9 +22,8 @@ export const LoadingSplash = ({
 
     useEffect(() => {
         if (progress < 100 && location.pathname === '/') return;
-        setTimeout(() => {
-            setClose(true);
-        }, 1000);
+
+        setTimeout(() => setClose(true), 1000);
     }, [progress, location, close]);
 
     return (

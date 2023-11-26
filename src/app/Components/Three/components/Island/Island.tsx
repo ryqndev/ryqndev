@@ -5,7 +5,8 @@ import type { GLTFResult } from './types';
 import { Rocks } from './Rocks';
 import { Lamps } from './Lamps';
 import { Bushes } from './Bushes';
-import { RigidBody } from '@react-three/rapier';
+import { lazily } from 'react-lazily';
+const { RigidBody } = lazily(() => import('@react-three/rapier'));
 
 export function Island(props: JSX.IntrinsicElements['group']) {
     const { nodes, materials } = useGLTF(

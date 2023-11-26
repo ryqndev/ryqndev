@@ -1,10 +1,11 @@
-import { Suspense, memo, useState } from 'react';
+import { Suspense, memo, useCallback, useEffect, useState } from 'react';
 import { useLoader } from '@react-three/fiber';
 import type { Euler, Vector3 } from '@react-three/fiber';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
-import { RigidBody } from '@react-three/rapier';
-import { Clone, useGLTF } from '@react-three/drei';
+import { Clone, useGLTF, useKeyboardControls } from '@react-three/drei';
 import { v4 as uuidv4 } from 'uuid';
+import { RigidBody } from '@react-three/rapier';
+import type { CustomControls } from '../controllers/useCustomKeyMapping';
 
 const ZOTBOT_GLTF = '/assets/delivery_robot/zotbot.gltf';
 
@@ -17,7 +18,7 @@ interface ZotbotSpawnState {
 const random = (min: number, max: number) => Math.random() * (max - min) + min;
 const getRandomSpawnState = (): ZotbotSpawnState => ({
     id: uuidv4(),
-    position: [random(-60, 60), random(20, 80), random(-60, 60)],
+    position: [random(-60, 60), random(100, 200), random(-60, 60)],
     rotation: [random(0, Math.PI), random(0, Math.PI), random(0, Math.PI)],
 });
 
@@ -25,6 +26,21 @@ export const Zotbot = memo(function Zotbot() {
     const { scene } = useLoader(GLTFLoader, ZOTBOT_GLTF);
     const [bots, setBots] = useState(() =>
         new Array(4).fill(0).map(getRandomSpawnState)
+    );
+
+    const dropBot = useCallback(() => {
+        setBots((prev) => [...prev, getRandomSpawnState()]);
+    }, []);
+
+    const [sub] = useKeyboardControls<CustomControls>();
+
+    useEffect(
+        () =>
+            sub(
+                (state) => state,
+                ({ SPAWN }) => SPAWN && dropBot()
+            ),
+        []
     );
 
     return (

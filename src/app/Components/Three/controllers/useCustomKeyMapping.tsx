@@ -7,6 +7,7 @@ export enum CustomControls {
     LEFT = 'LEFT',
     RIGHT = 'RIGHT',
     JUMP = 'JUMP',
+    SPAWN = 'SPAWN',
 }
 
 export const useCustomKeyMapping = () => {
@@ -17,6 +18,7 @@ export const useCustomKeyMapping = () => {
             { name: CustomControls.LEFT, keys: ['KeyA'] },
             { name: CustomControls.RIGHT, keys: ['KeyD'] },
             { name: CustomControls.JUMP, keys: ['Space'] },
+            { name: CustomControls.SPAWN, keys: ['KeyJ'] },
         ],
         []
     );

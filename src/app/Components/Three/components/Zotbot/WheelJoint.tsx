@@ -1,6 +1,10 @@
 import { useKeyboardControls } from '@react-three/drei';
-import { RapierRigidBody, useRevoluteJoint } from '@react-three/rapier';
-import type { Vector3Tuple } from '@react-three/rapier';
+
+import {
+    useRevoluteJoint,
+    type RapierRigidBody,
+    type Vector3Tuple,
+} from '@react-three/rapier';
 import { useEffect } from 'react';
 import type { RefObject } from 'react';
 import { CustomControls } from '../../controllers/useCustomKeyMapping';

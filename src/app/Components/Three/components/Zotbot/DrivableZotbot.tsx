@@ -1,17 +1,16 @@
 import { createRef, memo, useEffect, useRef } from 'react';
 import { useLoader } from '@react-three/fiber';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
-import {
-    CylinderCollider,
-    RapierRigidBody,
-    RigidBody,
-    RapierCollider,
-} from '@react-three/rapier';
 
-import type { Vector3Tuple } from '@react-three/rapier';
+const { CylinderCollider, RigidBody } = lazily(
+    () => import('@react-three/rapier')
+);
+
+import type { RapierRigidBody, Vector3Tuple } from '@react-three/rapier';
 import { Clone, useGLTF, useKeyboardControls } from '@react-three/drei';
 import { CustomControls } from '../../controllers/useCustomKeyMapping';
 import { WheelJoint } from './WheelJoint';
+import { lazily } from 'react-lazily';
 
 const ZOTBOT_GLTF = '/assets/delivery_robot/zotbot.gltf';
 

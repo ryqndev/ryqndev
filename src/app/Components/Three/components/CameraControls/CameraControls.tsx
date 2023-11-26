@@ -30,7 +30,7 @@ export function CameraControls({ project }: CameraControlsProps) {
     }, [resize]);
 
     useFrame((state) => {
-        state.camera.position.lerp(cameraVec, 0.02);
+        state.camera.position.lerp(cameraVec, 0.008);
     });
 
     return (
