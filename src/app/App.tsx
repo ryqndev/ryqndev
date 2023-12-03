@@ -1,3 +1,4 @@
+import { lazily } from 'react-lazily';
 import { memo, Suspense } from 'react';
 import { Routes, Route } from 'react-router-dom';
 import Toggle from 'react-toggle';
@@ -6,7 +7,6 @@ import './styles/main.scss';
 
 import { CustomMouseCursor } from './components/CustomMouseCursor/CustomMouseCursor';
 import { LoadingSplash } from './components/LoadingSplash/LoadingSplash';
-import { lazily } from 'react-lazily';
 const { Home } = lazily(() => import('./pages/Home/Home'));
 
 export const App = memo(function App() {

@@ -43,12 +43,7 @@ export const Home = ({ theme }: { theme: number }) => {
             <Stars project={project} />
             <BackgroundText visible={y > BACKGROUND_TEXT_BREAKPOINT} />
 
-            <Content
-                theme={theme}
-                project={project}
-                y={y}
-                projectsRef={projectsRef}
-            >
+            <Content theme={theme} project={project} projectsRef={projectsRef}>
                 <div className={clsx(cn.controls)}>
                     <PageOverlay
                         visible={y > CURTAIN_BREAKPOINT}

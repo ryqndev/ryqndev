@@ -15,7 +15,6 @@ const { ThreeContainer } = lazily(
 interface ContentProps {
     theme: number;
     project: any;
-    y: number;
     children: ReactNode;
     projectsRef: any;
 }
@@ -23,7 +22,6 @@ interface ContentProps {
 export const Content = ({
     theme,
     project,
-    y,
     children,
     projectsRef,
     ...props

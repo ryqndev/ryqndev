@@ -17,7 +17,6 @@ interface ThreeContainerProps {
     children: ReactNode;
     theme: number;
     project: any;
-    y: number;
 }
 
 export const ThreeContainer = ({
