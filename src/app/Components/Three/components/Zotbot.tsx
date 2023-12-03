@@ -57,13 +57,10 @@ export const Zotbot = memo(function Zotbot() {
 
     useFrame(() => {
         setBots((prev) =>
+            // @ts-ignore
             prev.filter((bot) => bot.ref?.current?.parent?.position.y > -300)
         );
     });
-
-    useEffect(() => {
-        console.log('@ryqndev', bots.length);
-    }, [bots]);
 
     return (
         <Suspense fallback={null}>
