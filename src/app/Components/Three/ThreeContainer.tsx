@@ -33,7 +33,7 @@ export const ThreeContainer = ({
             <KeyboardControls map={map}>
                 <Canvas className={clsx(className)} id={cn.container} shadows>
                     <CameraControls project={project} />
-                    <Physics>
+                    <Physics gravity={[0, -20, 0]} debug>
                         <Lights theme={theme} />
                         {children}
                     </Physics>

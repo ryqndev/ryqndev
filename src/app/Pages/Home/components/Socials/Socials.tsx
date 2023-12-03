@@ -2,6 +2,8 @@ import Github from '@assets/icons/minimal/github.svg?react';
 import Instagram from '@assets/icons/minimal/instagram.svg?react';
 import Linkedin from '@assets/icons/minimal/linkedin.svg?react';
 import cn from './Socials.module.scss';
+import { memo } from 'react';
+import clsx from 'clsx';
 
 const socials = [
     { link: 'https://linkedin.com/in/ryanqyang', Icon: Linkedin },
@@ -10,9 +12,13 @@ const socials = [
     { link: 'https://www.instagram.com/veryfewsbux/', Icon: Instagram },
 ];
 
-export function Socials() {
+interface SocialsProps {
+    visible: boolean;
+}
+
+export const Socials = memo(function Socials({ visible }: SocialsProps) {
     return (
-        <div className={cn.container}>
+        <div className={clsx(cn.container, visible && cn.visible)}>
             {socials.map(({ link, Icon }) => (
                 <a
                     key={link}
@@ -28,4 +34,4 @@ export function Socials() {
             ))}
         </div>
     );
-}
+});

@@ -1,14 +1,16 @@
 import { OrbitControls, OrthographicCamera } from '@react-three/drei';
 import { useFrame } from '@react-three/fiber';
 import { Vector3 } from 'three';
-import { useEffect, useMemo, useState, useCallback } from 'react';
+import { useEffect, useMemo, useState, useCallback, memo } from 'react';
 import PROJECTS from '@assets/projects.json';
 
 interface CameraControlsProps {
     project: any;
 }
 
-export function CameraControls({ project }: CameraControlsProps) {
+export const CameraControls = memo(function CameraControls({
+    project,
+}: CameraControlsProps) {
     const cameraVec = useMemo(() => new Vector3(200, 15, 5), []);
     const [zoom, setZoom] = useState(() =>
         Math.sqrt(0.005 * window.innerWidth)
@@ -49,4 +51,4 @@ export function CameraControls({ project }: CameraControlsProps) {
             />
         </>
     );
-}
+});

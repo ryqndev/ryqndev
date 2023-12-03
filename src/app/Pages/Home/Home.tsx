@@ -61,7 +61,7 @@ export const Home = ({ theme }: { theme: number }) => {
                         <>
                             <Timespan
                                 {...PROJECTS[project].date}
-                                visible={y > window.innerHeight}
+                                visible={y > CURTAIN_BREAKPOINT}
                             />
                             <ProjectName
                                 name={PROJECTS[project].displayName}
@@ -69,7 +69,7 @@ export const Home = ({ theme }: { theme: number }) => {
                             />
                         </>
                     )}
-                    <Socials />
+                    <Socials visible={y > CURTAIN_BREAKPOINT} />
                 </div>
             </Content>
             {y < PAGE_BOTTOM_BREAKPOINT && <ScrollableNotice />}

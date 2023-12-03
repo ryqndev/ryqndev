@@ -5,14 +5,14 @@ import GALAXY from './components/darker_eso.jpg';
 import cn from './ThreeContainer.module.scss';
 import { CameraControls } from './components/CameraControls/CameraControls';
 
-const Container = ({ project }: { project: any }) => {
+const Container = memo(function Container({ project }: { project: any }) {
     return (
         <Canvas id={cn.stars}>
             <CameraControls project={project} />
             <Stars />
         </Canvas>
     );
-};
+});
 
 const Stars = memo(() => {
     const loader = useLoader(TextureLoader, GALAXY);

@@ -1,4 +1,4 @@
-import { createRef, memo, useEffect, useRef } from 'react';
+import { Fragment, createRef, memo, useEffect, useRef } from 'react';
 import { useLoader } from '@react-three/fiber';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
 
@@ -35,15 +35,14 @@ export const DrivableZotbot = memo(function DrivableZotbot() {
             (state) => state,
             (pressed) => {
                 if (!zotbotRef.current) return;
-                zotbotRef.current.addTorque(
-                    {
-                        x: pressed.LEFT ? 1000 : pressed.RIGHT ? -1000 : 0,
-                        y: 0,
-                        z: 0,
-                    },
-                    true
-                );
-                // if (pressed.RIGHT) zotbotRef.current.configureMotorVelocity(-10, 100);
+                // zotbotRef.current.addTorque(
+                //     {
+                //         x: pressed.LEFT ? 1000 : pressed.RIGHT ? -1000 : 0,
+                //         y: 0,
+                //         z: 0,
+                //     },
+                //     true
+                // );
             }
         );
     }, []);
@@ -53,30 +52,30 @@ export const DrivableZotbot = memo(function DrivableZotbot() {
             <RigidBody colliders={'hull'} restitution={0} ref={zotbotRef}>
                 <Clone object={scene} scale={2} />
             </RigidBody>
-            {/* {wheelPositions.map((wheelPosition, idx) => (
-        <Fragment key={idx}>
-          <RigidBody
-            position={wheelPosition}
-            colliders="hull"
-            type="dynamic"
-            ref={wheelRefs.current[idx]}
-            canSleep={false}
-          >
-            <CylinderCollider
-              args={[0.1, 2]}
-              rotation={[Math.PI / 2, 0, Math.PI / 2]}
-            />
-          </RigidBody>
-          <WheelJoint
-            body={zotbotRef}
-            wheel={wheelRefs.current[idx]}
-            bodyAnchor={wheelPosition}
-            wheelAnchor={[0, 0, 0]}
-            rotationAxis={[1, 0, 0]}
-          />
-        </Fragment>
-      ))} */}
-            <group>
+            {wheelPositions.map((wheelPosition, idx) => (
+                <Fragment key={idx}>
+                    <RigidBody
+                        position={wheelPosition}
+                        colliders="hull"
+                        type="dynamic"
+                        ref={wheelRefs.current[idx]}
+                        canSleep={false}
+                    >
+                        <CylinderCollider
+                            args={[0.1, 2]}
+                            rotation={[Math.PI / 2, 0, Math.PI / 2]}
+                        />
+                    </RigidBody>
+                    <WheelJoint
+                        body={zotbotRef}
+                        wheel={wheelRefs.current[idx]}
+                        bodyAnchor={wheelPosition}
+                        wheelAnchor={[0, 0, 0]}
+                        rotationAxis={[1, 0, 0]}
+                    />
+                </Fragment>
+            ))}
+            {/* <group>
                 <RigidBody
                     position={wheelPositions[0]}
                     colliders="hull"
@@ -154,7 +153,7 @@ export const DrivableZotbot = memo(function DrivableZotbot() {
                 bodyAnchor={wheelPositions[3]}
                 wheelAnchor={[0, 0, 0]}
                 rotationAxis={[1, 0, 0]}
-            />
+            /> */}
         </group>
     );
 });

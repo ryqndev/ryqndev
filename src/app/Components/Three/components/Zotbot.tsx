@@ -49,6 +49,7 @@ export const Zotbot = memo(function Zotbot() {
                 <RigidBody
                     position={position}
                     rotation={rotation}
+                    restitution={1.5}
                     colliders={'cuboid'}
                     key={id}
                 >

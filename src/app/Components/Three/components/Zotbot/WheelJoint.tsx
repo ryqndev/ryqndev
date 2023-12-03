@@ -36,7 +36,7 @@ export const WheelJoint = ({
             (pressed) => {
                 if (!joint.current) return;
                 joint.current.configureMotorVelocity(
-                    pressed.FORWARD ? 15 : pressed.BACKWARD ? -15 : 0,
+                    pressed.FORWARD ? 30 : pressed.BACKWARD ? -30 : 0,
                     1000
                 );
             }
