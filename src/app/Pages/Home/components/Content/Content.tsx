@@ -24,19 +24,17 @@ export const Content = ({
     project,
     children,
     projectsRef,
-    ...props
 }: ContentProps) => (
     <div
         className={cn.content}
         style={{ height: (PROJECTS.length - 1) * 200 + 'vh' }}
         ref={projectsRef}
     >
-        <div className={cn.container} {...props}>
+        <div className={cn.container}>
             <ThreeContainer
                 className={cn.container}
                 theme={theme}
                 project={project}
-                y={y}
             >
                 <Zotbot />
                 <DrivableZotbot />
