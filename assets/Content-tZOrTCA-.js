@@ -1,0 +1,7 @@
+import{l as o,_ as e,j as t}from"./index-lCl7v7HW.js";import{P as c}from"./Home--_74O72U.js";const a="_container_12xj1_1",n={container:a},{Zotbot:l}=o(()=>e(()=>import("./Zotbot-h8OrpyYn.js"),__vite__mapDeps([0,1,2,3,4,5,6,7,8]))),{DrivableZotbot:m}=o(()=>e(()=>import("./DrivableZotbot-tHuUNEKV.js"),__vite__mapDeps([9,1,2,3,4,5,6,7,8]))),{UCI:d}=o(()=>e(()=>import("./UCI-CvjpSdMR.js"),__vite__mapDeps([10,1,2,8,6]))),{ThreeContainer:x}=o(()=>e(()=>import("./ThreeContainer-P3K_6o5h.js"),__vite__mapDeps([11,1,2,12,6,4,13,14,15,7]))),v=({theme:s,project:r,children:i,projectsRef:_})=>t.jsx("div",{className:n.content,style:{height:(c.length-1)*200+"vh"},ref:_,children:t.jsxs("div",{className:n.container,children:[t.jsxs(x,{className:n.container,theme:s,project:r,children:[t.jsx(l,{}),t.jsx(m,{}),t.jsx(d,{})]}),i]})});export{v as Content};
+function __vite__mapDeps(indexes) {
+  if (!__vite__mapDeps.viteFileDeps) {
+    __vite__mapDeps.viteFileDeps = ["assets/Zotbot-h8OrpyYn.js","assets/index-lCl7v7HW.js","assets/index-mm9ud21q.css","assets/GLTFLoader-iKApPePH.js","assets/extends-dGVwEr9R.js","assets/react-three-rapier.esm-JoK89KVn.js","assets/index-0c28a0fd.esm-pXf_Z0Nn.js","assets/KeyboardControls-GBqFUTb9.js","assets/useGLTF-EKpmjdbN.js","assets/DrivableZotbot-tHuUNEKV.js","assets/UCI-CvjpSdMR.js","assets/ThreeContainer-P3K_6o5h.js","assets/CameraControls-W4wiHnCb.js","assets/Home--_74O72U.js","assets/Home-rTJrma-R.css","assets/CameraControls-MQjibyQs.css"]
+  }
+  return indexes.map((i) => __vite__mapDeps.viteFileDeps[i])
+}
