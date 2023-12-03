@@ -28,7 +28,7 @@
         opacity: 1;    
     }
 
-    @media screen and (max-width: 600px) {
+    @media screen and (max-width: 768px) {
         top: max(2vw, 17px);
         right: max(calc(2vw + 20px), 75px);
         font-size: 1em;
@@ -46,7 +46,7 @@
             pointer-events: none;
         }
         
-        @media screen and (max-width: 600px) {
+        @media screen and (max-width: 768px) {
             left: -1.5em;
             top: 0.2em;
             height: 1em;

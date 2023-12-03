@@ -13,7 +13,7 @@ import type { Euler, Vector3 } from '@react-three/fiber';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
 import { Clone, useGLTF, useKeyboardControls } from '@react-three/drei';
 import { v4 as uuidv4 } from 'uuid';
-import { RapierRigidBody, RigidBody } from '@react-three/rapier';
+import { RigidBody } from '@react-three/rapier';
 import type { CustomControls } from '../controllers/useCustomKeyMapping';
 
 const ZOTBOT_GLTF = '/assets/delivery_robot/zotbot.gltf';
@@ -58,7 +58,7 @@ export const Zotbot = memo(function Zotbot() {
     useFrame(() => {
         setBots((prev) =>
             // @ts-ignore
-            prev.filter((bot) => bot.ref?.current?.parent?.position.y > -300)
+            prev.filter((bot) => bot.ref?.current?.parent?.position?.y > -300)
         );
     });
 

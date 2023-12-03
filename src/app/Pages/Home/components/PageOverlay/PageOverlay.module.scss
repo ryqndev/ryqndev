@@ -2,7 +2,7 @@
     z-index: 1000;
     position: absolute;
     top: 50vh;
-    right: max(6vw, 20px);
+    right: calc(6vw - 32px);
     transform: translateY(-50%);
     display: grid;
     row-gap: 15px;
@@ -57,12 +57,12 @@
             filter: drop-shadow(0px 0px 5px #00ffff);
 
             &>span {
-                color: var(--accent-secondary);
+                color: #649BFF;
                 font-size: 1.5rem;
             }
 
             &>svg {
-                fill: var(--accent-secondary);
+                fill: #649BFF;
             }
         }
     }
