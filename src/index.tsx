@@ -4,7 +4,7 @@ import { BrowserRouter as Router } from 'react-router-dom';
 import { App } from './app/App';
 import './i18n/i18n';
 
-console.log('v.3.1.1');
+console.log('v.3.1.2');
 
 Plausible({
     domain: 'ryqn.dev',
