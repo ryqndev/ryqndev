@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, memo } from 'react';
 import type { ReactNode } from 'react';
 import { useLocation } from 'react-router';
 import { useProgress } from '@react-three/drei';
@@ -6,13 +6,13 @@ import Plausible from 'plausible-tracker';
 import clsx from 'clsx';
 import cn from './LoadingSplash.module.scss';
 
-export const LoadingSplash = ({
+export const LoadingSplash = memo(function LoadingSplash({
     className,
     children,
 }: {
     className?: string;
     children?: ReactNode;
-}) => {
+}) {
     const { progress } = useProgress();
     const [close, setClose] = useState(false);
     const location = useLocation();
@@ -39,4 +39,4 @@ export const LoadingSplash = ({
             <div className={clsx(className)}>{children}</div>
         </>
     );
-};
+});

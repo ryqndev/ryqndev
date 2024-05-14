@@ -1,5 +1,6 @@
 import clsx from 'clsx';
 import cn from './PageOverlay.module.scss';
+import { memo } from 'react';
 
 interface PageOverlayProps {
     visible: boolean;
@@ -9,7 +10,7 @@ interface PageOverlayProps {
     setProject: any;
 }
 
-export function PageOverlay({
+export const PageOverlay = memo(function PageOverlay({
     visible,
     className,
     pages,
@@ -39,4 +40,4 @@ export function PageOverlay({
             ))}
         </div>
     );
-}
+});

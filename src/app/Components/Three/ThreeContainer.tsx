@@ -1,7 +1,7 @@
 import { lazily } from 'react-lazily';
 
 import clsx from 'clsx';
-import { Suspense } from 'react';
+import { Suspense, memo } from 'react';
 import type { ReactNode } from 'react';
 import { Canvas } from '@react-three/fiber';
 
@@ -19,12 +19,12 @@ interface ThreeContainerProps {
     project: any;
 }
 
-export const ThreeContainer = ({
+export const ThreeContainer = memo(function ThreeContainer({
     className,
     children,
     theme,
     project,
-}: ThreeContainerProps) => {
+}: ThreeContainerProps) {
     const map = useCustomKeyMapping();
 
     return (
@@ -40,4 +40,4 @@ export const ThreeContainer = ({
             </KeyboardControls>
         </Suspense>
     );
-};
+});

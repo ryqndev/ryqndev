@@ -5,7 +5,7 @@
     place-content: center;
     height: 100vh;
     width: 100vw;
-    transition: background-color 350ms;
+    transition: background-color 350ms, transform 350ms;
     background-color: var(--background-color-alt);
     will-change: transform;
 
@@ -54,7 +54,7 @@
         &#behind {
             position: absolute;
             pointer-events: none;
-            will-change: transform;
+            transition:  transform linear 200ms;
 
             &>svg {
                 pointer-events: none;
@@ -68,7 +68,7 @@
         &#front {
             opacity: 1;
             color: var(--text-color);
-            will-change: transform;
+            transition:  transform linear 200ms, opacity 200ms;
             pointer-events: none;
 
             & svg {
@@ -87,10 +87,10 @@
         height: 70vw;
         width: 70vw;
         background: linear-gradient(225deg, #ff00ff, #00ffff);
+        transition:  transform linear 200ms;
         padding: 20px;
         background-size: 200% 200%;
         animation: blend 4s ease infinite alternate-reverse;
-        will-change: transform;
 
         @media screen and (min-aspect-ratio: 1/1) {
             height: 70vh;

@@ -1,24 +1,21 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from 'react';
+import useDebounce from './useDebounce';
 
-const useScroll = () => {
-  const [y, setY] = useState(() => window.scrollY);
+export const useScroll = () => {
+    const [y, setY] = useState(() => window.scrollY);
+    const debouncedY = useDebounce(y, 200);
 
-  const listener = useCallback(() => {
-    setY(window.scrollY);
-  }, []);
+    const listener = useCallback(() => {
+        setY(window.scrollY);
+    }, []);
 
-  useEffect(() => {
-    setTimeout(() => {
-      setY(window.scrollY);
-    }, 500);
-    window.addEventListener("scroll", listener);
+    useEffect(() => {
+        window.addEventListener('scroll', listener);
 
-    return () => {
-      window.removeEventListener("scroll", listener);
-    };
-  }, []);
+        return () => {
+            window.removeEventListener('scroll', listener);
+        };
+    }, []);
 
-  return y;
+    return debouncedY;
 };
-
-export default useScroll;

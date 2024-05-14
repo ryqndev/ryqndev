@@ -1,7 +1,13 @@
-import { memo } from 'react'
-import cn from './ProjectName.module.scss'
+import { memo } from 'react';
+import cn from './ProjectName.module.scss';
 
-export function ProjectName({ name, y }: { name: string; y: number }) {
+export const ProjectName = memo(function ProjectName({
+    name,
+    y,
+}: {
+    name: string;
+    y: number;
+}) {
     return (
         <aside className={cn.container}>
             <p>
@@ -32,5 +38,5 @@ export function ProjectName({ name, y }: { name: string; y: number }) {
                 </svg>
             </div>
         </aside>
-    )
-}
+    );
+});

@@ -1,6 +1,6 @@
 import clsx from 'clsx';
 import { lazily } from 'react-lazily';
-import { useRef } from 'react';
+import { memo, useRef } from 'react';
 
 import PROJECTS from '@assets/projects.json';
 import { ScrollableNotice } from '@components/ScrollableNotice/ScrollableNotice';
@@ -20,7 +20,7 @@ import cn from './Home.module.scss';
 const { Stars } = lazily(() => import('@components/Three/Stars'));
 const { Content } = lazily(() => import('./components/Content/Content'));
 
-export const Home = ({ theme }: { theme: number }) => {
+export const Home = memo(function Home({ theme }: { theme: number }) {
     const projectsRef = useRef<HTMLDivElement>(null);
     const y = useScroll();
     const { project, setProject } = useProjects(y, projectsRef);
@@ -38,7 +38,11 @@ export const Home = ({ theme }: { theme: number }) => {
                     y > window.innerHeight && cn.disappear
                 )}
             >
-                {y < CURTAIN_BREAKPOINT && <Curtain y={y} />}
+                {
+                    <Curtain
+                        y={y < CURTAIN_BREAKPOINT ? y : CURTAIN_BREAKPOINT}
+                    />
+                }
             </div>
             <Stars project={project} />
             <BackgroundText visible={y > BACKGROUND_TEXT_BREAKPOINT} />
@@ -70,4 +74,4 @@ export const Home = ({ theme }: { theme: number }) => {
             {y < PAGE_BOTTOM_BREAKPOINT && <ScrollableNotice />}
         </main>
     );
-};
+});

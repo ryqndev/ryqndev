@@ -1,7 +1,7 @@
 import { memo } from 'react';
 import BobaWatchSplashBannerImage from '../../../assets/images/splash-min.png';
 import { ScrollableNotice } from '../../components';
-import useScroll from '../../controller/hooks/useScroll';
+import { useScroll } from '../../controller/hooks/useScroll';
 import './BobaWatch.scss';
 
 const BobaWatch = () => {

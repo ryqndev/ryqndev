@@ -15,6 +15,7 @@ import { Clone, useGLTF, useKeyboardControls } from '@react-three/drei';
 import { v4 as uuidv4 } from 'uuid';
 import { RigidBody } from '@react-three/rapier';
 import type { CustomControls } from '../controllers/useCustomKeyMapping';
+import { random } from 'app/utils/utils';
 
 const ZOTBOT_GLTF = '/assets/delivery_robot/zotbot.gltf';
 
@@ -24,7 +25,6 @@ interface ZotbotSpawnState {
     rotation: Euler;
     ref: Ref<any>;
 }
-const random = (min: number, max: number) => Math.random() * (max - min) + min;
 
 const getRandomSpawnState = (): ZotbotSpawnState => ({
     id: uuidv4(),

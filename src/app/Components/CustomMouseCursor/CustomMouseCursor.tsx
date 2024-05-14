@@ -1,16 +1,19 @@
 import clsx from 'clsx';
 import { useTranslation } from 'react-i18next';
-import { useEffect, useState } from 'react';
+import { memo, useEffect, useState } from 'react';
 import type { MouseEvent } from 'react';
 import cn from './CustomMouseCursor.module.scss';
+import useDebounce from 'app/controller/hooks/useDebounce';
 
-export const CustomMouseCursor = () => {
+export const CustomMouseCursor = memo(function CustomMouseCursor() {
     const { t } = useTranslation();
     const [mouse, setMouse] = useState({
         pos: [-100, -100],
         target: 'none',
         message: '',
     });
+
+    const debouncedMouse = useDebounce(mouse, 80);
 
     useEffect(() => {
         const handleMouseMove = (e: MouseEvent) => {
@@ -35,10 +38,10 @@ export const CustomMouseCursor = () => {
         <div
             className={clsx(
                 cn.container,
-                mouse.target === 'link' && cn.link,
-                mouse.target === 'button' && cn.button
+                debouncedMouse.target === 'link' && cn.link,
+                debouncedMouse.target === 'button' && cn.button
             )}
-            style={{ top: mouse.pos[1], left: mouse.pos[0] }}
+            style={{ top: debouncedMouse.pos[1], left: debouncedMouse.pos[0] }}
         >
             <svg viewBox="0 0 300 300" enableBackground="new 0 0 300 300">
                 <defs>
@@ -51,11 +54,11 @@ export const CustomMouseCursor = () => {
                     <use xlinkHref="#circleTextPath" fill="none" />
                     <text fill="#fff">
                         <textPath xlinkHref="#circleTextPath">
-                            {t(mouse.message)}
+                            {t(debouncedMouse.message)}
                         </textPath>
                     </text>
                 </g>
             </svg>
         </div>
     );
-};
+});

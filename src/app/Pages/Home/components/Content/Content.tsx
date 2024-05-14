@@ -1,5 +1,5 @@
 import { lazily } from 'react-lazily';
-import type { ReactNode } from 'react';
+import { memo, type ReactNode } from 'react';
 import PROJECTS from '@assets/projects.json';
 import cn from './Content.module.scss';
 
@@ -19,28 +19,30 @@ interface ContentProps {
     projectsRef: any;
 }
 
-export const Content = ({
+export const Content = memo(function Content({
     theme,
     project,
     children,
     projectsRef,
-}: ContentProps) => (
-    <div
-        className={cn.content}
-        style={{ height: (PROJECTS.length - 1) * 200 + 'vh' }}
-        ref={projectsRef}
-    >
-        <div className={cn.container}>
-            <ThreeContainer
-                className={cn.container}
-                theme={theme}
-                project={project}
-            >
-                <Zotbot />
-                <DrivableZotbot />
-                <UCI />
-            </ThreeContainer>
-            {children}
+}: ContentProps) {
+    return (
+        <div
+            className={cn.content}
+            style={{ height: (PROJECTS.length - 1) * 200 + 'vh' }}
+            ref={projectsRef}
+        >
+            <div className={cn.container}>
+                <ThreeContainer
+                    className={cn.container}
+                    theme={theme}
+                    project={project}
+                >
+                    <Zotbot />
+                    <DrivableZotbot />
+                    <UCI />
+                </ThreeContainer>
+                {children}
+            </div>
         </div>
-    </div>
-);
+    );
+});

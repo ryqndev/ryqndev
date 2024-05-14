@@ -1,12 +1,16 @@
 import clsx from 'clsx';
-import { useEffect, useState } from 'react';
+import { memo, useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import LanguageIcon from './assets/globe.svg?react';
 import cn from './LanguageSelect.module.scss';
 
 const supportedLanguages = ['en', 'es', 'zh'];
 
-export function LanguageSelect({ visible }: { visible: boolean }) {
+export const LanguageSelect = memo(function LanguageSelect({
+    visible,
+}: {
+    visible: boolean;
+}) {
     const { t, i18n } = useTranslation();
     const [language, setLanguage] = useState(
         supportedLanguages.indexOf(i18n.language) < 0
@@ -18,9 +22,9 @@ export function LanguageSelect({ visible }: { visible: boolean }) {
         i18n.changeLanguage(supportedLanguages[language]);
     }, [i18n, language]);
 
-    function toggle() {
+    const toggle = useCallback(() => {
         setLanguage((prev) => ++prev % supportedLanguages.length);
-    }
+    }, []);
 
     return (
         <div
@@ -36,4 +40,4 @@ export function LanguageSelect({ visible }: { visible: boolean }) {
             {t('en')}
         </div>
     );
-}
+});

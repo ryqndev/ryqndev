@@ -1,9 +1,15 @@
 import { Canvas, useFrame, useLoader } from '@react-three/fiber';
-import { memo, useRef, useState } from 'react';
+import { memo, useMemo, useRef, useState } from 'react';
 import { BackSide, Mesh, TextureLoader, Vector3 } from 'three';
 import GALAXY from './components/darker_eso.jpg';
 import cn from './ThreeContainer.module.scss';
 import { CameraControls } from './components/CameraControls/CameraControls';
+import { random } from 'app/utils/utils';
+
+const STAR_COUNT = 150;
+const STAR_RADIUS = 1;
+
+const GALAXY_RADIUS = 400;
 
 const Container = memo(function Container({ project }: { project: any }) {
     return (
@@ -18,16 +24,22 @@ const Stars = memo(() => {
     const loader = useLoader(TextureLoader, GALAXY);
     const galaxyRef = useRef<Mesh>(null);
     const [stars] = useState(() =>
-        new Array(150)
+        new Array(STAR_COUNT)
             .fill(undefined)
             .map(
                 (_) =>
                     new Vector3(
-                        Math.random() * 800 - 400,
-                        Math.random() * 800 - 400,
-                        Math.random() * 800 - 400
+                        random(-GALAXY_RADIUS, GALAXY_RADIUS),
+                        random(-GALAXY_RADIUS, GALAXY_RADIUS),
+                        random(-GALAXY_RADIUS, GALAXY_RADIUS)
                     )
             )
+    );
+
+    const starMesh = useMemo(() => <meshBasicMaterial color="#00ffff" />, []);
+    const starGeometry = useMemo(
+        () => <sphereGeometry args={[STAR_RADIUS, 4, 4]} />,
+        []
     );
 
     useFrame(() => {
@@ -38,13 +50,13 @@ const Stars = memo(() => {
     // Credit goes to "ESO/S. Brunier (http://www.sergebrunier.com/gallerie/pleinciel/index-eng.html)"
     return (
         <mesh rotation={[1.2, 0, 1]} ref={galaxyRef}>
-            <sphereGeometry args={[400, 40, 40]} />
+            <sphereGeometry args={[GALAXY_RADIUS, 40, 40]} />
             <meshBasicMaterial side={BackSide} map={loader} />
             <>
                 {stars.map((e, idx) => (
                     <mesh key={idx} position={e}>
-                        <sphereGeometry args={[0.6, 5, 5]} />
-                        <meshBasicMaterial color="#00ffff" />
+                        {starGeometry}
+                        {starMesh}
                     </mesh>
                 ))}
             </>
