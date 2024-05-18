@@ -2,6 +2,7 @@ import { lazily } from 'react-lazily';
 import { memo, type ReactNode } from 'react';
 import PROJECTS from '@assets/projects.json';
 import cn from './Content.module.scss';
+import { ProjectZotbot } from '@components/Three/components/ProjectZotbot/ProjectZotbot';
 
 const { Zotbot } = lazily(() => import('@components/Three/components/Zotbot'));
 const { DrivableZotbot } = lazily(
@@ -37,6 +38,13 @@ export const Content = memo(function Content({
                     theme={theme}
                     project={project}
                 >
+                    {PROJECTS.map((data, index) => (
+                        <ProjectZotbot
+                            key={data.name}
+                            data={data}
+                            selected={project === index}
+                        />
+                    ))}
                     <Zotbot />
                     <DrivableZotbot />
                     <UCI />

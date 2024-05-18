@@ -79,7 +79,7 @@
         },
         "url": "https://pickban.pro",
         "image": {
-            "src": "@assets/pickbanpro.png",
+            "src": "assets/pickbanpro.png",
             "alt": "Pick Ban Pro product display"
         },
         "links": [

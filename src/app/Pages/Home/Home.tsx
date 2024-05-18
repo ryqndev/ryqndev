@@ -1,6 +1,6 @@
 import clsx from 'clsx';
 import { lazily } from 'react-lazily';
-import { memo, useRef } from 'react';
+import { memo, useMemo, useRef } from 'react';
 
 import PROJECTS from '@assets/projects.json';
 import { ScrollableNotice } from '@components/ScrollableNotice/ScrollableNotice';

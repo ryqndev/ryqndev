@@ -17,7 +17,7 @@ interface ProjectLink {
     internal?: boolean;
 }
 
-export function ActionList({
+export const ActionList = memo(function ActionList({
     data,
     selected,
     className,
@@ -53,6 +53,4 @@ export function ActionList({
             </div>
         </div>
     );
-}
-
-export default memo(ActionList);
+});
