@@ -10,6 +10,7 @@
     // --custom-mouse-cursor-color-link: var(--accent-primary);
     // --custom-mouse-cursor-bg-link: var(--accent-primary)88;
 }
+
 .container {
     position: fixed;
     top: -100px;
@@ -17,7 +18,7 @@
     transform: translate(-50%, -50%);
     height: 50px;
     width: 50px;
-    
+
     mix-blend-mode: soft-light;
     background-color: var(--custom-mouse-cursor-bg);
     border: 2px solid var(--custom-mouse-cursor-color);
@@ -34,7 +35,7 @@
     @media screen and (max-width: 768px) {
         display: none;
     }
-        
+
     &>svg {
         overflow: visible;
         height: 140px;
@@ -64,10 +65,11 @@
         0% {
             transform: rotate(0deg);
         }
+
         100% {
             transform: rotate(360deg);
         }
-        
+
     }
 
     &.button {
@@ -78,4 +80,3 @@
         background-color: var(--custom-mouse-cursor-bg-button);
     }
 }
-

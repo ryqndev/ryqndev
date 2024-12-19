@@ -14,7 +14,7 @@ const { Physics } = lazily(() => import('@react-three/rapier'));
 
 interface ThreeContainerProps {
     className: string;
-    children: ReactNode;
+    children?: ReactNode;
     theme: number;
     project: any;
 }

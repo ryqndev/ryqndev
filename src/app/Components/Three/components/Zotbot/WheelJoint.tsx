@@ -16,8 +16,8 @@ export const WheelJoint = ({
     wheelAnchor,
     rotationAxis,
 }: {
-    body: RefObject<RapierRigidBody>;
-    wheel: RefObject<RapierRigidBody>;
+    body: RefObject<RapierRigidBody | null>;
+    wheel: RefObject<RapierRigidBody | null>;
     bodyAnchor: Vector3Tuple;
     wheelAnchor: Vector3Tuple;
     rotationAxis: Vector3Tuple;

@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import React, { useRef } from 'react';
+import { type JSX } from 'react';
 import { useGLTF } from '@react-three/drei';
 import type { GLTFResult } from './types';
 import { Rocks } from './Rocks';

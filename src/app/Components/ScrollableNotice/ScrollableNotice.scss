@@ -1,6 +1,7 @@
 :root {
     --scrollable-color: var(--accent-primary);
 }
+
 .scrollable-notice--wrapper {
     position: fixed;
     bottom: max(calc(6vw), 30px);

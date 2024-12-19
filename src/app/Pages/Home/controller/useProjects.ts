@@ -1,7 +1,7 @@
 import { useEffect, useState, useCallback } from 'react';
 import type { RefObject } from 'react';
 
-export const useProjects = (y: number, ref: RefObject<HTMLDivElement>) => {
+export const useProjects = (y: number, ref: RefObject<HTMLDivElement | null>) => {
     const [project, _setProject] = useState(0);
 
     useEffect(() => {

@@ -1,6 +1,6 @@
 import { lazily } from 'react-lazily';
 import { memo, Suspense } from 'react';
-import { Routes, Route } from 'react-router-dom';
+import { Routes, Route } from 'react-router';
 import Toggle from 'react-toggle';
 import { useTheme } from './controller';
 import './styles/main.scss';
@@ -24,13 +24,11 @@ export const App = memo(function App() {
             </div>
             <CustomMouseCursor />
             <LoadingSplash>
-                <>
-                    <Suspense fallback={<div>loading...</div>}>
-                        <Routes>
-                            <Route path="/" element={<Home theme={theme} />} />
-                        </Routes>
-                    </Suspense>
-                </>
+                <Suspense fallback={<div>loading...</div>}>
+                    <Routes>
+                        <Route path="/" element={<Home theme={theme} />} />
+                    </Routes>
+                </Suspense>
             </LoadingSplash>
         </>
     );

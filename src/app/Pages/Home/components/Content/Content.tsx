@@ -38,7 +38,7 @@ export const Content = memo(function Content({
                     theme={theme}
                     project={project}
                 >
-                    {PROJECTS.map((data, index) => (
+                    {/* {PROJECTS.map((data, index) => (
                         <ProjectZotbot
                             key={data.name}
                             data={data}
@@ -46,7 +46,7 @@ export const Content = memo(function Content({
                         />
                     ))}
                     <Zotbot />
-                    <DrivableZotbot />
+                    <DrivableZotbot /> */}
                     <UCI />
                 </ThreeContainer>
                 {children}

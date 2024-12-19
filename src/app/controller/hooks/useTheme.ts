@@ -10,12 +10,12 @@ const themes = [lightTheme, darkTheme];
 
 const useTheme = () => {
     const [theme, setTheme] = useState(
-        parseInt(localStorage.getItem('theme') ?? 0)
+        parseInt(localStorage.getItem('theme') ?? '0')
     );
 
     useEffect(() => {
         if (isNaN(theme)) return setTheme(1);
-        localStorage.setItem('theme', theme);
+        localStorage.setItem('theme', JSON.stringify(theme));
 
         let styles = themes[theme].themeStyles;
         for (let style in styles) {
