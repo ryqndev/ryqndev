@@ -1,14 +1,15 @@
 :root {
-    // --custom-mouse-cursor-color: var(--accent-primary);
-    // --custom-mouse-cursor-bg: var(--accent-primary)88;
     --custom-mouse-cursor-color: #fff;
     --custom-mouse-cursor-bg: #ffffffaa;
     --custom-mouse-cursor-color-link: #6488ff;
     --custom-mouse-cursor-bg-link: #6488ff;
     --custom-mouse-cursor-color-button: #943efd;
     --custom-mouse-cursor-bg-button: #943efd;
+
     // --custom-mouse-cursor-color-link: var(--accent-primary);
-    // --custom-mouse-cursor-bg-link: var(--accent-primary)88;
+
+--custom-mouse-cursor-color-link--custom-mouse-cursor-color-link
+    // --custom-mouse-cursor-bg-link: var(--accent-primary)88;--custom-mouse-cursor-bg-link--custom-mouse-cursor-bg-link
 }
 
 .container {
@@ -18,21 +19,17 @@
     transform: translate(-50%, -50%);
     height: 50px;
     width: 50px;
-
     mix-blend-mode: soft-light;
     background-color: var(--custom-mouse-cursor-bg);
     border: 2px solid var(--custom-mouse-cursor-color);
     border-radius: 50%;
-
     z-index: 2000;
     pointer-events: none;
     user-select: none;
-
     will-change: top, left;
-
     transition: top 250ms ease-out, left 250ms ease-out, height 350ms, width 350ms, color 250ms, background-color 250ms, border-color 250ms;
 
-    @media screen and (max-width: 768px) {
+    @media screen and (width <= 768px) {
         display: none;
     }
 

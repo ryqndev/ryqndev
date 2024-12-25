@@ -8,7 +8,6 @@
     font-weight: bold;
     color: var(--accent-primary);
     margin: 0;
-    transition: color 350ms;
     cursor: pointer;
     letter-spacing: 1px;
     opacity: 0;
@@ -28,7 +27,7 @@
         opacity: 1;    
     }
 
-    @media screen and (max-width: 768px) {
+    @media screen and (width <= 768px) {
         top: max(2vw, 17px);
         right: max(calc(2vw + 20px), 75px);
         font-size: 1em;
@@ -42,11 +41,12 @@
         width: 27px;
         fill: var(--accent-primary);
         transition: fill 350ms;
+
         & path {
             pointer-events: none;
         }
         
-        @media screen and (max-width: 768px) {
+        @media screen and (width <= 768px) {
             left: -1.5em;
             top: 0.2em;
             height: 1em;

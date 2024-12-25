@@ -5,9 +5,6 @@
     left: 0;
     height: 100vh;
     width: 100vw;
-    // background-color: black;
-    // background-color: transparent;
-    // background-color: #404040;
     background-color: var(--background-color);
     transition: background-color 350ms, left 1000ms;
 
@@ -49,8 +46,8 @@
         width: 100%;
         height: 100%;
         display: flex;
-        // background-color: transparent;
-        flex-direction: column;
+        // background-color: transparent;background-colorbackground-color
+        flex-direction: column;flex-direction
         justify-content: center;
         align-items: center;
         text-align: center;
@@ -61,25 +58,25 @@
     }
 
     &:nth-child(3) {
-        // background-color: var(--background-color);
-        background-color: #303030;
+        // background-color: var(--background-color);background-colorbackground-color
+        background-color: #303030;background-color
         transition: background-color 350ms, left 300ms;
 
         &::before {
-            // border-bottom: 100vh solid var(--background-color);
-            border-bottom: 100vh solid #303030;
+            // border-bottom: 100vh solid var(--background-color);border-bottomborder-bottom
+            border-bottom: 100vh solid #303030;border-bottom
 
         }
     }
 
     &:nth-child(4) {
-        // background-color: var(--background-emphasis);
-        background-color: #505050;
+        // background-color: var(--background-emphasis);background-colorbackground-color
+        background-color: #505050;background-color
         transition: background-color 350ms, left 250ms ease-in 100ms;
 
         &::before {
-            // border-bottom: 100vh solid var(--background-emphasis);
-            border-bottom: 100vh solid #505050;
+            // border-bottom: 100vh solid var(--background-emphasis);border-bottomborder-bottom
+            border-bottom: 100vh solid #505050;border-bottom
 
         }
     }

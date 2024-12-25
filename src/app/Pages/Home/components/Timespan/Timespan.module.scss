@@ -15,10 +15,10 @@
 
     &>span {
         color: #649BFF;
-        margin: 0px 10px;
+        margin: 0 10px;
     }
 
-    @media screen and (max-width: 768px) {
+    @media screen and (width <=768px) {
         transform-origin: top right;
         transform: rotateZ(-90deg);
         right: max(2vw, 30px);

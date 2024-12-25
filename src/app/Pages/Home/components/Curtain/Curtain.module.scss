@@ -9,11 +9,11 @@
     background-color: var(--background-color-alt);
     will-change: transform;
 
-    @media screen and (min-aspect-ratio: 1/1) {
+    @media screen and (aspect-ratio >= 1/1) {
         left: 0;
     }
 
-    @media screen and (max-aspect-ratio: 1/1) and (max-width: 1080px) {
+    @media screen and (aspect-ratio <= 1/1) and (width <= 1080px) {
         position: fixed;
         top: -50vw;
         right: -50vh;
@@ -40,13 +40,13 @@
                 transition: fill 350ms;
             }
 
-            @media screen and (min-aspect-ratio: 1/1) {
+            @media screen and (aspect-ratio >= 1/1) {
                 max-height: 40vh;
                 width: 80vw;
             }
         }
 
-        @media screen and (min-aspect-ratio: 1/1) {
+        @media screen and (aspect-ratio >= 1/1) {
             font-size: 20vw;
             transform: rotate(0deg);
         }
@@ -75,7 +75,6 @@
                 pointer-events: none;
 
                 &>path {
-
                     fill: var(--text-color);
                 }
             }
@@ -92,7 +91,7 @@
         background-size: 200% 200%;
         animation: blend 4s ease infinite alternate-reverse;
 
-        @media screen and (min-aspect-ratio: 1/1) {
+        @media screen and (aspect-ratio >= 1/1) {
             height: 70vh;
             width: 70vh;
         }

@@ -41,13 +41,13 @@
                 width: 25px;
                 fill: var(--accent-primary);
             }
-            
+
         }
 
         & .controls {
             opacity: 1;
             transition: opacity 350ms;
-            
+
             &.viewing {
                 pointer-events: none;
                 opacity: 0;
@@ -56,7 +56,9 @@
     }
 
     & .project {
-        @media screen and (min-aspect-ratio: 1/1), (min-width: 768px) {
+
+        @media screen and (aspect-ratio >=1/1),
+        (width >=768px) {
             display: none;
         }
 

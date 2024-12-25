@@ -5,13 +5,15 @@
 	right: max(6vw, 20px);
 	z-index: 1350;
 }
-@media screen and (max-width: 768px) {
+
+@media screen and (width <= 768px) {
 	.t-w {
 		top: max(2vw, 15px);
 		right: max(2vw, 10px);
 		transform: scale(1);
 	}
 }
+
 .react-toggle {
 	touch-action: pan-x;
 	display: inline-block;
@@ -20,9 +22,10 @@
 	padding: 0;
 	pointer-events: none;
 	user-select: none;
-	-webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+	-webkit-tap-highlight-color: rgb(0 0 0 / 0%);
 	-webkit-tap-highlight-color: transparent;
 }
+
 .react-toggle-screenreader-only {
 	border: 0;
 	clip: rect(0 0 0 0);
@@ -60,8 +63,8 @@
 	position: absolute;
 	width: 14px;
 	height: 10px;
-	top: 0px;
-	bottom: 0px;
+	top: 0;
+	bottom: 0;
 	margin-top: auto;
 	margin-bottom: auto;
 	line-height: 0;
@@ -79,8 +82,8 @@
 	position: absolute;
 	width: 10px;
 	height: 10px;
-	top: 0px;
-	bottom: 0px;
+	top: 0;
+	bottom: 0;
 	margin-top: auto;
 	margin-bottom: auto;
 	line-height: 0;
@@ -94,7 +97,6 @@
 }
 
 .react-toggle-thumb {
-	transition: all 0.5s cubic-bezier(0.23, 1, 0.32, 1) 0ms;
 	position: absolute;
 	top: 4px;
 	left: 4px;

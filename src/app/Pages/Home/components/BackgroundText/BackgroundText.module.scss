@@ -22,12 +22,14 @@
     &.visible {
         opacity: 1;
     }
-    @media screen and (max-width: 768px) {
+
+    @media screen and (width <= 768px) {
         left: 25vw;
         font-size: 40vw;
         text-shadow: 3px 3px var(--accent-secondary);
     }
-    @media screen and (max-width: 550px) {
+
+    @media screen and (width <= 550px) {
         left: 20vw;
         font-size: 50vw;
     }

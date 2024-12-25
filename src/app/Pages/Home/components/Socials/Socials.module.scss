@@ -3,16 +3,14 @@
     bottom: 5vw;
     left: 6vw;
     height: 35px;
-
     display: grid;
     grid-auto-flow: column;
     column-gap: 20px;
     place-content: center;
-
     opacity: 0;
     transition: opacity 350ms;
 
-    @media screen and (max-width: 768px) {
+    @media screen and (width <= 768px) {
         grid-auto-flow: row;
         height: auto;
         row-gap: 10px;
@@ -42,7 +40,7 @@
             fill: var(--accent-primary);
             transition: fill 350ms;
 
-            @media screen and (max-width: 768px) {
+            @media screen and (width <= 768px) {
                 height: 30px;
                 width: 30px;
             }

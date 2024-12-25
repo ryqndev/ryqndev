@@ -1,4 +1,4 @@
-import { useLayoutEffect, memo, useRef } from 'react';
+import {  memo } from 'react';
 import ChineseName from '@assets/chinese.svg?react';
 import cn from './Curtain.module.scss';
 

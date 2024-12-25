@@ -1,9 +1,10 @@
 * {
 	box-sizing: border-box;
 }
+
 // html, body {
-//     font-family:  'Libre Barcode 39' !important;
-// 	font-weight: normal !important;
+//     font-family:  'Libre Barcode 39' !important;font-familyfont-family
+// 	font-weight: normal !important;font-weightfont-weight
 // }
 
 html,
@@ -100,7 +101,7 @@ body {
 	overscroll-behavior: auto none;
 	min-width: 300px;
 	color: var(--text-color);
-	background-color: black;
+	background-color: var(--background-color);
 	transition: background-color 350ms, color 350ms;
 }
 
@@ -146,10 +147,10 @@ q {
 	quotes: none;
 }
 
-blockquote:before,
-blockquote:after,
-q:before,
-q:after {
+blockquote::before,
+blockquote::after,
+q::before,
+q::after {
 	content: '';
 	content: none;
 }
@@ -165,9 +166,14 @@ a {
 	display: block;
 }
 
-html, body {
-	-ms-overflow-style: none; /* for Internet Explorer, Edge */
-    scrollbar-width: none; /* for Firefox */
+html,
+body {
+	-ms-overflow-style: none;
+
+	/* for Internet Explorer, Edge */
+	scrollbar-width: none;
+
+	/* for Firefox */
 
 	&::-webkit-scrollbar {
 		display: none;
@@ -175,5 +181,5 @@ html, body {
 }
 
 footer {
-	// z-index: 1000 !important;
+	// z-index: 1000 !important;z-indexz-index
 }

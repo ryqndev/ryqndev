@@ -6,7 +6,6 @@ import lightTheme from '@assets/themes/light.json';
 import darkTheme from '@assets/themes/dark.json';
 
 const THEME_LOCALSTORAGE_ID = '@ryqndev/theme'
-
 export const themes = [lightTheme, darkTheme];
 
 
@@ -30,7 +29,6 @@ const renderThemeStyles = (theme: Theme) => {
  */
 const themeSwitch: (config: PersistType) => PersistType = (config) => (set, get, api) => {
     const wrappedSet: typeof set = (partial, replace) => {
-        console.log('Did it run?')
         const prev = get();
         set(partial, replace);
         const next = get();
@@ -46,7 +44,6 @@ const themeSwitch: (config: PersistType) => PersistType = (config) => (set, get,
 
     return initialState;
 };
-
 
 
 export const useThemeStore = create(themeSwitch(persist<ThemeStore>((set) => ({

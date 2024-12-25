@@ -27,8 +27,6 @@ export const Home = memo(function Home() {
 
     const CURTAIN_BREAKPOINT = window.innerHeight * 1.5;
     const BACKGROUND_TEXT_BREAKPOINT = window.innerHeight / 2;
-    const PAGE_BOTTOM_BREAKPOINT =
-        document.documentElement.scrollHeight - window.innerHeight;
 
     return (
         <main className={cn.container}>
@@ -71,7 +69,7 @@ export const Home = memo(function Home() {
                     <Socials visible={y > CURTAIN_BREAKPOINT} />
                 </div>
             </Content>
-            {y < PAGE_BOTTOM_BREAKPOINT && <ScrollableNotice />}
+            <ScrollableNotice />
         </main>
     );
 });
