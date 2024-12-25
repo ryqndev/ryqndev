@@ -13,7 +13,7 @@
         left: 0;
     }
 
-    @media screen and (max-aspect-ratio: 1/1) and (max-width: 1080px){
+    @media screen and (max-aspect-ratio: 1/1) and (max-width: 1080px) {
         position: fixed;
         top: -50vw;
         right: -50vh;
@@ -54,7 +54,7 @@
         &#behind {
             position: absolute;
             pointer-events: none;
-            transition:  transform linear 200ms;
+            transition: transform linear 200ms;
 
             &>svg {
                 pointer-events: none;
@@ -68,7 +68,7 @@
         &#front {
             opacity: 1;
             color: var(--text-color);
-            transition:  transform linear 200ms, opacity 200ms;
+            transition: transform linear 200ms, opacity 200ms;
             pointer-events: none;
 
             & svg {
@@ -87,7 +87,7 @@
         height: 70vw;
         width: 70vw;
         background: linear-gradient(225deg, #ff00ff, #00ffff);
-        transition:  transform linear 200ms;
+        transition: transform linear 200ms;
         padding: 20px;
         background-size: 200% 200%;
         animation: blend 4s ease infinite alternate-reverse;
