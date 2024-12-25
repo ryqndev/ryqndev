@@ -1,27 +1,19 @@
-import { lazily } from 'react-lazily';
 import { memo, type ReactNode } from 'react';
 import PROJECTS from '@assets/projects.json';
 import cn from './Content.module.scss';
 import { ProjectZotbot } from '@components/Three/components/ProjectZotbot/ProjectZotbot';
-
-const { Zotbot } = lazily(() => import('@components/Three/components/Zotbot'));
-const { DrivableZotbot } = lazily(
-    () => import('@components/Three/components/Zotbot/DrivableZotbot')
-);
-const { UCI } = lazily(() => import('@components/Three/components/UCI'));
-const { ThreeContainer } = lazily(
-    () => import('@components/Three/ThreeContainer')
-);
+import { ThreeContainer } from '@components/Three/ThreeContainer';
+import { Zotbot } from '@components/Three/components/Zotbot';
+import { UCI } from '@components/Three/components/UCI';
+import { DrivableZotbot } from '@components/Three/components/Zotbot/DrivableZotbot';
 
 interface ContentProps {
-    theme: number;
     project: any;
     children: ReactNode;
     projectsRef: any;
 }
 
 export const Content = memo(function Content({
-    theme,
     project,
     children,
     projectsRef,
@@ -33,12 +25,8 @@ export const Content = memo(function Content({
             ref={projectsRef}
         >
             <div className={cn.container}>
-                <ThreeContainer
-                    className={cn.container}
-                    theme={theme}
-                    project={project}
-                >
-                    {/* {PROJECTS.map((data, index) => (
+                <ThreeContainer className={cn.container} project={project}>
+                    {PROJECTS.map((data, index) => (
                         <ProjectZotbot
                             key={data.name}
                             data={data}
@@ -46,7 +34,7 @@ export const Content = memo(function Content({
                         />
                     ))}
                     <Zotbot />
-                    <DrivableZotbot /> */}
+                    <DrivableZotbot />
                     <UCI />
                 </ThreeContainer>
                 {children}

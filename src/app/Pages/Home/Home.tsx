@@ -5,7 +5,6 @@ import { memo, useMemo, useRef } from 'react';
 import PROJECTS from '@assets/projects.json';
 import { ScrollableNotice } from '@components/ScrollableNotice/ScrollableNotice';
 
-import { useScroll } from '../../controller';
 import { useProjects } from './controller/useProjects';
 import { BackgroundText } from './components/BackgroundText/BackgroundText';
 import { Curtain } from './components/Curtain/Curtain';
@@ -16,11 +15,12 @@ import { ProjectName } from './components/ProjectName/ProjectName';
 import { Socials } from './components/Socials/Socials';
 
 import cn from './Home.module.scss';
+import { useScroll } from 'app/controller/hooks/useScroll';
 
 const { Stars } = lazily(() => import('@components/Three/Stars'));
 const { Content } = lazily(() => import('./components/Content/Content'));
 
-export const Home = memo(function Home({ theme }: { theme: number }) {
+export const Home = memo(function Home() {
     const projectsRef = useRef<HTMLDivElement>(null);
     const y = useScroll();
     const { project, setProject } = useProjects(y, projectsRef);
@@ -47,7 +47,7 @@ export const Home = memo(function Home({ theme }: { theme: number }) {
             <Stars project={project} />
             <BackgroundText visible={y > BACKGROUND_TEXT_BREAKPOINT} />
 
-            <Content theme={theme} project={project} projectsRef={projectsRef}>
+            <Content project={project} projectsRef={projectsRef}>
                 <div className={clsx(cn.controls)}>
                     <PageOverlay
                         visible={y > CURTAIN_BREAKPOINT}

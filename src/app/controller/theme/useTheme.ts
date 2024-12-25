@@ -2,19 +2,19 @@
  * @author Ryan Yang
  * https://github.com/ryqndev
  */
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import lightTheme from '@assets/themes/light.json';
 import darkTheme from '@assets/themes/dark.json';
+import { Theme } from './types';
 
-const themes = [lightTheme, darkTheme];
+export const themes = [lightTheme, darkTheme];
 
 const useTheme = () => {
-    const [theme, setTheme] = useState(
-        parseInt(localStorage.getItem('theme') ?? '0')
+    const [theme, setTheme] = useState<Theme>(
+        (localStorage.getItem('theme') as Theme | null) ?? Theme.DARK
     );
 
     useEffect(() => {
-        if (isNaN(theme)) return setTheme(1);
         localStorage.setItem('theme', JSON.stringify(theme));
 
         let styles = themes[theme].themeStyles;
@@ -23,7 +23,7 @@ const useTheme = () => {
         }
     }, [theme]);
 
-    const toggle = () => setTheme((prev) => ++prev % 2);
+    const toggle = useCallback(() => setTheme((prev) => (prev + 1) % 2), []);
 
     return {
         theme,

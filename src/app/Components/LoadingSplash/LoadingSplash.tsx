@@ -4,6 +4,7 @@ import { useProgress } from '@react-three/drei';
 import Plausible from 'plausible-tracker';
 import clsx from 'clsx';
 import cn from './LoadingSplash.module.scss';
+import { useLocation } from 'react-router';
 
 export const LoadingSplash = memo(function LoadingSplash({
     className,
@@ -14,8 +15,7 @@ export const LoadingSplash = memo(function LoadingSplash({
 }) {
     const { progress } = useProgress();
     const [close, setClose] = useState(false);
-    // const location = useLocation();
-    const location = window.location;
+    const location = useLocation();
     const { trackPageview } = Plausible();
 
     useEffect(trackPageview, [location, trackPageview]);

@@ -59,6 +59,9 @@ importers:
       uuid:
         specifier: ^11.0.3
         version: 11.0.3
+      zustand:
+        specifier: ^5.0.2
+        version: 5.0.2(@types/react@18.3.1)(react@18.3.1)(use-sync-external-store@1.2.2(react@18.3.1))
     devDependencies:
       '@types/react':
         specifier: 18.3.1
@@ -1420,8 +1423,8 @@ packages:
     resolution: {integrity: sha512-pkonvlKk8/ZuR0D5tLW8ljt5I8kmxp2XKymhepUeOdCEfKpZaktSArkLHZt76OB1ZvO9bssUsDty4SWhLvZpLg==}
     engines: {node: '>=0.10.0'}
 
-  troika-three-text@0.52.2:
-    resolution: {integrity: sha512-UGYwjKnR8RgmyOIpo0/KiSW0wySQ155BQXNLoSWA1liKzXG+RyHM+dvTIDawHGVQcqjqyunFlVY32xm/HDqjpw==}
+  troika-three-text@0.52.3:
+    resolution: {integrity: sha512-jLhiwgV8kEkwWjvK12f2fHVpbOC75p7SgPQ0cgcz+IMtN5Bdyg4EuFdwuTOVu9ga8UeYdKBpzd1AxviyixtYTQ==}
     peerDependencies:
       three: '>=0.125.0'
 
@@ -1936,7 +1939,7 @@ snapshots:
       three: 0.171.0
       three-mesh-bvh: 0.7.8(three@0.171.0)
       three-stdlib: 2.35.2(three@0.171.0)
-      troika-three-text: 0.52.2(three@0.171.0)
+      troika-three-text: 0.52.3(three@0.171.0)
       tunnel-rat: 0.1.2(@types/react@18.3.1)(react@18.3.1)
       utility-types: 3.11.0
       uuid: 9.0.1
@@ -2815,7 +2818,7 @@ snapshots:
     dependencies:
       escape-string-regexp: 1.0.5
 
-  troika-three-text@0.52.2(three@0.171.0):
+  troika-three-text@0.52.3(three@0.171.0):
     dependencies:
       bidi-js: 1.0.3
       three: 0.171.0

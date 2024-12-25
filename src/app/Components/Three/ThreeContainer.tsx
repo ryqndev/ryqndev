@@ -10,19 +10,18 @@ import { KeyboardControls } from '@react-three/drei';
 import { useCustomKeyMapping } from './controllers/useCustomKeyMapping';
 import { Lights } from './components/Lights/Lights';
 import { CameraControls } from './components/CameraControls/CameraControls';
+import { UCI } from './components/UCI';
 const { Physics } = lazily(() => import('@react-three/rapier'));
 
 interface ThreeContainerProps {
     className: string;
     children?: ReactNode;
-    theme: number;
     project: any;
 }
 
 export const ThreeContainer = memo(function ThreeContainer({
     className,
     children,
-    theme,
     project,
 }: ThreeContainerProps) {
     const map = useCustomKeyMapping();
@@ -30,12 +29,13 @@ export const ThreeContainer = memo(function ThreeContainer({
     return (
         <Suspense fallback={<div></div>}>
             <KeyboardControls map={map}>
-                <Canvas className={clsx(className)} id={cn.container} shadows>
+                <Canvas className={clsx(className)} id={cn.container}>
                     <CameraControls project={project} />
-                    <Physics gravity={[0, -20, 0]}>
+                    <UCI />
+                    {/* <Physics gravity={[0, -20, 0]}>
                         <Lights theme={theme} />
                         {children}
-                    </Physics>
+                    </Physics> */}
                 </Canvas>
             </KeyboardControls>
         </Suspense>
