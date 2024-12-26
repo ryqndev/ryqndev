@@ -9,11 +9,11 @@
     background-color: var(--background-color-alt);
     will-change: transform;
 
-    @media screen and (min-aspect-ratio: 1/1) {
+    @media screen and (aspect-ratio >=1/1) {
         left: 0;
     }
 
-    @media screen and (max-aspect-ratio: 1/1) and (max-width: 1080px){
+    @media screen and (aspect-ratio <=1/1) and (width <=1080px) {
         position: fixed;
         top: -50vw;
         right: -50vh;
@@ -29,24 +29,24 @@
         width: 100%;
         pointer-events: none;
 
-        &>svg {
+        svg {
             pointer-events: none;
             height: auto;
             max-width: 1100px;
             max-height: min(40vw, 800px);
             width: 80vh;
 
-            &>path {
+            path {
                 transition: fill 350ms;
             }
 
-            @media screen and (min-aspect-ratio: 1/1) {
+            @media screen and (aspect-ratio >=1/1) {
                 max-height: 40vh;
                 width: 80vw;
             }
         }
 
-        @media screen and (min-aspect-ratio: 1/1) {
+        @media screen and (aspect-ratio >=1/1) {
             font-size: 20vw;
             transform: rotate(0deg);
         }
@@ -54,12 +54,12 @@
         &#behind {
             position: absolute;
             pointer-events: none;
-            transition:  transform linear 200ms;
+            transition: transform linear 200ms;
 
-            &>svg {
+            svg {
                 pointer-events: none;
 
-                &>path {
+                path {
                     fill: var(--text-color-alt);
                 }
             }
@@ -68,36 +68,35 @@
         &#front {
             opacity: 1;
             color: var(--text-color);
-            transition:  transform linear 200ms, opacity 200ms;
+            transition: transform linear 200ms, opacity 200ms;
             pointer-events: none;
 
-            & svg {
+            svg {
                 pointer-events: none;
 
-                &>path {
-
+                path {
                     fill: var(--text-color);
                 }
             }
         }
     }
 
-    & #border {
+    #border {
         z-index: 1;
         height: 70vw;
         width: 70vw;
         background: linear-gradient(225deg, #ff00ff, #00ffff);
-        transition:  transform linear 200ms;
+        transition: transform linear 200ms;
         padding: 20px;
         background-size: 200% 200%;
         animation: blend 4s ease infinite alternate-reverse;
 
-        @media screen and (min-aspect-ratio: 1/1) {
+        @media screen and (aspect-ratio >=1/1) {
             height: 70vh;
             width: 70vh;
         }
 
-        & #content {
+        #content {
             height: 100%;
             width: 100%;
             background-color: var(--background-color);

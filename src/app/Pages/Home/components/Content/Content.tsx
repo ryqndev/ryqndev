@@ -1,55 +1,30 @@
-import { lazily } from 'react-lazily';
-import { memo, type ReactNode } from 'react';
+import { memo } from 'react';
 import PROJECTS from '@assets/projects.json';
 import cn from './Content.module.scss';
-import { ProjectZotbot } from '@components/Three/components/ProjectZotbot/ProjectZotbot';
-
-const { Zotbot } = lazily(() => import('@components/Three/components/Zotbot'));
-const { DrivableZotbot } = lazily(
-    () => import('@components/Three/components/Zotbot/DrivableZotbot')
-);
-const { UCI } = lazily(() => import('@components/Three/components/UCI'));
-const { ThreeContainer } = lazily(
-    () => import('@components/Three/ThreeContainer')
-);
+import { InteractiveIsland } from './components/InteractiveIsland/InteractiveIsland';
+import { Overlays } from './components/Overlays/Overlays';
 
 interface ContentProps {
-    theme: number;
     project: any;
-    children: ReactNode;
     projectsRef: any;
 }
 
+// this is the amount the user can "scroll" through - scales with
+// the # of projects that can be shown
+const height = (PROJECTS.length - 1) * 200 + 'vh';
+
 export const Content = memo(function Content({
-    theme,
     project,
-    children,
     projectsRef,
 }: ContentProps) {
     return (
         <div
-            className={cn.content}
-            style={{ height: (PROJECTS.length - 1) * 200 + 'vh' }}
+            style={{ height }}
             ref={projectsRef}
         >
             <div className={cn.container}>
-                <ThreeContainer
-                    className={cn.container}
-                    theme={theme}
-                    project={project}
-                >
-                    {PROJECTS.map((data, index) => (
-                        <ProjectZotbot
-                            key={data.name}
-                            data={data}
-                            selected={project === index}
-                        />
-                    ))}
-                    <Zotbot />
-                    <DrivableZotbot />
-                    <UCI />
-                </ThreeContainer>
-                {children}
+                <InteractiveIsland project={project} />
+                <Overlays project={project} projectsRef={projectsRef} />
             </div>
         </div>
     );

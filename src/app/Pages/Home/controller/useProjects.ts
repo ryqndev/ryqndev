@@ -1,13 +1,16 @@
 import { useEffect, useState, useCallback } from 'react';
 import type { RefObject } from 'react';
 
-export const useProjects = (y: number, ref: RefObject<HTMLDivElement>) => {
+// literally what the heck is this code I wrote ????
+// college me was an actual monster what the heck
+export const useProjects = (y: number, ref: RefObject<HTMLDivElement | null>) => {
     const [project, _setProject] = useState(0);
 
     useEffect(() => {
         if (!ref.current) return;
         _setProject(
             Math.min(
+                // WHAT IS THIS SQUIGGLY LINE MATH? WHY WOULD I DO THIS?
                 ~~(
                     (y -
                         ref.current?.getBoundingClientRect()?.top -

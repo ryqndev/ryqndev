@@ -1,18 +1,9 @@
 @charset "UTF-8";
 
-@import 
-	'base/reset',
-	'base/typography',
-	'base/animations';
-
-@import 
-	'themes/theme';
-
-@import 
-	'layout/layout';
-
-@import 
-	'components/button';
-
-@import 
-	'libs/toggle';
+@use 'base/reset';
+@use 'base/typography';
+@use 'base/animations';
+@use 'themes/theme';
+@use 'layout/layout';
+@use 'components/button';
+@use 'libs/toggle';

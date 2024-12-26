@@ -1,0 +1,5 @@
+.container {
+    @media screen and (aspect-ratio <= 1/1) and (width <= 1080px) {
+        display: none;
+    }
+}

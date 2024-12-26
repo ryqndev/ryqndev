@@ -47,7 +47,7 @@ export const CustomMouseCursor = memo(function CustomMouseCursor() {
                 <defs>
                     <path
                         id="circleTextPath"
-                        d=" M 150, 150 m -120, 0 a 120,120 0 0,1 240,0 a 120,120 0 0,1 -240,0 "
+                        d="M 150, 150 m -120, 0 a 120,120 0 0,1 240,0 a 120,120 0 0,1 -240,0"
                     />
                 </defs>
                 <g>

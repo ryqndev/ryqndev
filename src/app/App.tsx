@@ -1,36 +1,26 @@
-import { lazily } from 'react-lazily';
-import { memo, Suspense } from 'react';
-import { Routes, Route } from 'react-router-dom';
-import Toggle from 'react-toggle';
-import { useTheme } from './controller';
 import './styles/main.scss';
+
+import { ThemeToggleSwitch } from '@components/ThemeToggleSwitch';
+import { memo, Suspense } from 'react';
+import { lazily } from 'react-lazily';
+import { Route, Routes } from 'react-router';
 
 import { CustomMouseCursor } from './components/CustomMouseCursor/CustomMouseCursor';
 import { LoadingSplash } from './components/LoadingSplash/LoadingSplash';
-const { Home } = lazily(() => import('./pages/Home/Home'));
 
-export const App = memo(function App() {
-    const { theme, toggle } = useTheme();
+const { Home } = lazily(() => import('@pages/Home/Home'));
 
+export const App = memo(() => {
     return (
         <>
-            <div
-                className="t-w"
-                onClick={toggle}
-                data-mouse-hover="button"
-                data-mouse-hover-text="toggle theme"
-            >
-                <Toggle checked={!!theme} icons={false} onChange={toggle} />
-            </div>
+            <ThemeToggleSwitch />
             <CustomMouseCursor />
             <LoadingSplash>
-                <>
-                    <Suspense fallback={<div>loading...</div>}>
-                        <Routes>
-                            <Route path="/" element={<Home theme={theme} />} />
-                        </Routes>
-                    </Suspense>
-                </>
+                <Suspense fallback={<div>loading...</div>}>
+                    <Routes>
+                        <Route element={<Home />} path="/" />
+                    </Routes>
+                </Suspense>
             </LoadingSplash>
         </>
     );

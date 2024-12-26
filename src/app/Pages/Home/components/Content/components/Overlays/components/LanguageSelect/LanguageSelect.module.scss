@@ -1,0 +1,55 @@
+.container {
+    position: absolute;
+    height: 35px;
+    top: max(calc(5vw - 3px), 15px);
+    right: max(calc(6vw + 80px), 100px);
+    font-size: 1.45em;
+    text-transform: uppercase;
+    font-weight: bold;
+    color: var(--accent-primary);
+    margin: 0;
+    cursor: pointer;
+    letter-spacing: 1px;
+    opacity: 0;
+    transition: opacity 350ms;
+
+
+    &:hover,
+    &:active {
+        color: var(--accent-secondary);
+
+        &>svg {
+            fill: var(--accent-secondary);
+        }
+    }
+    
+    &.visible {
+        opacity: 1;    
+    }
+
+    @media screen and (width <= 768px) {
+        top: max(2vw, 17px);
+        right: max(calc(2vw + 20px), 75px);
+        font-size: 1em;
+    }
+
+    &>svg {
+        position: absolute;
+        left: -36px;
+        top: 4px;
+        height: 27px;
+        width: 27px;
+        fill: var(--accent-primary);
+        transition: fill 350ms;
+
+        & path {
+            pointer-events: none;
+        }
+        
+        @media screen and (width <= 768px) {
+            left: -1.5em;
+            top: 0.2em;
+            height: 1em;
+        }
+    }
+}
