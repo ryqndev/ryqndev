@@ -1,11 +1,12 @@
+import darkTheme from '@assets/themes/dark.json';
+import lightTheme from '@assets/themes/light.json';
 import { create, StateCreator } from 'zustand';
-import { Theme } from './types';
 import { persist } from 'zustand/middleware';
 
-import lightTheme from '@assets/themes/light.json';
-import darkTheme from '@assets/themes/dark.json';
+import { Theme } from './types';
 
 const THEME_LOCALSTORAGE_ID = '@ryqndev/theme'
+
 export const themes = [lightTheme, darkTheme];
 
 
@@ -18,8 +19,9 @@ interface ThemeStore {
 type PersistType = StateCreator<ThemeStore, [], [["zustand/persist", ThemeStore]]>;
 
 const renderThemeStyles = (theme: Theme) => {
-    let styles = themes[theme].themeStyles;
-    for (let style in styles) {
+    const styles = themes[theme].themeStyles;
+
+    for (const style in styles) {
         document.documentElement.style.setProperty(style, styles[style]);
     }
 }
@@ -30,6 +32,7 @@ const renderThemeStyles = (theme: Theme) => {
 const themeSwitch: (config: PersistType) => PersistType = (config) => (set, get, api) => {
     const wrappedSet: typeof set = (partial, replace) => {
         const prev = get();
+
         set(partial, replace);
         const next = get();
 

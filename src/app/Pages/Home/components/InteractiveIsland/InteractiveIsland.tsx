@@ -1,11 +1,9 @@
 import { lazily } from 'react-lazily';
 
-import clsx from 'clsx';
 import { Suspense, memo } from 'react';
-import type { ReactNode } from 'react';
 import { Canvas } from '@react-three/fiber';
 
-import cn from './ThreeContainer.module.scss';
+import cn from './InteractiveIsland.module.scss';
 import { KeyboardControls } from '@react-three/drei';
 import { useCustomKeyMapping } from './controllers/useCustomKeyMapping';
 import { Lights } from './components/Lights/Lights';
@@ -13,25 +11,28 @@ import { CameraControls } from './components/CameraControls/CameraControls';
 import { UCI } from './components/UCI';
 const { Physics } = lazily(() => import('@react-three/rapier'));
 
-interface ThreeContainerProps {
-    className: string;
-    children?: ReactNode;
-    project: any;
-}
-
-export const ThreeContainer = memo(function ThreeContainer({
-    className,
-    children,
+export const InteractiveIsland = memo(function InteractiveIsland({
     project,
-}: ThreeContainerProps) {
+}) {
     const map = useCustomKeyMapping();
 
     return (
         <Suspense fallback={<div></div>}>
             <KeyboardControls map={map}>
-                <Canvas className={clsx(className)} id={cn.container}>
+                <Canvas id={cn.container}>
                     <CameraControls project={project} />
                     <UCI />
+                    <Lights />
+                    {/* {PROJECTS.map((data, index) => (
+                        <ProjectZotbot
+                            key={data.name}
+                            data={data}
+                            selected={project === index}
+                        />
+                    ))}
+                    <Zotbot />
+                    <DrivableZotbot />
+                    <UCI /> */}
                     {/* <Physics gravity={[0, -20, 0]}>
                         <Lights theme={theme} />
                         {children}

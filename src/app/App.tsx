@@ -1,16 +1,17 @@
-import { lazily } from 'react-lazily';
-import { memo, Suspense } from 'react';
-import { Routes, Route } from 'react-router';
 import './styles/main.scss';
+
+import { ThemeToggleSwitch } from '@components/ThemeToggleSwitch';
+import { memo, Suspense } from 'react';
+import { lazily } from 'react-lazily';
+import { Route, Routes } from 'react-router';
 
 import { CustomMouseCursor } from './components/CustomMouseCursor/CustomMouseCursor';
 import { LoadingSplash } from './components/LoadingSplash/LoadingSplash';
-import { ThemeToggleSwitch } from '@components/ThemeToggleSwitch/ThemeToggleSwitch';
 
 const { Test } = lazily(() => import('@pages/Test/Test'));
 const { Home } = lazily(() => import('@pages/Home/Home'));
 
-export const App = memo(function App() {
+export const App = memo(() => {
     return (
         <>
             <ThemeToggleSwitch />
@@ -18,8 +19,8 @@ export const App = memo(function App() {
             <LoadingSplash>
                 <Suspense fallback={<div>loading...</div>}>
                     <Routes>
-                        <Route path="/" element={<Home />} />
-                        <Route path="/test" element={<Test />} />
+                        <Route element={<Home />} path="/" />
+                        <Route element={<Test />} path="/test" />
                     </Routes>
                 </Suspense>
             </LoadingSplash>

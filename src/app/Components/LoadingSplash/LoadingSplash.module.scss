@@ -15,7 +15,7 @@
         border-left: 150px solid transparent;
     }
 
-    & p {
+    p {
         font-size: min(10vw, 100px);
         font-family: Poppins;
         font-weight: bold;
@@ -38,7 +38,7 @@
         }
     }
 
-    &>.content {
+    .content {
         position: absolute;
         top: 50%;
         left: 50%;
@@ -46,8 +46,7 @@
         width: 100%;
         height: 100%;
         display: flex;
-        // background-color: transparent;background-colorbackground-color
-        flex-direction: column;flex-direction
+        flex-direction: column;
         justify-content: center;
         align-items: center;
         text-align: center;
@@ -58,25 +57,21 @@
     }
 
     &:nth-child(3) {
-        // background-color: var(--background-color);background-colorbackground-color
-        background-color: #303030;background-color
+        background-color: #303030;
         transition: background-color 350ms, left 300ms;
 
         &::before {
-            // border-bottom: 100vh solid var(--background-color);border-bottomborder-bottom
-            border-bottom: 100vh solid #303030;border-bottom
+            border-bottom: 100vh solid #303030;
 
         }
     }
 
     &:nth-child(4) {
-        // background-color: var(--background-emphasis);background-colorbackground-color
-        background-color: #505050;background-color
+        background-color: #505050;
         transition: background-color 350ms, left 250ms ease-in 100ms;
 
         &::before {
-            // border-bottom: 100vh solid var(--background-emphasis);border-bottomborder-bottom
-            border-bottom: 100vh solid #505050;border-bottom
+            border-bottom: 100vh solid #505050;
 
         }
     }

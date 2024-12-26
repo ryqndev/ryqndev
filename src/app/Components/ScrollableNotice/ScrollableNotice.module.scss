@@ -2,16 +2,13 @@
     --scrollable-color: var(--accent-primary);
 }
 
-.scrollable-notice--wrapper {
+.container {
     position: fixed;
     bottom: max(calc(6vw), 30px);
     right: 50%;
     width: 1em;
     z-index: 950;
     transform: scale(1.5) translate(50%, 20%);
-    // mix-blend-mode: difference;
-
-mix-blend-modemix-blend-mode
 
     @media screen and (max-width: 768px) {
         bottom: 26px;

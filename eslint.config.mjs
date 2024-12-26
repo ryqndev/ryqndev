@@ -1,11 +1,12 @@
-import globals from 'globals';
 import pluginJs from '@eslint/js';
-import tseslint from 'typescript-eslint';
-import pluginReact from 'eslint-plugin-react';
-import stylelintConfig from 'eslint-config-stylelint';
 import ReactThree from '@react-three/eslint-plugin';
+import stylelintConfig from 'eslint-config-stylelint';
+import importResolver from 'eslint-import-resolver-typescript';
 import importPlugin from 'eslint-plugin-import';
+import pluginReact from 'eslint-plugin-react';
 import simpleImportSort from 'eslint-plugin-simple-import-sort';
+import globals from 'globals';
+import tseslint from 'typescript-eslint';
 
 /** @type {import('eslint').Linter.Config[]} */
 // eslint-disable-next-line
@@ -16,8 +17,14 @@ export default [
     ...tseslint.configs.recommended,
     importPlugin.flatConfigs.recommended,
     pluginReact.configs.flat.recommended,
+    importResolver.configs.flat.recommended,
     ...stylelintConfig,
     {
+        settings: {
+            'import/resolver': {
+                typescript: {},
+            },
+        },
         plugins: {
             '@react-three': ReactThree,
             'simple-import-sort': simpleImportSort,
@@ -30,12 +37,18 @@ export default [
                     message: 'Use window.close if the global is wanted',
                 },
             ],
+            'no-absolute-path': 'off',
             'arrow-parents': ['off', 'always'],
             'import/no-default-export': 'error',
             'react/jsx-sort-props': ['error', { callbacksLast: true }],
             'no-else-return': 'error',
             'sort-imports': ['off', 'always'],
             'react/display-name': 'off',
+            'guard-for-in': 'off',
+
+            // use the TS version
+            'no-unused-vars': 'off',
+            '@typescript-eslint/no-unused-vars': ['error'],
             'react/jsx-wrap-multilines': [
                 'error',
                 {

@@ -1,9 +1,13 @@
 import { useFrame } from '@react-three/fiber';
+import { useThemeStore } from 'app/controller/theme/theme.store';
 import { memo, useRef } from 'react';
 import { Color, DirectionalLight } from 'three';
+import { useShallow } from 'zustand/shallow';
 
-export const Lights = memo(function Lights({ theme }: { theme: number }) {
+export const Lights = memo(function Lights() {
     const light = useRef<DirectionalLight>(null);
+    const theme = useThemeStore(useShallow(store => store.theme));
+
 
     useFrame(() => {
         light.current?.color.lerp(
@@ -15,11 +19,11 @@ export const Lights = memo(function Lights({ theme }: { theme: number }) {
     return (
         <>
             <directionalLight
-                ref={light}
+                // ref={light}
                 castShadow
                 intensity={2}
                 position={[0, 50, 100]}
-                color={theme ? new Color('#6633dd') : new Color('#ffff00')}
+                color={theme ? '#6633dd' : '#ffff00'}
             />
             <directionalLight
                 intensity={theme ? 1 : 1}

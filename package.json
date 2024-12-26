@@ -28,7 +28,9 @@
         "build": "tsc && vite build && cp build/index.html build/404.html",
         "serve": "vite preview",
         "predeploy": "npm run build",
-        "deploy": "gh-pages -d build"
+        "deploy": "gh-pages -d build",
+        "lint": "npx stylelint \"**/*.scss\"",
+        "lintfix": "npx stylelint \"**/*.scss\" --fix"
     },
     "eslintConfig": {
         "extends": "react-app"
@@ -55,6 +57,7 @@
         "@types/uuid": " ^10.0.0",
         "eslint": "^9.17.0",
         "eslint-config-stylelint": "^23.0.0",
+        "eslint-import-resolver-typescript": "^3.7.0",
         "eslint-plugin-import": "^2.31.0",
         "eslint-plugin-react": "^7.37.3",
         "eslint-plugin-simple-import-sort": "^12.1.1",

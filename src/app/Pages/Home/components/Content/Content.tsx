@@ -2,10 +2,10 @@ import { memo, type ReactNode } from 'react';
 import PROJECTS from '@assets/projects.json';
 import cn from './Content.module.scss';
 import { ProjectZotbot } from '@components/Three/components/ProjectZotbot/ProjectZotbot';
-import { ThreeContainer } from '@components/Three/ThreeContainer';
 import { Zotbot } from '@components/Three/components/Zotbot';
 import { UCI } from '@components/Three/components/UCI';
 import { DrivableZotbot } from '@components/Three/components/Zotbot/DrivableZotbot';
+import { InteractiveIsland } from '../InteractiveIsland/InteractiveIsland';
 
 interface ContentProps {
     project: any;
@@ -15,7 +15,6 @@ interface ContentProps {
 
 export const Content = memo(function Content({
     project,
-    children,
     projectsRef,
 }: ContentProps) {
     return (
@@ -25,19 +24,29 @@ export const Content = memo(function Content({
             ref={projectsRef}
         >
             <div className={cn.container}>
-                <ThreeContainer className={cn.container} project={project}>
-                    {PROJECTS.map((data, index) => (
-                        <ProjectZotbot
-                            key={data.name}
-                            data={data}
-                            selected={project === index}
-                        />
-                    ))}
-                    <Zotbot />
-                    <DrivableZotbot />
-                    <UCI />
-                </ThreeContainer>
-                {children}
+                <InteractiveIsland project={project} />
+                <div className={clsx(cn.controls)}>
+                    <PageOverlay
+                        visible={y > CURTAIN_BREAKPOINT}
+                        pages={PROJECTS}
+                        project={project}
+                        setProject={setProject}
+                    />
+                    <LanguageSelect visible={y > CURTAIN_BREAKPOINT} />
+                    {PROJECTS?.[project] && (
+                        <>
+                            <Timespan
+                                {...PROJECTS[project].date}
+                                visible={y > CURTAIN_BREAKPOINT}
+                            />
+                            <ProjectName
+                                name={PROJECTS[project].displayName}
+                                y={y}
+                            />
+                        </>
+                    )}
+                    <Socials visible={y > CURTAIN_BREAKPOINT} />
+                </div>
             </div>
         </div>
     );
