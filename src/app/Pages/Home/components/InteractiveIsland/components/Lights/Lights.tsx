@@ -19,7 +19,7 @@ export const Lights = memo(function Lights() {
     return (
         <>
             <directionalLight
-                // ref={light}
+                ref={light}
                 castShadow
                 intensity={2}
                 position={[0, 50, 100]}

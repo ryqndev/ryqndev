@@ -2,7 +2,7 @@ import { Canvas, useFrame, useLoader } from '@react-three/fiber';
 import { memo, useMemo, useRef, useState } from 'react';
 import { BackSide, Mesh, TextureLoader, Vector3 } from 'three';
 import GALAXY from './components/darker_eso.jpg';
-import cn from './ThreeContainer.module.scss';
+import cn from './InteractiveIsland.module.scss';
 import { CameraControls } from './components/CameraControls/CameraControls';
 import { random } from 'app/utils/utils';
 
@@ -23,16 +23,16 @@ const Container = memo(function Container({ project }: { project: any }) {
 const Stars = memo(() => {
     const loader = useLoader(TextureLoader, GALAXY);
     const galaxyRef = useRef<Mesh>(null);
-    const [stars] = useState(() =>
+    const [stars] = useState<[x: number, y: number, z: number][]>(() =>
         new Array(STAR_COUNT)
             .fill(undefined)
             .map(
                 (_) =>
-                    new Vector3(
+                    [
                         random(-GALAXY_RADIUS, GALAXY_RADIUS),
                         random(-GALAXY_RADIUS, GALAXY_RADIUS),
                         random(-GALAXY_RADIUS, GALAXY_RADIUS)
-                    )
+                    ]
             )
     );
 
@@ -47,19 +47,18 @@ const Stars = memo(() => {
         galaxyRef.current.rotation.y += 0.0001;
     });
 
+
     // Credit goes to "ESO/S. Brunier (http://www.sergebrunier.com/gallerie/pleinciel/index-eng.html)"
     return (
         <mesh rotation={[1.2, 0, 1]} ref={galaxyRef}>
             <sphereGeometry args={[GALAXY_RADIUS, 40, 40]} />
             <meshBasicMaterial side={BackSide} map={loader} />
-            <>
-                {stars.map((e, idx) => (
-                    <mesh key={idx} position={e}>
-                        {starGeometry}
-                        {starMesh}
-                    </mesh>
-                ))}
-            </>
+            {stars.map((e, idx) => (
+                <mesh key={idx} position={e}>
+                    {starGeometry}
+                    {starMesh}
+                </mesh>
+            ))}
         </mesh>
     );
 });

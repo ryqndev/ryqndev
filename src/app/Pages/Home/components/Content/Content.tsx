@@ -1,15 +1,15 @@
-import { memo, type ReactNode } from 'react';
+import { memo } from 'react';
 import PROJECTS from '@assets/projects.json';
 import cn from './Content.module.scss';
-import { ProjectZotbot } from '@components/Three/components/ProjectZotbot/ProjectZotbot';
-import { Zotbot } from '@components/Three/components/Zotbot';
-import { UCI } from '@components/Three/components/UCI';
-import { DrivableZotbot } from '@components/Three/components/Zotbot/DrivableZotbot';
+// import { ProjectZotbot } from '@components/Three/components/ProjectZotbot/ProjectZotbot';
+// import { Zotbot } from '@components/Three/components/Zotbot';
+// import { UCI } from '@components/Three/components/UCI';
+// import { DrivableZotbot } from '@components/Three/components/Zotbot/DrivableZotbot';
 import { InteractiveIsland } from '../InteractiveIsland/InteractiveIsland';
+import { Stars } from '../InteractiveIsland/Stars';
 
 interface ContentProps {
     project: any;
-    children: ReactNode;
     projectsRef: any;
 }
 
@@ -25,7 +25,7 @@ export const Content = memo(function Content({
         >
             <div className={cn.container}>
                 <InteractiveIsland project={project} />
-                <div className={clsx(cn.controls)}>
+                {/* <div className={clsx(cn.controls)}>
                     <PageOverlay
                         visible={y > CURTAIN_BREAKPOINT}
                         pages={PROJECTS}
@@ -46,7 +46,7 @@ export const Content = memo(function Content({
                         </>
                     )}
                     <Socials visible={y > CURTAIN_BREAKPOINT} />
-                </div>
+                </div> */}
             </div>
         </div>
     );

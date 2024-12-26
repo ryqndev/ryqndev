@@ -11,9 +11,9 @@ import { Curtain } from './components/Curtain/Curtain';
 
 import cn from './Home.module.scss';
 import { useScroll } from 'app/controller/hooks/useScroll';
+import { Content } from './components/Content/Content';
+import { Stars } from './components/InteractiveIsland/Stars';
 
-const { Stars } = lazily(() => import('@components/Three/Stars'));
-const { Content } = lazily(() => import('./components/Content/Content'));
 
 export const Home = memo(function Home() {
     const projectsRef = useRef<HTMLDivElement>(null);
@@ -36,8 +36,8 @@ export const Home = memo(function Home() {
                 />
             </div>
             <ScrollableNotice />
-
             <Stars project={project} />
+
             <BackgroundText visible={y > BACKGROUND_TEXT_BREAKPOINT} />
             <Content project={project} projectsRef={projectsRef} />
         </main>
