@@ -11,7 +11,7 @@ interface CameraControlsProps {
 export const CameraControls = memo(function CameraControls({
     project,
 }: CameraControlsProps) {
-    const [cameraVec, setCameraVec] = useState([200, 15, 5]);
+    const [cameraVec, setCameraVec] = useState(new Vector3(200, 15, 5));
     const [zoom, setZoom] = useState(() =>
         Math.sqrt(0.005 * window.innerWidth)
     );
@@ -22,7 +22,7 @@ export const CameraControls = memo(function CameraControls({
 
     useEffect(() => {
         let angle = (project / PROJECTS.length) * 180;
-        setCameraVec([Math.sin(angle) * 400, 80, Math.cos(angle) * 400]);
+        setCameraVec(new Vector3(Math.sin(angle) * 400, 80, Math.cos(angle) * 400));
     }, [project]);
 
     useEffect(() => {
@@ -32,7 +32,7 @@ export const CameraControls = memo(function CameraControls({
     }, [resize]);
 
     useFrame((state) => {
-        state.camera.position.lerp(new Vector3(...cameraVec), 0.008);
+        state.camera.position.lerp(cameraVec, 0.008);
     });
 
     return (
@@ -46,7 +46,6 @@ export const CameraControls = memo(function CameraControls({
             <OrthographicCamera
                 makeDefault={true}
                 near={-100}
-                // position={[200, 15, 5]}
                 zoom={zoom}
             />
         </>

@@ -1,6 +1,6 @@
 import { Canvas, useFrame, useLoader } from '@react-three/fiber';
 import { memo, useMemo, useRef, useState } from 'react';
-import { BackSide, Mesh, TextureLoader, Vector3 } from 'three';
+import { BackSide, Mesh, TextureLoader } from 'three';
 import GALAXY from './components/darker_eso.jpg';
 import cn from './InteractiveIsland.module.scss';
 import { CameraControls } from './components/CameraControls/CameraControls';

@@ -1,17 +1,17 @@
 import { memo } from 'react';
 import PROJECTS from '@assets/projects.json';
 import cn from './Content.module.scss';
-// import { ProjectZotbot } from '@components/Three/components/ProjectZotbot/ProjectZotbot';
-// import { Zotbot } from '@components/Three/components/Zotbot';
-// import { UCI } from '@components/Three/components/UCI';
-// import { DrivableZotbot } from '@components/Three/components/Zotbot/DrivableZotbot';
-import { InteractiveIsland } from '../InteractiveIsland/InteractiveIsland';
-import { Stars } from '../InteractiveIsland/Stars';
+import { InteractiveIsland } from './components/InteractiveIsland/InteractiveIsland';
+import { Overlays } from './components/Overlays/Overlays';
 
 interface ContentProps {
     project: any;
     projectsRef: any;
 }
+
+// this is the amount the user can "scroll" through - scales with
+// the # of projects that can be shown
+const height = (PROJECTS.length - 1) * 200 + 'vh';
 
 export const Content = memo(function Content({
     project,
@@ -19,34 +19,12 @@ export const Content = memo(function Content({
 }: ContentProps) {
     return (
         <div
-            className={cn.content}
-            style={{ height: (PROJECTS.length - 1) * 200 + 'vh' }}
+            style={{ height }}
             ref={projectsRef}
         >
             <div className={cn.container}>
                 <InteractiveIsland project={project} />
-                {/* <div className={clsx(cn.controls)}>
-                    <PageOverlay
-                        visible={y > CURTAIN_BREAKPOINT}
-                        pages={PROJECTS}
-                        project={project}
-                        setProject={setProject}
-                    />
-                    <LanguageSelect visible={y > CURTAIN_BREAKPOINT} />
-                    {PROJECTS?.[project] && (
-                        <>
-                            <Timespan
-                                {...PROJECTS[project].date}
-                                visible={y > CURTAIN_BREAKPOINT}
-                            />
-                            <ProjectName
-                                name={PROJECTS[project].displayName}
-                                y={y}
-                            />
-                        </>
-                    )}
-                    <Socials visible={y > CURTAIN_BREAKPOINT} />
-                </div> */}
+                <Overlays project={project} projectsRef={projectsRef} />
             </div>
         </div>
     );

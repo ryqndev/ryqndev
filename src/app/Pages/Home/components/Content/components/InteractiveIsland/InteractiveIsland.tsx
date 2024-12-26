@@ -13,9 +13,8 @@ import { DrivableZotbot } from './components/Zotbot/DrivableZotbot';
 
 export const InteractiveIsland = memo(function InteractiveIsland({
     project,
-}) {
+}: { project: any }) {
     const map = useCustomKeyMapping();
-    console.log('@ryqndev', project)
 
     return (
         <Suspense fallback={<div></div>}>

@@ -12,7 +12,7 @@ import { Curtain } from './components/Curtain/Curtain';
 import cn from './Home.module.scss';
 import { useScroll } from 'app/controller/hooks/useScroll';
 import { Content } from './components/Content/Content';
-import { Stars } from './components/InteractiveIsland/Stars';
+import { Stars } from './components/Content/components/InteractiveIsland/Stars';
 
 
 export const Home = memo(function Home() {

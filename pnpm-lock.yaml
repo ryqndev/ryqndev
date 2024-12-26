@@ -50,6 +50,9 @@ importers:
       sass:
         specifier: ^1.69.5
         version: 1.83.0
+      three:
+        specifier: ^0.171.0
+        version: 0.171.0
       uuid:
         specifier: ^11.0.3
         version: 11.0.3
