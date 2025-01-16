@@ -6,14 +6,8 @@
     transform: translateY(-50%);
     display: grid;
     row-gap: 15px;
-    opacity: 0;
-    transition: opacity 350ms;
 
-    &.visible {
-        opacity: 1;
-    }
-
-    @media screen and (width <= 768px) {
+    @media screen and (width <=768px) {
         display: none;
     }
 

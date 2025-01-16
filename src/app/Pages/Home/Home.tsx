@@ -18,7 +18,7 @@ import { Stars } from './components/Content/components/InteractiveIsland/Stars';
 export const Home = memo(function Home() {
     const projectsRef = useRef<HTMLDivElement>(null);
     const y = useScroll();
-    const { project, setProject } = useProjects(y, projectsRef);
+    const { project } = useProjects(y, projectsRef);
 
     const CURTAIN_BREAKPOINT = window.innerHeight * 1.5;
     const BACKGROUND_TEXT_BREAKPOINT = window.innerHeight / 2;

@@ -6,11 +6,7 @@ import cn from './LanguageSelect.module.scss';
 
 const supportedLanguages = ['en', 'es', 'zh'];
 
-export const LanguageSelect = memo(function LanguageSelect({
-    visible,
-}: {
-    visible: boolean;
-}) {
+export const LanguageSelect = memo(function LanguageSelect() {
     const { t, i18n } = useTranslation();
     const [language, setLanguage] = useState(
         supportedLanguages.indexOf(i18n.language) < 0
@@ -28,7 +24,7 @@ export const LanguageSelect = memo(function LanguageSelect({
 
     return (
         <div
-            className={clsx(cn.container, visible && cn.visible)}
+            className={clsx(cn.container)}
             onClick={toggle}
             data-mouse-hover="button"
             data-mouse-hover-text="change the language"

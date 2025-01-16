@@ -12,16 +12,14 @@ const dateDisplayOptions: Intl.DateTimeFormatOptions = {
 export const Timespan = memo(function Timespan({
     start,
     end,
-    visible,
 }: {
     start: any;
     end?: any;
-    visible: boolean;
 }) {
     const { t, i18n } = useTranslation();
 
     return (
-        <aside className={clsx(cn.container, visible && cn.visible)}>
+        <aside className={clsx(cn.container)}>
             {new Date(start).toLocaleDateString(
                 i18n.language,
                 dateDisplayOptions
@@ -29,9 +27,9 @@ export const Timespan = memo(function Timespan({
             <span>⎯⎯⎯⎯⎯</span>
             {end
                 ? new Date(end).toLocaleDateString(
-                      i18n.language,
-                      dateDisplayOptions
-                  )
+                    i18n.language,
+                    dateDisplayOptions
+                )
                 : t('present')}
         </aside>
     );

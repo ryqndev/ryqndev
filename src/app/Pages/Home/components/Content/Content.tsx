@@ -11,7 +11,7 @@ interface ContentProps {
 
 // this is the amount the user can "scroll" through - scales with
 // the # of projects that can be shown
-const height = (PROJECTS.length - 1) * 200 + 'vh';
+const STYLES = { height: (PROJECTS.length - 1) * 200 + 'vh' };
 
 export const Content = memo(function Content({
     project,
@@ -19,7 +19,7 @@ export const Content = memo(function Content({
 }: ContentProps) {
     return (
         <div
-            style={{ height }}
+            style={STYLES}
             ref={projectsRef}
         >
             <div className={cn.container}>

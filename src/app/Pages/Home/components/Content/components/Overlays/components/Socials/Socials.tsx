@@ -12,13 +12,9 @@ const socials = [
     { link: 'https://www.instagram.com/veryfewsbux/', Icon: Instagram },
 ];
 
-interface SocialsProps {
-    visible: boolean;
-}
-
-export const Socials = memo(function Socials({ visible }: SocialsProps) {
+export const Socials = memo(function Socials() {
     return (
-        <div className={clsx(cn.container, visible && cn.visible)}>
+        <div className={clsx(cn.container)}>
             {socials.map(({ link, Icon }) => (
                 <a
                     key={link}

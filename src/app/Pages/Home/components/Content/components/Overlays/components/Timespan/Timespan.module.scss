@@ -6,12 +6,6 @@
     color: var(--accent-primary);
     mix-blend-mode: difference;
     font-weight: bold;
-    opacity: 0;
-    transition: opacity 350ms;
-
-    &.visible {
-        opacity: 1;
-    }
 
     &>span {
         color: #649BFF;

@@ -7,10 +7,8 @@
     grid-auto-flow: column;
     column-gap: 20px;
     place-content: center;
-    opacity: 0;
-    transition: opacity 350ms;
 
-    @media screen and (width <= 768px) {
+    @media screen and (width <=768px) {
         grid-auto-flow: row;
         height: auto;
         row-gap: 10px;
@@ -19,10 +17,6 @@
         right: 6px;
     }
 
-
-    &.visible {
-        opacity: 1;
-    }
 
 
     &>a {
@@ -40,7 +34,7 @@
             fill: var(--accent-primary);
             transition: fill 350ms;
 
-            @media screen and (width <= 768px) {
+            @media screen and (width <=768px) {
                 height: 30px;
                 width: 30px;
             }

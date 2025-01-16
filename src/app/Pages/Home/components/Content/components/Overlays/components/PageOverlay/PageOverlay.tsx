@@ -3,7 +3,6 @@ import cn from './PageOverlay.module.scss';
 import { memo } from 'react';
 
 interface PageOverlayProps {
-    visible: boolean;
     className?: string;
     pages: any;
     project: any;
@@ -11,14 +10,13 @@ interface PageOverlayProps {
 }
 
 export const PageOverlay = memo(function PageOverlay({
-    visible,
     className,
     pages,
     project,
     setProject,
 }: PageOverlayProps) {
     return (
-        <div className={clsx(cn.container, className, visible && cn.visible)}>
+        <div className={clsx(cn.container, className)}>
             {pages.map((page: any, index: number) => (
                 <div
                     className={clsx(project === index && cn.selected, cn.item)}

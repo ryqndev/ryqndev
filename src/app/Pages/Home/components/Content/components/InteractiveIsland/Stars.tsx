@@ -11,7 +11,7 @@ const STAR_RADIUS = 1;
 
 const GALAXY_RADIUS = 400;
 
-const Container = memo(function Container({ project }: { project: any }) {
+const Container = memo(function Container({ project }: { project: number }) {
     return (
         <Canvas id={cn.stars}>
             <CameraControls project={project} />
