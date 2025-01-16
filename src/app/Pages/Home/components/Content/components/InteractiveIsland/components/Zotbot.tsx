@@ -4,37 +4,16 @@ import {
     useCallback,
     useEffect,
     useState,
-    type Ref,
-    useRef,
-    createRef,
 } from 'react';
 import { useFrame, useLoader } from '@react-three/fiber';
-import type { Euler, Vector3 } from '@react-three/fiber';
+// @ts-ignore
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
 import { Clone, useGLTF, useKeyboardControls } from '@react-three/drei';
-import { v4 as uuidv4 } from 'uuid';
 import { RigidBody } from '@react-three/rapier';
 import type { CustomControls } from '../controllers/useCustomKeyMapping';
-import { random } from 'app/utils/utils';
+import { generateNZotbots, getRandomSpawnState } from 'app/controller/random-gen-utils';
 
 const ZOTBOT_GLTF = '/assets/delivery_robot/zotbot.gltf';
-
-interface ZotbotSpawnState {
-    id: string;
-    position: Vector3;
-    rotation: Euler;
-    ref: Ref<any>;
-}
-
-const getRandomSpawnState = (): ZotbotSpawnState => ({
-    id: uuidv4(),
-    position: [random(-60, 60), random(100, 200), random(-60, 60)],
-    rotation: [random(0, Math.PI), random(0, Math.PI), random(0, Math.PI)],
-    ref: createRef(),
-});
-
-const generateNZotbots = (n: number) =>
-    new Array(n).fill(0).map(getRandomSpawnState);
 
 export const Zotbot = memo(function Zotbot() {
     const { scene } = useLoader(GLTFLoader, ZOTBOT_GLTF);

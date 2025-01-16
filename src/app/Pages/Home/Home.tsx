@@ -37,7 +37,6 @@ export const Home = memo(function Home() {
             </div>
             <ScrollableNotice />
             <Stars project={project} />
-
             <BackgroundText visible={y > BACKGROUND_TEXT_BREAKPOINT} />
             <Content project={project} projectsRef={projectsRef} />
         </main>

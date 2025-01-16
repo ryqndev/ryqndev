@@ -1,6 +1,8 @@
 import { Suspense, memo } from 'react';
 import { Canvas } from '@react-three/fiber';
 
+import PROJECTS from '@assets/projects.json'
+
 import cn from './InteractiveIsland.module.scss';
 import { KeyboardControls } from '@react-three/drei';
 import { useCustomKeyMapping } from './controllers/useCustomKeyMapping';
@@ -10,6 +12,7 @@ import { UCI } from './components/UCI';
 import { Physics } from '@react-three/rapier';
 import { Zotbot } from './components/Zotbot';
 import { DrivableZotbot } from './components/Zotbot/DrivableZotbot';
+import { ProjectZotbot } from './components/ProjectZotbot/ProjectZotbot';
 
 export const InteractiveIsland = memo(function InteractiveIsland({
     project,
@@ -26,14 +29,14 @@ export const InteractiveIsland = memo(function InteractiveIsland({
                         <UCI />
                         <Zotbot />
 
-                        {/* {PROJECTS.map((data, index) => (
+                        {PROJECTS.map((data, index) => (
                             <ProjectZotbot
                                 key={data.name}
                                 data={data}
                                 selected={project === index}
                             />
-                        ))} */}
-                        {/* <DrivableZotbot /> */}
+                        ))}
+                        <DrivableZotbot />
                     </Physics>
                 </Canvas>
             </KeyboardControls>
