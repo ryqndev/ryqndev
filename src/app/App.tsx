@@ -9,6 +9,7 @@ import { CustomMouseCursor } from './components/CustomMouseCursor/CustomMouseCur
 import { LoadingSplash } from './components/LoadingSplash/LoadingSplash';
 
 const { Home } = lazily(() => import('@pages/Home/Home'));
+const { Scuba } = lazily(() => import('@pages/Scuba/Scuba'));
 
 export const App = memo(() => {
     return (
@@ -19,6 +20,7 @@ export const App = memo(() => {
                 <Suspense fallback={<div>loading...</div>}>
                     <Routes>
                         <Route element={<Home />} path="/" />
+                        <Route element={<Scuba />} path="/scuba" />
                     </Routes>
                 </Suspense>
             </LoadingSplash>
