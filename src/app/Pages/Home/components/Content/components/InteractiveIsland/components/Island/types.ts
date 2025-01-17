@@ -1,4 +1,6 @@
+// @ts-ignore
 import type { GLTF } from 'three-stdlib';
+import * as THREE from 'three';
 
 export type GLTFResult = GLTF & {
     nodes: {

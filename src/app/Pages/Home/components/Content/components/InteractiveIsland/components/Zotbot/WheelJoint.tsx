@@ -24,6 +24,7 @@ export const WheelJoint = ({
 }) => {
     const [sub] = useKeyboardControls<CustomControls>();
 
+    // @ts-ignore
     const joint = useRevoluteJoint(body, wheel, [
         bodyAnchor,
         wheelAnchor,

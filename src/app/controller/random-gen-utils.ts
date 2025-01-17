@@ -2,7 +2,7 @@ import {
     type Ref,
     createRef,
 } from 'react';
-import type { Euler, Vector3 } from '@react-three/fiber';
+import type { Euler } from '@react-three/fiber';
 // @ts-ignore
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
 import { v4 as uuidv4 } from 'uuid';
@@ -10,7 +10,7 @@ import { random } from 'app/utils/utils';
 
 export interface ZotbotSpawnState {
     id: string;
-    position: Vector3;
+    position: [number, number, number];
     rotation: Euler;
     ref: Ref<any>;
 }

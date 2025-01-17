@@ -1,5 +1,6 @@
 import { Fragment, createRef, memo, useEffect, useRef } from 'react';
 import { useLoader } from '@react-three/fiber';
+// @ts-ignore
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
 
 const { CylinderCollider, RigidBody } = lazily(
@@ -33,6 +34,7 @@ export const DrivableZotbot = memo(function DrivableZotbot() {
     useEffect(() => {
         return sub(
             (state) => state,
+            // @ts-ignore
             (pressed) => {
                 if (!zotbotRef.current) return;
                 // zotbotRef.current.addTorque(

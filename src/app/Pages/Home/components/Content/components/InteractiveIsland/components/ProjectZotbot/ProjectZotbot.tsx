@@ -20,6 +20,7 @@ interface ProjectBallProps {
 export const ProjectZotbot = memo(function ProjectZotbot({ data, selected }: ProjectBallProps) {
     const { scene } = useLoader(GLTFLoader, ZOTBOT_GLTF);
     const { position, rotation, ref } = useMemo(() => getRandomSpawnState(), []);
+
     const loweredAltitude = useMemo(() => new Vector3(position[0], random(20, 40), position[2]), [position])
 
     return (

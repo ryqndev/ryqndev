@@ -22,6 +22,7 @@ const renderThemeStyles = (theme: Theme) => {
     const styles = themes[theme].themeStyles;
 
     for (const style in styles) {
+        // @ts-ignore
         document.documentElement.style.setProperty(style, styles[style]);
     }
 }
@@ -33,6 +34,7 @@ const themeSwitch: (config: PersistType) => PersistType = (config) => (set, get,
     const wrappedSet: typeof set = (partial, replace) => {
         const prev = get();
 
+        // @ts-ignore
         set(partial, replace);
         const next = get();
 

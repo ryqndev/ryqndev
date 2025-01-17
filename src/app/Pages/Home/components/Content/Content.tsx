@@ -1,9 +1,13 @@
 import { memo } from 'react';
 import PROJECTS from '@assets/projects.json';
 import cn from './Content.module.scss';
-import { InteractiveIsland } from './components/InteractiveIsland/InteractiveIsland';
+// import { InteractiveIsland } from './components/InteractiveIsland/InteractiveIsland';
 import { Overlays } from './components/Overlays/Overlays';
+import { lazily } from 'react-lazily';
 
+const { InteractiveIsland } = lazily(
+    () => import('./components/InteractiveIsland/InteractiveIsland')
+);
 interface ContentProps {
     project: any;
     projectsRef: any;
