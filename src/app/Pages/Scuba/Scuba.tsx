@@ -18,14 +18,12 @@ export const Scuba = memo(function Home() {
         ? (y / getScrollableHeight(container.current))
         : 0, [y]);
 
-    console.log('@ryqndev', percent)
-
     return (
         <main className={cn.container} ref={container}>
             <div className={cn.canvas}>
                 <Canvas id={cn.canvas} camera={{
                     zoom: 0.6,
-                    position: [300, 0, 0]
+                    position: [250, 0, 0]
 
                 }}>
                     <OrbitControls
