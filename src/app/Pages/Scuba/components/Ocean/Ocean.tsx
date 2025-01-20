@@ -1,22 +1,17 @@
 import { useLoader } from '@react-three/fiber';
 import { memo, useEffect, useMemo, useRef } from 'react';
-import { BackSide, BufferGeometry, Mesh, MeshBasicMaterial, TextureLoader } from 'three';
+import { BackSide, BufferGeometry, MeshBasicMaterial, TextureLoader } from 'three';
 
-const arr: string[] = [];
-for (var i = 1; i <= 28; i++) {
-    arr.push((await import(`../assets/shaws-compressed/${i.toString()}.jpg`)).default);
-}
-
-export const Ocean = memo(({ percent }: { percent: number }) => {
+export const Ocean = memo(({ percent, images }: { percent: number, images: any[] }) => {
     const materialRef = useRef<MeshBasicMaterial>(null);
     const meshRef = useRef<BufferGeometry>(null);
-    const loader = useLoader(TextureLoader, arr);
-    const idx = useMemo(() => ~~(percent * arr.length), [percent]);
+    const loader = useLoader(TextureLoader, images);
+    const idx = useMemo(() => ~~(percent * images.length), [percent]);
 
     useEffect(() => {
         if (!materialRef?.current?.map) return;
         const imageRef = document.createElement('img');
-        imageRef.src = arr[idx];
+        imageRef.src = images[idx];
         materialRef.current.map.source.data = imageRef;
         materialRef.current.map.needsUpdate = true;
     }, [loader, idx]);

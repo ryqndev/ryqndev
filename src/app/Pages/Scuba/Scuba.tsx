@@ -1,16 +1,25 @@
 import { useScroll } from "app/controller/hooks/useScroll";
-import { memo, useMemo, useRef } from "react";
+import { memo, use, useMemo, useRef } from "react";
 
 import cn from './Scuba.module.scss';
 import { Canvas } from "@react-three/fiber";
 import { OrbitControls } from "@react-three/drei";
 import { Ocean } from "./components/Ocean/Ocean";
+import { ScrollableNotice } from "@components/ScrollableNotice/ScrollableNotice";
 
 const getScrollableHeight = (el: HTMLElement) => {
     return el.scrollHeight - window.innerHeight;
 }
 
 export const Scuba = memo(function Home() {
+    const imageLinks = useMemo(async () => {
+        const arr: string[] = [];
+        for (var i = 1; i <= 28; i++) {
+            arr.push((await import(`./components/assets/shaws-compressed/${i.toString()}.jpg`)).default);
+        }
+        return arr;
+    }, []);
+    const images = use(imageLinks);
     const y = useScroll();
     const container = useRef<HTMLDivElement>(null);
 
@@ -23,7 +32,7 @@ export const Scuba = memo(function Home() {
             <div className={cn.canvas}>
                 <Canvas id={cn.canvas} camera={{
                     zoom: 0.6,
-                    position: [250, 0, 0]
+                    position: [300, 0, 0]
 
                 }}>
                     <OrbitControls
@@ -32,10 +41,10 @@ export const Scuba = memo(function Home() {
                         enableRotate={true}
                         target={[0, 0, 0]}
                     />
-                    <Ocean percent={percent} />
+                    <Ocean percent={percent} images={images} />
                 </Canvas>
-            </div >
-
+            </div>
+            <ScrollableNotice />
         </main>
     );
 });
