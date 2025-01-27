@@ -1,27 +1,21 @@
 import { useScroll } from "app/controller/hooks/useScroll";
-import { memo, use, useMemo, useRef } from "react";
+import { memo, useMemo, useRef } from "react";
 
 import cn from './Scuba.module.scss';
 import { Canvas } from "@react-three/fiber";
 import { OrbitControls } from "@react-three/drei";
 import { Ocean } from "./components/Ocean/Ocean";
 import { ScrollableNotice } from "@components/ScrollableNotice/ScrollableNotice";
+import { useImages } from "./controllers/useImages";
 
 const getScrollableHeight = (el: HTMLElement) => {
     return el.scrollHeight - window.innerHeight;
 }
 
 export const Scuba = memo(function Home() {
-    const imageLinks = useMemo(async () => {
-        const arr: string[] = [];
-        for (var i = 1; i <= 28; i++) {
-            arr.push((await import(`./components/assets/shaws-compressed/${i.toString()}.jpg`)).default);
-        }
-        return arr;
-    }, []);
-    const images = use(imageLinks);
     const y = useScroll();
     const container = useRef<HTMLDivElement>(null);
+    const images = useImages();
 
     const percent = useMemo(() => container.current && getScrollableHeight(container.current)
         ? (y / getScrollableHeight(container.current))
