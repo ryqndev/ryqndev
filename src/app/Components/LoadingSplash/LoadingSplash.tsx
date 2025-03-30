@@ -22,7 +22,6 @@ export const LoadingSplash = memo(function LoadingSplash({
 
     useEffect(() => {
         if (progress < 100 && location.pathname === '/') return;
-
         setTimeout(() => setClose(true), 1000);
     }, [progress, location, close]);
 

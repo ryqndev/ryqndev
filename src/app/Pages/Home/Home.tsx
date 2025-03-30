@@ -1,16 +1,14 @@
+import { ScrollableNotice } from '@components/ScrollableNotice/ScrollableNotice';
+import { useScroll } from 'app/controller/hooks/useScroll';
 import clsx from 'clsx';
 import { memo, useRef } from 'react';
 
-import { ScrollableNotice } from '@components/ScrollableNotice/ScrollableNotice';
-
-import { useProjects } from './controller/useProjects';
 import { BackgroundText } from './components/BackgroundText/BackgroundText';
-import { Curtain } from './components/Curtain/Curtain';
-
-import cn from './Home.module.scss';
-import { useScroll } from 'app/controller/hooks/useScroll';
-import { Content } from './components/Content/Content';
 import { Stars } from './components/Content/components/InteractiveIsland/Stars';
+import { Content } from './components/Content/Content';
+import { Curtain } from './components/Curtain/Curtain';
+import { useProjects } from './controller/useProjects';
+import cn from './Home.module.scss';
 
 
 export const Home = memo(function Home() {
