@@ -1,6 +1,6 @@
 # Who am I?
 
-I am a developer specializing in front-end and UI/UX development. My passion lies in creating beautiful, functional, and intuitive user experiences using some of the latest web technologies while pushing the boundaries of the available tech. 
+I am a developer specializing in front-end and UI/UX development. My passion lies in creating beautiful, functional, and intuitive user experiences using some of the latest web technologies while pushing the boundaries of the available tech.  Ex-Anduril, now p-1.ai.
 
 
 ## Tech Stack
