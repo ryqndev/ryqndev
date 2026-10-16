@@ -1,5 +1,5 @@
 import clsx from 'clsx';
-import { memo, useMemo } from 'react';
+import { memo } from 'react';
 import { PageOverlay } from './components/PageOverlay/PageOverlay';
 import { LanguageSelect } from './components/LanguageSelect/LanguageSelect';
 import { Timespan } from './components/Timespan/Timespan';
@@ -18,10 +18,8 @@ export const Overlays = memo(function Overlays({
     project: any;
     projectsRef: any;
 }) {
-    const y = useScroll();
-    const { setProject } = useProjects(y, projectsRef);
-
-    const visible = useMemo(() => y > window.innerHeight * 1.5, [y]);
+    const { setProject } = useProjects(projectsRef);
+    const visible = useScroll((y) => y > window.innerHeight * 1.5);
 
     return (
         <div className={clsx(cn.container, visible && cn.visible)}>
@@ -36,7 +34,7 @@ export const Overlays = memo(function Overlays({
                     <Timespan
                         {...PROJECTS[project].date}
                     />
-                    <ProjectName name={PROJECTS[project].displayName} y={y} />
+                    <ProjectName name={PROJECTS[project].displayName} />
                 </>
             )}
             <Socials />
