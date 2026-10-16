@@ -1,14 +1,13 @@
-import { use, useMemo } from "react";
+// All panorama frames as hashed asset URLs, resolved at build time in one go.
+// (Previously 28 sequential `await import()`s at runtime, one round trip each.)
+const frames = import.meta.glob('./shaws-compressed/*.webp', {
+    eager: true,
+    import: 'default',
+}) as Record<string, string>;
 
-export const useImages = () => {
-    const imageLinks = useMemo(async () => {
-        const arr: string[] = [];
-        for (let i = 1; i <= 28; i++) {
-            arr.push((await import(`./shaws-compressed/${i.toString()}.jpg`)).default);
-        }
-        return arr;
-    }, []);
-    const images = use(imageLinks);
+const ordered = Object.entries(frames)
+    .map(([path, url]) => [Number(path.match(/(\d+)\.webp$/)![1]), url] as const)
+    .sort((a, b) => a[0] - b[0])
+    .map(([, url]) => url);
 
-    return images;
-}
+export const useImages = () => ordered;
