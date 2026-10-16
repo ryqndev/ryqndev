@@ -1,16 +1,23 @@
+// Self-hosted fonts are served as WOFF2 (roughly a quarter the size of the
+// original TTFs). `font-display: swap` lets text render in the fallback font
+// immediately instead of being invisible while the file downloads.
+
 @font-face {
     font-family: Hyperwave;
-    src: url('/fonts/Hyperwave-Two.ttf');
+    font-display: swap;
+    src: url('/fonts/Hyperwave-Two.woff2') format('woff2');
 }
 
 @font-face {
     font-family: Poppins;
     font-weight: 400;
-    src: url('/fonts/Poppins-Regular.ttf');
+    font-display: swap;
+    src: url('/fonts/Poppins-Regular.woff2') format('woff2');
 }
 
 @font-face {
     font-family: Poppins;
     font-weight: 800;
-    src: url('/fonts/Poppins-ExtraBold.ttf');
+    font-display: swap;
+    src: url('/fonts/Poppins-ExtraBold.woff2') format('woff2');
 }
