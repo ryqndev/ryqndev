@@ -3,6 +3,7 @@ import {
     memo,
     useCallback,
     useEffect,
+    useRef,
     useState,
 } from 'react';
 import { useFrame, useLoader } from '@react-three/fiber';
@@ -11,7 +12,11 @@ import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
 import { Clone, useGLTF, useKeyboardControls } from '@react-three/drei';
 import { RigidBody } from '@react-three/rapier';
 import type { CustomControls } from '../controllers/useCustomKeyMapping';
-import { generateNZotbots, getRandomSpawnState } from 'app/controller/random-gen-utils';
+import {
+    generateNZotbots,
+    getRandomSpawnState,
+    type ZotbotSpawnState,
+} from 'app/controller/random-gen-utils';
 
 const ZOTBOT_GLTF = '/assets/delivery_robot/zotbot.gltf';
 
@@ -34,11 +39,18 @@ export const Zotbot = memo(function Zotbot() {
         []
     );
 
+    // Drop bots that have fallen off the island. Only touch state when one
+    // actually has: `filter` returns a new array even when nothing changed,
+    // which re-rendered this whole subtree on every frame.
+    const botsRef = useRef(bots);
+    botsRef.current = bots;
+
     useFrame(() => {
-        setBots((prev) =>
+        const onIsland = (bot: ZotbotSpawnState) =>
             // @ts-ignore
-            prev.filter((bot) => bot.ref?.current?.parent?.position?.y > -300)
-        );
+            bot.ref?.current?.parent?.position?.y > -300;
+        if (botsRef.current.every(onIsland)) return;
+        setBots((prev) => prev.filter(onIsland));
     });
 
     return (
