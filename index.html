@@ -41,6 +41,18 @@
 	<link rel="shortcut icon" href="/assets/logo-white-small.png" />
 	<link rel="manifest" href="/manifest.json" />
 
+	<!-- The island and robot models are needed on every visit. Start fetching them
+	     now instead of after the entry, Home and scene chunks have each downloaded
+	     and executed. The attributes mirror how three.js requests them (FileLoader
+	     uses fetch in cors mode; ImageLoader uses crossorigin="anonymous" images). -->
+	<link rel="preload" href="/assets/updated_island/floating%20island.gltf" as="fetch" crossorigin />
+	<link rel="preload" href="/assets/updated_island/floating%20island_data.bin" as="fetch" crossorigin />
+	<link rel="preload" href="/assets/updated_island/floating%20island_img0.png" as="image" crossorigin />
+	<link rel="preload" href="/assets/updated_island/floating%20island_img1.png" as="image" crossorigin />
+	<link rel="preload" href="/assets/delivery_robot/zotbot.gltf" as="fetch" crossorigin />
+	<link rel="preload" href="/assets/delivery_robot/zotbot.bin" as="fetch" crossorigin />
+	<link rel="preload" href="/assets/delivery_robot/textures/lambert5SG_baseColor.png" as="image" crossorigin />
+
 	
 	<script type="module" src="/src/index.tsx"></script>
 
