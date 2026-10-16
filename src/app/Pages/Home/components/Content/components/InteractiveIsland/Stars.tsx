@@ -5,6 +5,7 @@ import GALAXY from './components/darker_eso.webp';
 import cn from './InteractiveIsland.module.scss';
 import { CameraControls } from './components/CameraControls/CameraControls';
 import { random } from 'app/utils/utils';
+import { CANVAS_DPR } from './constants';
 
 const STAR_COUNT = 150;
 const STAR_RADIUS = 1;
@@ -13,7 +14,7 @@ const GALAXY_RADIUS = 400;
 
 const Container = memo(function Container({ project }: { project: number }) {
     return (
-        <Canvas id={cn.stars}>
+        <Canvas id={cn.stars} dpr={CANVAS_DPR}>
             <CameraControls project={project} />
             <Stars />
         </Canvas>
