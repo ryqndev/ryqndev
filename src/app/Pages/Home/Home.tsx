@@ -13,27 +13,24 @@ import cn from './Home.module.scss';
 
 export const Home = memo(function Home() {
     const projectsRef = useRef<HTMLDivElement>(null);
-    const y = useScroll();
-    const { project } = useProjects(y, projectsRef);
+    const { project } = useProjects(projectsRef);
 
-    const CURTAIN_BREAKPOINT = window.innerHeight * 1.5;
-    const BACKGROUND_TEXT_BREAKPOINT = window.innerHeight / 2;
+    // Threshold selectors: Home re-renders when one of these flips, not on
+    // every scroll frame.
+    const headerHidden = useScroll((y) => y > window.innerHeight);
+    const curtainMounted = useScroll((y) => y <= window.innerHeight * 1.5);
+    const backgroundTextVisible = useScroll((y) => y > window.innerHeight / 2);
 
     return (
         <main className={cn.container}>
-            <div
-                className={clsx(
-                    cn.header,
-                    y > window.innerHeight && cn.disappear
-                )}
-            >
+            <div className={clsx(cn.header, headerHidden && cn.disappear)}>
                 {/* Fully faded out by 1.5 screens; unmount it so its fixed layer
                     and gradient animation stop costing anything after that. */}
-                {y <= CURTAIN_BREAKPOINT && <Curtain />}
+                {curtainMounted && <Curtain />}
             </div>
             <ScrollableNotice />
             <Stars project={project} />
-            <BackgroundText visible={y > BACKGROUND_TEXT_BREAKPOINT} />
+            <BackgroundText visible={backgroundTextVisible} />
             <Content project={project} projectsRef={projectsRef} />
         </main>
     );

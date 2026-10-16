@@ -1,13 +1,15 @@
 import { memo } from 'react';
+import { useScroll } from 'app/controller/hooks/useScroll';
 import cn from './ProjectName.module.scss';
 
 export const ProjectName = memo(function ProjectName({
     name,
-    y,
 }: {
     name: string;
-    y: number;
 }) {
+    // Only this small component tracks the raw scroll position (progress bar).
+    const y = useScroll();
+
     return (
         <aside className={cn.container}>
             <p>
