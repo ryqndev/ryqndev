@@ -1,10 +1,10 @@
 import { useState, useEffect, memo } from 'react';
 import type { ReactNode } from 'react';
-import { useProgress } from '@react-three/drei';
 import Plausible from 'plausible-tracker';
 import clsx from 'clsx';
 import cn from './LoadingSplash.module.scss';
 import { useLocation } from 'react-router';
+import { useLoadingStore } from 'app/controller/loading/loading.store';
 
 export const LoadingSplash = memo(function LoadingSplash({
     className,
@@ -13,7 +13,7 @@ export const LoadingSplash = memo(function LoadingSplash({
     className?: string;
     children?: ReactNode;
 }) {
-    const { progress } = useProgress();
+    const progress = useLoadingStore((state) => state.progress);
     const [close, setClose] = useState(false);
     const location = useLocation();
     const { trackPageview } = Plausible();
