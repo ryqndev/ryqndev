@@ -5,7 +5,7 @@ import { persist } from 'zustand/middleware';
 
 import { Theme } from './types';
 
-const THEME_LOCALSTORAGE_ID = '@ryqndev/theme'
+const THEME_LOCALSTORAGE_ID = '@ryqndev/ryqndev/theme'
 
 export const themes = [lightTheme, darkTheme];
 
@@ -52,7 +52,7 @@ const themeSwitch: (config: PersistType) => PersistType = (config) => (set, get,
 
 
 export const useThemeStore = create(themeSwitch(persist<ThemeStore>((set) => ({
-    theme: (localStorage.getItem(THEME_LOCALSTORAGE_ID) as Theme | null) ?? Theme.DARK,
+    theme: Theme.DARK,
     toggleTheme: () =>
         set((state) => ({ theme: (state.theme + 1) % themes.length })),
     setTheme: (theme: Theme) => set({ theme }),
