@@ -3,8 +3,6 @@ import {
     createRef,
 } from 'react';
 import type { Euler } from '@react-three/fiber';
-// @ts-ignore
-import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
 import { v4 as uuidv4 } from 'uuid';
 import { random } from 'app/utils/utils';
 
