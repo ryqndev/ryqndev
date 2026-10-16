@@ -1,47 +1,61 @@
 import clsx from 'clsx';
 import { useTranslation } from 'react-i18next';
-import { memo, useEffect, useState } from 'react';
-import type { MouseEvent } from 'react';
+import { memo, useEffect, useRef, useState } from 'react';
 import cn from './CustomMouseCursor.module.scss';
 import useDebounce from 'app/controller/hooks/useDebounce';
 
 export const CustomMouseCursor = memo(function CustomMouseCursor() {
     const { t } = useTranslation();
-    const [mouse, setMouse] = useState({
-        pos: [-100, -100],
-        target: 'none',
-        message: '',
-    });
+    const cursorRef = useRef<HTMLDivElement>(null);
 
-    const debouncedMouse = useDebounce(mouse, 80);
+    // Only what changes the cursor's appearance goes through React state.
+    // Position is written straight to the element as a transform.
+    const [hover, setHover] = useState({ target: 'none', message: '' });
+    const debouncedHover = useDebounce(hover, 80);
 
     useEffect(() => {
-        const handleMouseMove = (e: MouseEvent) => {
-            setMouse({
-                pos: [e.clientX, e.clientY],
-                // @ts-ignore: Implement custom event later
-                target: e.target.dataset?.mouseHover,
-                // @ts-ignore: Implement custom event later
-                message: e.target.dataset?.mouseHoverText ?? '',
-            });
+        let frame = 0;
+        let x = -100;
+        let y = -100;
+
+        const apply = () => {
+            frame = 0;
+            if (cursorRef.current) {
+                cursorRef.current.style.transform = `translate3d(${x}px, ${y}px, 0) translate(-50%, -50%)`;
+            }
         };
-        // @ts-ignore: Implement custom event later
-        window.addEventListener('mousemove', handleMouseMove);
+
+        const handleMouseMove = (e: MouseEvent) => {
+            x = e.clientX;
+            y = e.clientY;
+            if (!frame) frame = requestAnimationFrame(apply);
+
+            const dataset = (e.target as HTMLElement | null)?.dataset;
+            const target = dataset?.mouseHover ?? 'none';
+            const message = dataset?.mouseHoverText ?? '';
+            setHover((prev) =>
+                prev.target === target && prev.message === message
+                    ? prev
+                    : { target, message }
+            );
+        };
+
+        window.addEventListener('mousemove', handleMouseMove, { passive: true });
 
         return () => {
-            // @ts-ignore: Implement custom event later
             window.removeEventListener('mousemove', handleMouseMove);
+            if (frame) cancelAnimationFrame(frame);
         };
     }, []);
 
     return (
         <div
+            ref={cursorRef}
             className={clsx(
                 cn.container,
-                debouncedMouse.target === 'link' && cn.link,
-                debouncedMouse.target === 'button' && cn.button
+                debouncedHover.target === 'link' && cn.link,
+                debouncedHover.target === 'button' && cn.button
             )}
-            style={{ top: debouncedMouse.pos[1], left: debouncedMouse.pos[0] }}
         >
             <svg viewBox="0 0 300 300" enableBackground="new 0 0 300 300">
                 <defs>
@@ -54,7 +68,7 @@ export const CustomMouseCursor = memo(function CustomMouseCursor() {
                     <use xlinkHref="#circleTextPath" fill="none" />
                     <text fill="#fff">
                         <textPath xlinkHref="#circleTextPath">
-                            {t(debouncedMouse.message)}
+                            {t(debouncedHover.message)}
                         </textPath>
                     </text>
                 </g>
