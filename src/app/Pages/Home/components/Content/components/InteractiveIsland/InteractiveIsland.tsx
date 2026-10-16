@@ -13,6 +13,7 @@ import { Physics } from '@react-three/rapier';
 import { Zotbot } from './components/Zotbot';
 import { DrivableZotbot } from './components/Zotbot/DrivableZotbot';
 import { ProjectZotbot } from './components/ProjectZotbot/ProjectZotbot';
+import { CANVAS_DPR } from './constants';
 
 export const InteractiveIsland = memo(function InteractiveIsland({
     project,
@@ -22,7 +23,7 @@ export const InteractiveIsland = memo(function InteractiveIsland({
     return (
         <Suspense fallback={<div></div>}>
             <KeyboardControls map={map}>
-                <Canvas id={cn.container}>
+                <Canvas id={cn.container} dpr={CANVAS_DPR}>
                     <CameraControls project={project} />
                     <Lights />
                     <Physics gravity={[0, -20, 0]}>
