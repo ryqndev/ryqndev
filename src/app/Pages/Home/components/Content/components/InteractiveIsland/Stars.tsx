@@ -1,6 +1,6 @@
-import { Canvas, useFrame, useLoader } from '@react-three/fiber';
-import { memo, useMemo, useRef, useState } from 'react';
-import { BackSide, Mesh, TextureLoader } from 'three';
+import { Canvas, useLoader } from '@react-three/fiber';
+import { memo, useMemo, useState } from 'react';
+import { BackSide, TextureLoader } from 'three';
 import GALAXY from './components/darker_eso.webp';
 import cn from './InteractiveIsland.module.scss';
 import { CameraControls } from './components/CameraControls/CameraControls';
@@ -13,8 +13,9 @@ const STAR_RADIUS = 1;
 const GALAXY_RADIUS = 400;
 
 const Container = memo(function Container({ project }: { project: number }) {
+    // Nothing in here moves on its own: render only when the camera does.
     return (
-        <Canvas id={cn.stars} dpr={CANVAS_DPR}>
+        <Canvas id={cn.stars} dpr={CANVAS_DPR} frameloop="demand">
             <CameraControls project={project} />
             <Stars />
         </Canvas>
@@ -23,7 +24,6 @@ const Container = memo(function Container({ project }: { project: number }) {
 
 const Stars = memo(() => {
     const loader = useLoader(TextureLoader, GALAXY);
-    const galaxyRef = useRef<Mesh>(null);
     const [stars] = useState<[x: number, y: number, z: number][]>(() =>
         new Array(STAR_COUNT)
             .fill(undefined)
@@ -43,15 +43,9 @@ const Stars = memo(() => {
         []
     );
 
-    useFrame(() => {
-        if (!galaxyRef.current) return;
-        galaxyRef.current.rotation.y += 0.0001;
-    });
-
-
     // Credit goes to "ESO/S. Brunier (http://www.sergebrunier.com/gallerie/pleinciel/index-eng.html)"
     return (
-        <mesh rotation={[1.2, 0, 1]} ref={galaxyRef}>
+        <mesh rotation={[1.2, 0, 1]}>
             <sphereGeometry args={[GALAXY_RADIUS, 40, 40]} />
             <meshBasicMaterial side={BackSide} map={loader} />
             {stars.map((e, idx) => (
