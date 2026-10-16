@@ -27,9 +27,9 @@ export const Home = memo(function Home() {
                     y > window.innerHeight && cn.disappear
                 )}
             >
-                <Curtain
-                    y={y < CURTAIN_BREAKPOINT ? y : CURTAIN_BREAKPOINT}
-                />
+                {/* Fully faded out by 1.5 screens; unmount it so its fixed layer
+                    and gradient animation stop costing anything after that. */}
+                {y <= CURTAIN_BREAKPOINT && <Curtain y={y} />}
             </div>
             <ScrollableNotice />
             <Stars project={project} />

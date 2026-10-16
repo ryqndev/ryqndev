@@ -13,24 +13,6 @@
     }
 }
 
-@keyframes blend {
-    0% {
-        background-position: 100% 100%
-    }
-
-    33% {
-        background-position: 0% 100%
-    }
-
-    66% {
-        background-position: 0% 0%
-    }
-
-    100% {
-        background-position: 100% 0%
-    }
-}
-
 .fade-quick-enter {
     opacity: 0;
 }
