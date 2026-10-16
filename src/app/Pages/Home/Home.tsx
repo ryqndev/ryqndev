@@ -29,7 +29,7 @@ export const Home = memo(function Home() {
             >
                 {/* Fully faded out by 1.5 screens; unmount it so its fixed layer
                     and gradient animation stop costing anything after that. */}
-                {y <= CURTAIN_BREAKPOINT && <Curtain y={y} />}
+                {y <= CURTAIN_BREAKPOINT && <Curtain />}
             </div>
             <ScrollableNotice />
             <Stars project={project} />
