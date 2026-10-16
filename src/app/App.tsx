@@ -5,8 +5,8 @@ import { memo, Suspense } from 'react';
 import { lazily } from 'react-lazily';
 import { Route, Routes } from 'react-router';
 
-import { CustomMouseCursor } from './components/CustomMouseCursor/CustomMouseCursor';
-import { LoadingSplash } from './components/LoadingSplash/LoadingSplash';
+import { CustomMouseCursor } from './Components/CustomMouseCursor/CustomMouseCursor';
+import { LoadingSplash } from './Components/LoadingSplash/LoadingSplash';
 
 const { Home } = lazily(() => import('@pages/Home/Home'));
 const { Scuba } = lazily(() => import('@pages/Scuba/Scuba'));

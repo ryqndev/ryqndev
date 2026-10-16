@@ -20,11 +20,11 @@
         "noUnusedParameters": true,
         "noFallthroughCasesInSwitch": true,
         "paths": {
-            "@pages/*": ["app/pages/*"],
-            "@components/*": ["app/components/*"],
-            "@assets/*": ["assets/*"]
-        },
-        "baseUrl": "./src"
+            "@pages/*": ["./src/app/Pages/*"],
+            "@components/*": ["./src/app/Components/*"],
+            "@assets/*": ["./src/assets/*"],
+            "app/*": ["./src/app/*"]
+        }
     },
     "include": ["src"],
     "references": [{ "path": "./tsconfig.node.json" }]
