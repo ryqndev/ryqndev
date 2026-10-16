@@ -20,8 +20,8 @@
         "noUnusedParameters": true,
         "noFallthroughCasesInSwitch": true,
         "paths": {
-            "@pages/*": ["app/pages/*"],
-            "@components/*": ["app/components/*"],
+            "@pages/*": ["app/Pages/*"],
+            "@components/*": ["app/Components/*"],
             "@assets/*": ["assets/*"]
         },
         "baseUrl": "./src"
