@@ -33,7 +33,7 @@
         },
         "url": "https://learn.ryqn.dev",
         "image": {
-            "src": "/assets/learn.png",
+            "src": "/assets/learn.webp",
             "alt": "Screenshot of Learn article"
         },
         "links": [
@@ -79,7 +79,7 @@
         },
         "url": "https://pickban.pro",
         "image": {
-            "src": "assets/pickbanpro.png",
+            "src": "/assets/pickbanpro.webp",
             "alt": "Pick Ban Pro product display"
         },
         "links": [
