@@ -4,6 +4,10 @@ import { memo, useRef } from 'react';
 import { Color, DirectionalLight } from 'three';
 import { useShallow } from 'zustand/shallow';
 
+// Lerp targets for the key light, allocated once instead of on every frame.
+const KEY_LIGHT_DARK_THEME = new Color('#ffff00');
+const KEY_LIGHT_LIGHT_THEME = new Color('#6633dd');
+
 export const Lights = memo(function Lights() {
     const light = useRef<DirectionalLight>(null);
     const theme = useThemeStore(useShallow(store => store.theme));
@@ -11,7 +15,7 @@ export const Lights = memo(function Lights() {
 
     useFrame(() => {
         light.current?.color.lerp(
-            theme ? new Color('#ffff00') : new Color('#6633dd'),
+            theme ? KEY_LIGHT_DARK_THEME : KEY_LIGHT_LIGHT_THEME,
             0.05
         );
     });
