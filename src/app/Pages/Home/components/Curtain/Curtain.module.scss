@@ -54,7 +54,7 @@
         &#behind {
             position: absolute;
             pointer-events: none;
-            transition: transform linear 200ms;
+            will-change: transform;
 
             svg {
                 pointer-events: none;
@@ -68,7 +68,7 @@
         &#front {
             opacity: 1;
             color: var(--text-color);
-            transition: transform linear 200ms, opacity 200ms;
+            will-change: transform, opacity;
             pointer-events: none;
 
             svg {
@@ -87,7 +87,7 @@
         height: 70vw;
         width: 70vw;
         overflow: hidden;
-        transition: transform linear 200ms;
+        will-change: transform;
         padding: 20px;
 
         // The moving gradient is an oversized pseudo-element that gets
