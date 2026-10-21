@@ -1,7 +1,4 @@
 import { Fragment, createRef, memo, useEffect, useRef } from 'react';
-import { useLoader } from '@react-three/fiber';
-// @ts-ignore
-import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
 
 const { CylinderCollider, RigidBody } = lazily(
     () => import('@react-three/rapier')
@@ -16,7 +13,7 @@ import { lazily } from 'react-lazily';
 const ZOTBOT_GLTF = '/assets/delivery_robot/zotbot.gltf';
 
 export const DrivableZotbot = memo(function DrivableZotbot() {
-    const { scene } = useLoader(GLTFLoader, ZOTBOT_GLTF);
+    const { scene } = useGLTF(ZOTBOT_GLTF);
     const zotbotRef = useRef<RapierRigidBody>(null);
     const wheelPositions: Vector3Tuple[] = [
         [-7, 1.5, 4],
