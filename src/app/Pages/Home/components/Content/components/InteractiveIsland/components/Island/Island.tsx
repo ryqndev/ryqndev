@@ -130,4 +130,8 @@ export function Island(props: JSX.IntrinsicElements['group']) {
     );
 }
 
+// The island model is Draco-compressed (2.7 MB -> ~360 kB). Serve the decoder
+// ourselves instead of drei's default gstatic CDN so it comes over the same
+// connection as everything else.
+useGLTF.setDecoderPath('/draco/');
 useGLTF.preload('/assets/updated_island/floating island.gltf');
