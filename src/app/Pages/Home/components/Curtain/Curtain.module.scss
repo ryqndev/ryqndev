@@ -54,7 +54,7 @@
         &#behind {
             position: absolute;
             pointer-events: none;
-            transition: transform linear 200ms;
+            will-change: transform;
 
             svg {
                 pointer-events: none;
@@ -68,7 +68,7 @@
         &#front {
             opacity: 1;
             color: var(--text-color);
-            transition: transform linear 200ms, opacity 200ms;
+            will-change: transform, opacity;
             pointer-events: none;
 
             svg {
@@ -82,14 +82,29 @@
     }
 
     #border {
+        position: relative;
         z-index: 1;
         height: 70vw;
         width: 70vw;
-        background: linear-gradient(225deg, #ff00ff, #00ffff);
-        transition: transform linear 200ms;
+        overflow: hidden;
+        will-change: transform;
         padding: 20px;
-        background-size: 200% 200%;
-        animation: blend 4s ease infinite alternate-reverse;
+
+        // The moving gradient is an oversized pseudo-element that gets
+        // translated, instead of animating `background-position` on the box.
+        // Transforms run on the compositor; background-position repainted
+        // the whole 70vw square on the main thread every frame.
+        &::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(225deg, #ff00ff, #00ffff);
+            will-change: transform;
+            animation: blend-slide 4s ease infinite alternate-reverse;
+        }
 
         @media screen and (aspect-ratio >=1/1) {
             height: 70vh;
@@ -97,11 +112,33 @@
         }
 
         #content {
+            position: relative;
             height: 100%;
             width: 100%;
             background-color: var(--background-color);
             overflow: hidden;
             transition: background-color 350ms;
         }
+    }
+}
+
+// Same path the old `blend` background-position animation took
+// (100% 100% -> 0% 100% -> 0% 0% -> 100% 0%), expressed as a translate of
+// the 200%-sized gradient.
+@keyframes blend-slide {
+    0% {
+        transform: translate(-50%, -50%);
+    }
+
+    33% {
+        transform: translate(0%, -50%);
+    }
+
+    66% {
+        transform: translate(0%, 0%);
+    }
+
+    100% {
+        transform: translate(-50%, 0%);
     }
 }
