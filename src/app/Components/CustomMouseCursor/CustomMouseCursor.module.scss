@@ -9,9 +9,12 @@
 
 .container {
     position: fixed;
-    top: -100px;
-    left: -100px;
-    transform: translate(-50%, -50%);
+    top: 0;
+    left: 0;
+
+    // Position is applied as a transform from the mousemove handler (see tsx),
+    // so following the pointer never triggers layout. Start parked offscreen.
+    transform: translate3d(-100px, -100px, 0) translate(-50%, -50%);
     height: 50px;
     width: 50px;
 
@@ -24,9 +27,9 @@
     pointer-events: none;
     user-select: none;
 
-    will-change: top, left;
+    will-change: transform;
 
-    transition: top 250ms ease-out, left 250ms ease-out, height 350ms, width 350ms, color 250ms, background-color 250ms, border-color 250ms;
+    transition: transform 250ms ease-out, height 350ms, width 350ms, color 250ms, background-color 250ms, border-color 250ms;
 
     @media screen and (max-width: 768px) {
         display: none;
