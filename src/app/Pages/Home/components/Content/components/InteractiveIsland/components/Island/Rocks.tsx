@@ -1,10 +1,48 @@
 import { useGLTF } from '@react-three/drei';
 import type { GLTFResult } from './types';
 
-export const Rocks = () => {
-    const { nodes, materials } = useGLTF(
-        '/assets/updated_island/floating island.gltf'
-    ) as GLTFResult;
+const ISLAND_GLTF = '/assets/updated_island/floating island.gltf';
+
+/** Rocks lying on the walkable top surface; zotbots can land on these. */
+export const SurfaceRocks = () => {
+    const { nodes, materials } = useGLTF(ISLAND_GLTF) as GLTFResult;
+    return (
+        <>
+            <mesh
+                geometry={nodes.rock046.geometry}
+                material={materials['Color texture']}
+                position={[-4.012, 0.715, 0.769]}
+                rotation={[1.58, 0.044, -0.014]}
+                scale={1.795}
+            />
+            <mesh
+                geometry={nodes.rock047.geometry}
+                material={materials['Color texture']}
+                position={[-2.098, 0.55, 5.203]}
+                rotation={[-0.328, 0.657, -1.44]}
+                scale={[0.187, 0.386, 0.343]}
+            />
+            <mesh
+                geometry={nodes.rock062.geometry}
+                material={materials['Color texture']}
+                position={[-2.378, 0.546, -4.534]}
+                rotation={[-1.427, 0.046, 0.878]}
+                scale={[0.906, 0.91, 1.31]}
+            />
+            <mesh
+                geometry={nodes.rock063.geometry}
+                material={materials['Color texture']}
+                position={[1.933, 0.6, -0.748]}
+                rotation={[-1.427, 0.046, 0.878]}
+                scale={1.04}
+            />
+        </>
+    );
+};
+
+/** Boulders hanging below the island. Decorative only: nothing ever touches them. */
+export const UndersideRocks = () => {
+    const { nodes, materials } = useGLTF(ISLAND_GLTF) as GLTFResult;
     return (
         <>
             <mesh
@@ -104,34 +142,6 @@ export const Rocks = () => {
                 position={[6.846, -5.821, 4.703]}
                 rotation={[-2.392, 0.346, 0.571]}
                 scale={1.217}
-            />
-            <mesh
-                geometry={nodes.rock046.geometry}
-                material={materials['Color texture']}
-                position={[-4.012, 0.715, 0.769]}
-                rotation={[1.58, 0.044, -0.014]}
-                scale={1.795}
-            />
-            <mesh
-                geometry={nodes.rock047.geometry}
-                material={materials['Color texture']}
-                position={[-2.098, 0.55, 5.203]}
-                rotation={[-0.328, 0.657, -1.44]}
-                scale={[0.187, 0.386, 0.343]}
-            />
-            <mesh
-                geometry={nodes.rock062.geometry}
-                material={materials['Color texture']}
-                position={[-2.378, 0.546, -4.534]}
-                rotation={[-1.427, 0.046, 0.878]}
-                scale={[0.906, 0.91, 1.31]}
-            />
-            <mesh
-                geometry={nodes.rock063.geometry}
-                material={materials['Color texture']}
-                position={[1.933, 0.6, -0.748]}
-                rotation={[-1.427, 0.046, 0.878]}
-                scale={1.04}
             />
             <mesh
                 geometry={nodes.rock064.geometry}

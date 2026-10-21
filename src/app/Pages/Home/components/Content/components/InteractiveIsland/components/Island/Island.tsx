@@ -1,7 +1,7 @@
 import { type JSX } from 'react';
 import { useGLTF } from '@react-three/drei';
 import type { GLTFResult } from './types';
-import { Rocks } from './Rocks';
+import { SurfaceRocks, UndersideRocks } from './Rocks';
 import { Lamps } from './Lamps';
 import { Bushes } from './Bushes';
 import { RigidBody } from '@react-three/rapier';
@@ -12,15 +12,11 @@ export function Island(props: JSX.IntrinsicElements['group']) {
     ) as GLTFResult;
     return (
         <group {...props} dispose={null}>
+            {/* Only what a falling zotbot can land on gets a (trimesh) collider:
+                the walkable top surface and the props standing on it. */}
             <RigidBody colliders="trimesh" type="fixed" friction={0}>
                 <Lamps />
                 <Bushes />
-                <mesh
-                    geometry={nodes.base001.geometry}
-                    material={materials['Color texture']}
-                    position={[-1.63, -8.489, 0.72]}
-                    scale={[12.702, 12.702, 12.975]}
-                />
                 <mesh
                     geometry={nodes.grass001.geometry}
                     material={materials['Color texture']}
@@ -64,8 +60,17 @@ export function Island(props: JSX.IntrinsicElements['group']) {
                     scale={[0.078, 0.295, 0.296]}
                 />
 
-                <Rocks />
+                <SurfaceRocks />
             </RigidBody>
+            {/* The rock underside and the boulders hanging below it are never
+                touched by anything, so they stay plain meshes. */}
+            <mesh
+                geometry={nodes.base001.geometry}
+                material={materials['Color texture']}
+                position={[-1.63, -8.489, 0.72]}
+                scale={[12.702, 12.702, 12.975]}
+            />
+            <UndersideRocks />
             <group
                 position={[-5.305, 0.566, 3.731]}
                 rotation={[0.088, 0.134, 0.19]}
