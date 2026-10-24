@@ -5,9 +5,7 @@ import {
     useEffect,
     useState,
 } from 'react';
-import { useFrame, useLoader } from '@react-three/fiber';
-// @ts-ignore
-import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
+import { useFrame } from '@react-three/fiber';
 import { Clone, useGLTF, useKeyboardControls } from '@react-three/drei';
 import { RigidBody } from '@react-three/rapier';
 import type { CustomControls } from '../controllers/useCustomKeyMapping';
@@ -16,7 +14,7 @@ import { generateNZotbots, getRandomSpawnState } from 'app/controller/random-gen
 const ZOTBOT_GLTF = '/assets/delivery_robot/zotbot.gltf';
 
 export const Zotbot = memo(function Zotbot() {
-    const { scene } = useLoader(GLTFLoader, ZOTBOT_GLTF);
+    const { scene } = useGLTF(ZOTBOT_GLTF);
     const [bots, setBots] = useState(() => generateNZotbots(4));
 
     const dropBot = useCallback(() => {
