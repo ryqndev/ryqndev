@@ -1,27 +1,36 @@
-import { useEffect, useState, useCallback } from 'react';
+import { useCallback, useEffect } from 'react';
 import type { RefObject } from 'react';
+import { refreshScroll, useScroll } from 'app/controller/hooks/useScroll';
+
+const MAX_PROJECT = 3;
 
 // literally what the heck is this code I wrote ????
 // college me was an actual monster what the heck
-export const useProjects = (y: number, ref: RefObject<HTMLDivElement | null>) => {
-    const [project, _setProject] = useState(0);
+// (formula preserved as-is; it just runs as a scroll selector now, so the
+// caller only re-renders when the resulting index changes)
+const projectAt = (y: number, el: HTMLDivElement | null) =>
+    el
+        ? Math.min(
+              // WHAT IS THIS SQUIGGLY LINE MATH? WHY WOULD I DO THIS?
+              ~~(
+                  (y -
+                      el.getBoundingClientRect().top -
+                      window.innerHeight * 1.6) /
+                  window.innerHeight /
+                  2
+              ),
+              MAX_PROJECT
+          )
+        : 0;
 
+export const useProjects = (ref: RefObject<HTMLDivElement | null>) => {
+    const project = useScroll((y) => projectAt(y, ref.current));
+
+    // The ref is attached after the first render; re-evaluate once it exists
+    // (matters when the page loads already scrolled, e.g. a reload mid-page).
     useEffect(() => {
-        if (!ref.current) return;
-        _setProject(
-            Math.min(
-                // WHAT IS THIS SQUIGGLY LINE MATH? WHY WOULD I DO THIS?
-                ~~(
-                    (y -
-                        ref.current?.getBoundingClientRect()?.top -
-                        window.innerHeight * 1.6) /
-                    window.innerHeight /
-                    2
-                ),
-                3
-            )
-        );
-    }, [ref, y]);
+        refreshScroll();
+    }, []);
 
     const setProject = useCallback(
         (projectid: number) => {
