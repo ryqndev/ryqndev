@@ -6,9 +6,11 @@ import './i18n/i18n';
 
 console.log('v.4.0.0');
 
-Plausible({
+const plausible = Plausible({
     domain: 'ryqn.dev',
 });
+// One pageview per navigation (hooks history.pushState / popstate).
+plausible.enableAutoPageviews();
 
 const container = document.getElementById('root');
 const root = createRoot(container!);

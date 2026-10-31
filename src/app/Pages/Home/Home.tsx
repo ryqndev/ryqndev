@@ -7,6 +7,7 @@ import { BackgroundText } from './components/BackgroundText/BackgroundText';
 import { Stars } from './components/Content/components/InteractiveIsland/Stars';
 import { Content } from './components/Content/Content';
 import { Curtain } from './components/Curtain/Curtain';
+import { LoadingProgressBridge } from './components/LoadingProgressBridge';
 import { useProjects } from './controller/useProjects';
 import cn from './Home.module.scss';
 
@@ -35,6 +36,7 @@ export const Home = memo(function Home() {
             <Stars project={project} />
             <BackgroundText visible={y > BACKGROUND_TEXT_BREAKPOINT} />
             <Content project={project} projectsRef={projectsRef} />
+            <LoadingProgressBridge />
         </main>
     );
 });
