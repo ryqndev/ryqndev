@@ -1,0 +1,24 @@
+{
+    "name": "@ryqndev/scuba",
+    "private": true,
+    "version": "0.0.0",
+    "main": "src/index.ts",
+    "sideEffects": [
+        "**/*.scss"
+    ],
+    "scripts": {
+        "compile": "tsc -b"
+    },
+    "dependencies": {
+        "@react-three/drei": "catalog:",
+        "@react-three/fiber": "catalog:",
+        "@ryqndev/components": "workspace:*",
+        "react": "catalog:",
+        "three": "catalog:"
+    },
+    "devDependencies": {
+        "@types/three": "catalog:",
+        "fs": "0.0.1-security",
+        "sharp": "^0.35.5"
+    }
+}

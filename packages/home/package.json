@@ -1,0 +1,30 @@
+{
+    "name": "@ryqndev/home",
+    "private": true,
+    "version": "0.0.0",
+    "main": "src/index.ts",
+    "sideEffects": [
+        "**/*.scss"
+    ],
+    "scripts": {
+        "compile": "tsc -b"
+    },
+    "dependencies": {
+        "@react-three/drei": "catalog:",
+        "@react-three/fiber": "catalog:",
+        "@react-three/rapier": "catalog:",
+        "@ryqndev/components": "workspace:*",
+        "@ryqndev/loading": "workspace:*",
+        "@ryqndev/theme": "workspace:*",
+        "clsx": "catalog:",
+        "react": "catalog:",
+        "react-i18next": "catalog:",
+        "react-lazily": "catalog:",
+        "three": "catalog:",
+        "uuid": "^14.0.3",
+        "zustand": "catalog:"
+    },
+    "devDependencies": {
+        "@types/three": "catalog:"
+    }
+}

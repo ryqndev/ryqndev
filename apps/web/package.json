@@ -1,0 +1,45 @@
+{
+    "name": "web",
+    "private": true,
+    "version": "0.0.0",
+    "scripts": {
+        "dev": "vite",
+        "build": "tsc -b && vite build && cp build/index.html build/404.html",
+        "preview": "vite preview"
+    },
+    "dependencies": {
+        "@ryqndev/components": "workspace:*",
+        "@ryqndev/home": "workspace:*",
+        "@ryqndev/i18n": "workspace:*",
+        "@ryqndev/loading": "workspace:*",
+        "@ryqndev/scuba": "workspace:*",
+        "@ryqndev/theme": "workspace:*",
+        "plausible-tracker": "^0.3.8",
+        "react": "catalog:",
+        "react-dom": "catalog:",
+        "react-lazily": "catalog:",
+        "react-router": "catalog:"
+    },
+    "devDependencies": {
+        "@types/node": "catalog:",
+        "@types/react": "catalog:",
+        "@types/react-dom": "catalog:",
+        "@vitejs/plugin-react-swc": "catalog:",
+        "sass": "catalog:",
+        "typescript": "catalog:",
+        "vite": "catalog:",
+        "vite-plugin-svgr": "catalog:"
+    },
+    "browserslist": {
+        "production": [
+            ">0.2%",
+            "not dead",
+            "not op_mini all"
+        ],
+        "development": [
+            "last 1 chrome version",
+            "last 1 firefox version",
+            "last 1 safari version"
+        ]
+    }
+}
