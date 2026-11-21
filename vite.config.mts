@@ -53,12 +53,27 @@ const preloadRouteChunks = (facadeSuffixes: string[]): Plugin => {
     };
 };
 
+// Dev server only: serve the standalone pages in public/ at their folder URL,
+// the way static hosting does in production (/rimefire -> public/rimefire/index.html).
+const standalonePages = (...names: string[]): Plugin => ({
+    name: 'standalone-pages',
+    apply: 'serve',
+    configureServer(server) {
+        server.middlewares.use((req, _res, next) => {
+            const path = (req.url ?? '').split('?')[0].replace(/\/$/, '');
+            if (names.some((n) => path === `/${n}`)) req.url = `${path}/index.html`;
+            next();
+        });
+    },
+});
+
 export default defineConfig({
     plugins: [
         react(),
         svgr(),
         viteTsconfigPaths(),
         preloadRouteChunks(['/Home/Home.tsx', '/InteractiveIsland/InteractiveIsland.tsx']),
+        standalonePages('rimefire'),
     ],
     build: {
         outDir: './build',

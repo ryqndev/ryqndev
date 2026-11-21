@@ -26,6 +26,7 @@
         "start": "vite",
         "dev": "vite",
         "build": "tsc && vite build && cp build/index.html build/404.html",
+        "build:rimefire": "node games/rimefire/build.mjs",
         "serve": "vite preview",
         "predeploy": "npm run build",
         "deploy": "gh-pages -d build",
