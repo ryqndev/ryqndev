@@ -9,6 +9,7 @@ import { updatePylons } from './pylons';
 import { blobs, bolts, D, fires, foes, gels, shots } from './state';
 import { updateShots } from './weapons';
 
+export { GEL_AIM_RANGE, lobVelocity } from './ballistics';
 export { igniteAt } from './blobs';
 export { hurtPlayer } from './damage';
 export { spawnFoe } from './foe-common';

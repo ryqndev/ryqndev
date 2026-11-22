@@ -3,7 +3,7 @@ import { clamp } from '@ryqndev/rimefire-math';
 import { cam, clearScorch, type Frame, initGL, initRenderer, post, R, render, resize, setCamera, setScene } from '@ryqndev/rimefire-renderer';
 
 import { blobs, D, fireGel, fireSpark, foes, idleCombat, resetCombat, spawnFoe, updateCombat } from './combat';
-import { goo } from './combat/state';
+import { gels, goo } from './combat/state';
 import { listen } from './dom';
 import { clearParticles, debris, gpu, lightU, pcount, sprite, updateDebris, updateLights, updateParticles, updateShockwaves } from './fx';
 import { hud } from './hud';
@@ -83,7 +83,7 @@ export function mountGame(canvas: HTMLCanvasElement, { debug = false }: GameOpti
     });
     const off = [listen(window, 'resize', resize), listen(document, 'visibilitychange', () => suspendAudio(document.hidden))];
     if (debug) {
-        (window as unknown as Record<string, unknown>).RF = { S, PL, D, W, R, cam, post, foes, blobs, keys, mouse, spawnFoe, fireGel, fireSpark, setMode, swapWeapon, resetGame, opts };
+        (window as unknown as Record<string, unknown>).RF = { S, PL, D, W, R, cam, post, foes, blobs, gels, keys, mouse, spawnFoe, fireGel, fireSpark, setMode, swapWeapon, resetGame, opts };
     }
     last = performance.now();
     rafId = requestAnimationFrame(frame);

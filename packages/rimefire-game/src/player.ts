@@ -2,18 +2,19 @@ import { setListener, sfx } from '@ryqndev/rimefire-audio';
 import { clamp, damp, m4, m4aim, m4mul, m4trs, PI, rnd, rnds, vnoise } from '@ryqndev/rimefire-math';
 import { addInstance, cam, setCamera } from '@ryqndev/rimefire-renderer';
 
-import { aimDist, fireGel, fireSpark } from './combat';
+import { aimDist, fireGel, fireSpark, GEL_AIM_RANGE, lobVelocity } from './combat';
 import { flash, fxPuff, light, shake, spawn } from './fx';
 import { keys, mouse, opts } from './input';
 import { M } from './models';
 import { PL, S } from './state';
 import { ARENA, groundAt, height, pushOut, STEP } from './world';
 
-// scratch: viewmodel matrix, local temporaries and the muzzle position
+// scratch: viewmodel matrix, local temporaries, the muzzle position and a gel launch velocity
 const VM = m4(),
     Lm = m4(),
     Tm = m4(),
-    mz = { x: 0, y: 0, z: 0 };
+    mz = { x: 0, y: 0, z: 0 },
+    lob = { x: 0, y: 0, z: 0 };
 
 export function resetPlayer() {
     Object.assign(PL, {
@@ -191,26 +192,10 @@ export function updatePlayer(dt: number) {
                     p.rof = 0.2;
                 } else {
                     vmWorld(0, 0, -0.5, mz);
-                    // lob the gel so it lands on the crosshair
-                    const dx = tx - mz.x,
-                        dy = ty - mz.y,
-                        dz = tz - mz.z,
-                        hx = Math.hypot(dx, dz),
-                        v = 34,
-                        gr = 15;
-                    let vx, vy, vz;
-                    if (hx < 0.6) {
-                        vx = cam.fx * v;
-                        vy = cam.fy * v;
-                        vz = cam.fz * v;
-                    } else {
-                        const disc = v * v * v * v - gr * (gr * hx * hx + 2 * dy * v * v);
-                        const th = disc < 0 ? 0.78 : Math.atan((v * v - Math.sqrt(disc)) / (gr * hx));
-                        vx = (dx / hx) * v * Math.cos(th);
-                        vz = (dz / hx) * v * Math.cos(th);
-                        vy = v * Math.sin(th);
-                    }
-                    fireGel(mz.x, mz.y, mz.z, vx + rnds(1.1), vy + rnds(0.7), vz + rnds(1.1));
+                    // lob the gel so it lands on the crosshair, or passes through it at the edge of its aim range
+                    const reach = Math.min(d, GEL_AIM_RANGE);
+                    lobVelocity(cam.x + cam.fx * reach - mz.x, cam.y + cam.fy * reach - mz.y, cam.z + cam.fz * reach - mz.z, lob);
+                    fireGel(mz.x, mz.y, mz.z, lob.x + rnds(1.1), lob.y + rnds(0.7), lob.z + rnds(1.1));
                     p.gel -= 2.4;
                     p.gelT = 0;
                     p.rof = 1 / 11.5;

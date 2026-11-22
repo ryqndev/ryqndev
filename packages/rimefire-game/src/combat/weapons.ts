@@ -4,6 +4,7 @@ import { rnd } from '@ryqndev/rimefire-math';
 import { flash, fxGooSplat, fxSparks, light, sprite } from '../fx';
 import { hud } from '../hud';
 import { segHit } from '../world';
+import { GEL_GRAVITY } from './ballistics';
 import { addBlob, igniteAt, igniteBlob } from './blobs';
 import { damage } from './damage';
 import { eh, segFoes, segSphere } from './hit';
@@ -28,7 +29,7 @@ export function updateShots(dt: number) {
     for (let i = gels.length - 1; i >= 0; i--) {
         const g = gels[i];
         g.age += dt;
-        g.vy -= 15 * dt;
+        g.vy -= GEL_GRAVITY * dt;
         const nx = g.x + g.vx * dt,
             ny = g.y + g.vy * dt,
             nz = g.z + g.vz * dt;
