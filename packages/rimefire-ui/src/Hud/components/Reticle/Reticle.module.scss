@@ -1,0 +1,165 @@
+@use '../../../styles/tokens' as *;
+
+// zero-size anchors at the centre of the screen; children are positioned around them
+.crosshair,
+.hit,
+.damage {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: 0;
+    height: 0;
+}
+
+.crosshair {
+    i {
+        position: absolute;
+        background: #fff;
+        box-shadow: 0 0 3px rgb(0 0 0 / 70%);
+        transition: all 0.12s;
+    }
+
+    .dot {
+        width: 3px;
+        height: 3px;
+        left: -1.5px;
+        top: -1.5px;
+        border-radius: 50%;
+    }
+
+    .top {
+        width: 2px;
+        height: 7px;
+        left: -1px;
+        top: -15px;
+    }
+
+    .bottom {
+        width: 2px;
+        height: 7px;
+        left: -1px;
+        top: 8px;
+    }
+
+    .left {
+        width: 7px;
+        height: 2px;
+        left: -15px;
+        top: -1px;
+    }
+
+    .right {
+        width: 7px;
+        height: 2px;
+        left: 8px;
+        top: -1px;
+    }
+
+    .ring {
+        position: absolute;
+        width: 26px;
+        height: 26px;
+        left: -14px;
+        top: -14px;
+        border: 1.5px solid $gel;
+        border-radius: 50%;
+        opacity: 0;
+        transition: opacity 0.12s;
+        box-shadow: 0 0 4px rgb(0 0 0 / 50%);
+    }
+
+    // gelcaster: ticks pushed out around a ring, since the shot is lobbed
+    &.gel {
+        i {
+            background: $gel;
+        }
+
+        .top {
+            top: -21px;
+            height: 4px;
+        }
+
+        .bottom {
+            top: 17px;
+            height: 4px;
+        }
+
+        .left {
+            left: -21px;
+            width: 4px;
+        }
+
+        .right {
+            left: 17px;
+            width: 4px;
+        }
+
+        .ring {
+            opacity: 0.85;
+        }
+    }
+
+    &.striker i {
+        background: $spark-soft;
+    }
+}
+
+.hit {
+    opacity: 0;
+
+    i {
+        position: absolute;
+        width: 11px;
+        height: 2px;
+        background: #fff;
+        left: -5.5px;
+        top: -1px;
+
+        &:nth-child(1) {
+            transform: rotate(45deg) translateX(13px);
+        }
+
+        &:nth-child(2) {
+            transform: rotate(135deg) translateX(13px);
+        }
+
+        &:nth-child(3) {
+            transform: rotate(225deg) translateX(13px);
+        }
+
+        &:nth-child(4) {
+            transform: rotate(315deg) translateX(13px);
+        }
+    }
+
+    &.kill i {
+        background: #ff7a3c;
+        width: 15px;
+    }
+}
+
+.resist {
+    position: absolute;
+    left: 50%;
+    top: calc(50% + 34px);
+    transform: translateX(-50%);
+    font-size: 10px;
+    letter-spacing: 0.3em;
+    color: $ice;
+    opacity: 0;
+}
+
+.damage {
+    opacity: 0;
+
+    i {
+        position: absolute;
+        left: -46px;
+        top: -150px;
+        width: 92px;
+        height: 26px;
+        border-top: 4px solid #ff4a38;
+        border-radius: 50% / 100% 100% 0 0;
+        filter: drop-shadow(0 0 6px #ff2a18);
+    }
+}

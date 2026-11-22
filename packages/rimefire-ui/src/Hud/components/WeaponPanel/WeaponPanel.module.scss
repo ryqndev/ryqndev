@@ -1,0 +1,72 @@
+@use '../../../styles/tokens' as *;
+
+.panel {
+    position: absolute;
+    right: 28px;
+    bottom: 26px;
+    display: flex;
+    gap: 10px;
+    align-items: flex-end;
+}
+
+.card {
+    width: 150px;
+    padding: 10px 12px 11px;
+    background: $panel;
+    border-top: 2px solid rgb(255 255 255 / 14%);
+    opacity: 0.45;
+    transform: translateY(6px);
+    transition: all 0.16s;
+    backdrop-filter: blur(6px);
+
+    &.active {
+        opacity: 1;
+        transform: none;
+    }
+}
+
+.name {
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 0.14em;
+    display: flex;
+    justify-content: space-between;
+
+    span {
+        opacity: 0.5;
+        font-weight: 400;
+    }
+}
+
+.bar {
+    @include bar;
+}
+
+.fill {
+    @include bar-fill;
+}
+
+.gel {
+    &.active {
+        border-color: $gel;
+    }
+
+    .fill {
+        background: $gel;
+    }
+
+    // tank ran empty: locked out until it recharges past the threshold
+    &.dry .fill {
+        background: $danger;
+    }
+}
+
+.striker {
+    &.active {
+        border-color: $spark;
+    }
+
+    .fill {
+        background: $spark;
+    }
+}

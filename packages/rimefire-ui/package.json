@@ -1,0 +1,18 @@
+{
+    "name": "@ryqndev/rimefire-ui",
+    "private": true,
+    "version": "0.0.0",
+    "main": "src/index.ts",
+    "sideEffects": [
+        "**/*.scss"
+    ],
+    "scripts": {
+        "compile": "tsc -b"
+    },
+    "dependencies": {
+        "@ryqndev/rimefire-game": "workspace:*",
+        "clsx": "catalog:",
+        "react": "catalog:",
+        "zustand": "catalog:"
+    }
+}

@@ -1,0 +1,54 @@
+@use '../../../styles/tokens' as *;
+
+.boss {
+    position: absolute;
+    left: 50%;
+    top: 26px;
+    width: min(520px, 60vw);
+    transform: translateX(-50%);
+    text-align: center;
+    opacity: 0;
+    transition: opacity 0.6s;
+
+    &.on {
+        opacity: 1;
+    }
+}
+
+.label {
+    @include label;
+}
+
+.bar {
+    @include bar(7px);
+}
+
+// core exposed: hot. Armoured (frost nodes intact): cold.
+.fill {
+    @include bar-fill(linear-gradient(90deg, #ff7a1c, #ffd08a));
+
+    .armored & {
+        background: linear-gradient(90deg, #6fb8e6, #bfeaff);
+    }
+}
+
+.nodes {
+    display: flex;
+    justify-content: center;
+    gap: 7px;
+    margin-top: 8px;
+
+    i {
+        width: 9px;
+        height: 9px;
+        transform: rotate(45deg);
+        background: $ice;
+        box-shadow: 0 0 8px #49c8ff;
+        transition: all 0.3s;
+
+        &.broken {
+            background: rgb(255 255 255 / 15%);
+            box-shadow: none;
+        }
+    }
+}

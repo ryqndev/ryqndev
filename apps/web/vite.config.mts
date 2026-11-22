@@ -52,27 +52,24 @@ const preloadRouteChunks = (facadeSuffixes: string[]): Plugin => {
     };
 };
 
-// Dev server only: serve the standalone pages in public/ at their folder URL,
-// the way static hosting does in production (/rimefire -> public/rimefire/index.html).
-const standalonePages = (...names: string[]): Plugin => ({
-    name: 'standalone-pages',
-    apply: 'serve',
-    configureServer(server) {
-        server.middlewares.use((req, _res, next) => {
-            const path = (req.url ?? '').split('?')[0].replace(/\/$/, '');
-            if (names.some((n) => path === `/${n}`)) req.url = `${path}/index.html`;
-            next();
-        });
-    },
-});
-
 export default defineConfig({
     plugins: [
         react(),
         svgr(),
         preloadRouteChunks(['/packages/home/src/index.ts', '/InteractiveIsland/InteractiveIsland.tsx']),
-        standalonePages('rimefire'),
     ],
+    server: {
+        // The game is its own app (apps/rimefire). In dev it runs on its own server and is reached
+        // through this one at /rimefire; in production the root build copies it into this app's output.
+        proxy: {
+            '/rimefire': {
+                target: 'http://localhost:5174',
+                ws: true,
+                // static hosts redirect /rimefire to /rimefire/; do the equivalent here
+                rewrite: (path) => (path === '/rimefire' ? '/rimefire/' : path),
+            },
+        },
+    },
     build: {
         outDir: './build',
         rollupOptions: {

@@ -1,0 +1,18 @@
+{
+    "name": "@ryqndev/rimefire-game",
+    "private": true,
+    "version": "0.0.0",
+    "main": "src/index.ts",
+    "sideEffects": [
+        "**/*.scss"
+    ],
+    "scripts": {
+        "compile": "tsc -b"
+    },
+    "dependencies": {
+        "@ryqndev/rimefire-audio": "workspace:*",
+        "@ryqndev/rimefire-math": "workspace:*",
+        "@ryqndev/rimefire-renderer": "workspace:*",
+        "zustand": "catalog:"
+    }
+}

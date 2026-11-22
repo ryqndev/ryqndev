@@ -1,0 +1,19 @@
+// Assembles the deployable site: the web app's build plus every other app mounted under its path.
+// Runs at the end of `pnpm build`; `pnpm deploy` then publishes apps/web/build.
+import { cpSync, existsSync, rmSync } from 'node:fs';
+import { join } from 'node:path';
+
+const root = join(import.meta.dirname, '..');
+const site = join(root, 'apps/web/build');
+
+// app build output -> path it is served from
+const mounts = { 'apps/rimefire/build': 'rimefire' };
+
+for (const [from, to] of Object.entries(mounts)) {
+    const src = join(root, from);
+    if (!existsSync(src)) throw new Error(`${from} is missing: build that app first`);
+    const dest = join(site, to);
+    rmSync(dest, { recursive: true, force: true });
+    cpSync(src, dest, { recursive: true });
+    console.log(`site: ${from} -> /${to}`);
+}

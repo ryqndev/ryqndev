@@ -1,0 +1,39 @@
+@use '../../../styles/tokens' as *;
+
+.chain {
+    position: absolute;
+    right: 40px;
+    top: 38%;
+    text-align: right;
+    opacity: 0;
+    transition: opacity 0.25s;
+
+    &.on {
+        opacity: 1;
+    }
+}
+
+.value {
+    @include mono;
+
+    font-size: 54px;
+    font-weight: 200;
+    line-height: 1;
+    color: $spark-soft;
+    text-shadow: 0 0 22px rgb(255 120 30 / 80%);
+    animation: pop 0.25s;
+}
+
+.label {
+    @include label;
+}
+
+@keyframes pop {
+    from {
+        transform: scale(1.25);
+    }
+
+    to {
+        transform: scale(1);
+    }
+}

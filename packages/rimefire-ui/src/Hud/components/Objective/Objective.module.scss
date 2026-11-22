@@ -1,0 +1,40 @@
+@use '../../../styles/tokens' as *;
+
+.objective {
+    position: absolute;
+    left: 28px;
+    top: 26px;
+    max-width: 340px;
+}
+
+.label {
+    @include label;
+}
+
+.text {
+    font-size: 15px;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    margin-top: 5px;
+    text-shadow: 0 1px 8px rgb(0 0 0 / 80%);
+}
+
+.pips {
+    display: flex;
+    gap: 5px;
+    margin-top: 9px;
+
+    i {
+        width: 26px;
+        height: 4px;
+        background: rgb(255 255 255 / 20%);
+        transition:
+            background 0.5s,
+            box-shadow 0.5s;
+
+        &.lit {
+            background: $spark;
+            box-shadow: 0 0 10px #ff7a1c;
+        }
+    }
+}

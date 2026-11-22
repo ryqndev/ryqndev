@@ -1,0 +1,51 @@
+// GLSL lives in the sibling .glsl files; Vite inlines them as strings (`?raw`).
+// The production build strips comments and whitespace from them (see apps/rimefire/vite.config.mts).
+import bloomDownFrag from './bloom-down.frag.glsl?raw';
+import bloomUpFrag from './bloom-up.frag.glsl?raw';
+import compositeFrag from './composite.frag.glsl?raw';
+import flatFrag from './flat.frag.glsl?raw';
+import fullscreenVert from './fullscreen.vert.glsl?raw';
+import fxaaFrag from './fxaa.frag.glsl?raw';
+import gooFrag from './goo.frag.glsl?raw';
+import gooVert from './goo.vert.glsl?raw';
+import lighting from './lighting.glsl?raw';
+import particleFrag from './particle.frag.glsl?raw';
+import particleVert from './particle.vert.glsl?raw';
+import scorchStampFrag from './scorch-stamp.frag.glsl?raw';
+import scorchStampVert from './scorch-stamp.vert.glsl?raw';
+import shadowFrag from './shadow.frag.glsl?raw';
+import shadowVert from './shadow.vert.glsl?raw';
+import skyFrag from './sky.frag.glsl?raw';
+import skyVert from './sky.vert.glsl?raw';
+import snowFrag from './snow.frag.glsl?raw';
+import snowVert from './snow.vert.glsl?raw';
+import ssaoFrag from './ssao.frag.glsl?raw';
+import ssaoApplyFrag from './ssao-apply.frag.glsl?raw';
+import ssaoBlurFrag from './ssao-blur.frag.glsl?raw';
+import surfaceFrag from './surface.frag.glsl?raw';
+import surfaceVert from './surface.vert.glsl?raw';
+
+// Lit programs prepend the shared lighting chunk (lights, shadows, sky ambient, fog).
+export const UBER_VS = surfaceVert;
+export const UBER_FS = lighting + surfaceFrag;
+export const SHADOW_VS = shadowVert;
+export const SHADOW_FS = shadowFrag;
+export const GOO_VS = gooVert;
+export const GOO_FS = lighting + gooFrag;
+export const PART_VS = particleVert;
+export const PART_FS = particleFrag;
+export const SNOW_VS = snowVert;
+export const SNOW_FS = snowFrag;
+export const SKY_VS = skyVert;
+export const SKY_FS = skyFrag;
+export const FS_VS = fullscreenVert;
+export const DOWN_FS = bloomDownFrag;
+export const UP_FS = bloomUpFrag;
+export const COMP_FS = compositeFrag;
+export const FXAA_FS = fxaaFrag;
+export const AO_FS = ssaoFrag;
+export const AOBLUR_FS = ssaoBlurFrag;
+export const AOAPPLY_FS = ssaoApplyFrag;
+export const STAMP_VS = scorchStampVert;
+export const STAMP_FS = scorchStampFrag;
+export const FLAT_FS = flatFrag;

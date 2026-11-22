@@ -1,0 +1,49 @@
+$text: #e8f1fa;
+$gel: #8dff73;
+$spark: #ff9a3c;
+$spark-soft: #ffb35c;
+$ice: #9be8ff;
+$danger: #ff5a48;
+$panel: rgb(8 14 22 / 50%);
+
+$font-ui: ui-sans-serif, system-ui, -apple-system, 'Segoe UI', 'Helvetica Neue', Arial, sans-serif;
+$font-mono: ui-monospace, 'SF Mono', Menlo, Consolas, monospace;
+
+// full-viewport layer that never intercepts input unless a child opts in
+@mixin layer {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    font-family: $font-ui;
+    color: $text;
+    user-select: none;
+}
+
+@mixin mono {
+    font-family: $font-mono;
+    font-variant-numeric: tabular-nums;
+}
+
+@mixin label {
+    font-size: 10px;
+    letter-spacing: 0.24em;
+    text-transform: uppercase;
+    opacity: 0.62;
+}
+
+// thin gauge: the track, and a fill scaled with transform: scaleX()
+@mixin bar($height: 5px) {
+    height: $height;
+    background: rgb(255 255 255 / 14%);
+    margin-top: 8px;
+    position: relative;
+    overflow: hidden;
+}
+
+@mixin bar-fill($color: $text) {
+    position: absolute;
+    inset: 0;
+    transform-origin: 0 50%;
+    background: $color;
+    transition: transform 0.12s;
+}

@@ -2,15 +2,23 @@
     "name": "rimefire",
     "private": true,
     "version": "0.0.0",
-    "type": "module",
     "scripts": {
-        "dev": "vite --port 5174",
-        "build": "node build.mjs"
+        "dev": "vite",
+        "build": "tsc -b && vite build",
+        "preview": "vite preview"
     },
     "dependencies": {
-        "@ryqndev/rimefire": "workspace:*"
+        "@ryqndev/rimefire-ui": "workspace:*",
+        "react": "catalog:",
+        "react-dom": "catalog:"
     },
     "devDependencies": {
+        "@types/node": "catalog:",
+        "@types/react": "catalog:",
+        "@types/react-dom": "catalog:",
+        "@vitejs/plugin-react-swc": "catalog:",
+        "sass": "catalog:",
+        "typescript": "catalog:",
         "vite": "catalog:"
     }
 }
