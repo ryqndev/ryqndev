@@ -1,0 +1,1 @@
+var e=`/assets/7-CD_DHpKH.jpg`;export{e as default};

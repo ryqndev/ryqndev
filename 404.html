@@ -31,20 +31,37 @@
 
 	<title>Ryan Yang // Front-End Developer</title>
 
+	<!-- Red Hat Display is the only Google font the stylesheets reference. -->
+	<link rel="preconnect" href="https://fonts.googleapis.com">
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 	<link href="https://fonts.googleapis.com/css?family=Red+Hat+Display:400,900&display=swap" rel="stylesheet">
-	<link href="https://fonts.googleapis.com/css2?family=Work+Sans&display=swap" rel="stylesheet">
-	<link href="https://fonts.googleapis.com/css2?family=Nunito+Sans&display=swap" rel="stylesheet">
-	<link href="https://fonts.googleapis.com/css2?family=Libre+Barcode+39&display=swap" rel="stylesheet">
-	<link href="https://fonts.googleapis.com/css2?family=Lato&display=swap" rel="stylesheet">
 	<link rel="apple-touch-icon" href="https://boba.watch/logo.png">
 	<link rel="apple-touch-startup-image" href="https://ryqn.dev/assets/profile.jpg">
 	<link rel="shortcut icon" href="/assets/logo-white-small.png" />
 	<link rel="manifest" href="/manifest.json" />
 
+	<!-- The island and robot models are needed on every visit. Start fetching them
+	     now instead of after the entry, Home and scene chunks have each downloaded
+	     and executed. The attributes mirror how three.js requests them (FileLoader
+	     uses fetch in cors mode; ImageLoader uses crossorigin="anonymous" images). -->
+	<link rel="preload" href="/assets/updated_island/floating island.gltf" as="fetch" crossorigin />
+	<link rel="preload" href="/assets/updated_island/floating island_data.bin" as="fetch" crossorigin />
+	<link rel="preload" href="/assets/updated_island/floating island_img0.png" as="image" crossorigin />
+	<link rel="preload" href="/assets/updated_island/floating island_img1.png" as="image" crossorigin />
+	<link rel="preload" href="/assets/delivery_robot/zotbot.gltf" as="fetch" crossorigin />
+	<link rel="preload" href="/assets/delivery_robot/zotbot.bin" as="fetch" crossorigin />
+	<link rel="preload" href="/assets/delivery_robot/textures/lambert5SG_baseColor.png" as="image" crossorigin />
+
 	
 
-  <script type="module" crossorigin src="/assets/index-CzxE8-6Z.js"></script>
-  <link rel="stylesheet" crossorigin href="/assets/index-IYg5dcLF.css">
+  <script type="module" crossorigin src="/assets/index-DV95b3oj.js"></script>
+  <link rel="modulepreload" crossorigin href="/assets/vanilla-vUVfzxWB.js">
+  <link rel="modulepreload" crossorigin href="/assets/react-lazily-YZ_2nkgY.js">
+  <link rel="stylesheet" crossorigin href="/assets/index-C9XNp8U0.css">
+  <link rel="modulepreload" crossorigin href="/assets/InteractiveIsland-CEJQHKYE.js">
+  <link rel="modulepreload" crossorigin href="/assets/OrbitControls-eMdefiYo.js">
+  <link rel="modulepreload" crossorigin href="/assets/rapier-nu9QadDv.js">
+  <link rel="modulepreload" crossorigin href="/assets/home-ChvXLlwI.js">
 </head>
 
 <body>

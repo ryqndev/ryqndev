@@ -1,0 +1,1 @@
+var e=`/assets/10-BYMCXb-U.jpg`;export{e as default};

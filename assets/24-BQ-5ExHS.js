@@ -1,0 +1,1 @@
+var e=`/assets/24-Bskp_mvq.jpg`;export{e as default};
