@@ -1,0 +1,93 @@
+@use '../../../styles/tokens' as *;
+
+.helm {
+    position: absolute;
+    left: 50%;
+    bottom: 26px;
+    transform: translateX(-50%);
+    display: flex;
+    align-items: flex-end;
+    gap: 14px;
+}
+
+.name {
+    @include label;
+}
+
+.battery {
+    width: 150px;
+    padding: 9px 12px 11px;
+    background: $panel;
+    border-top: 2px solid rgb(255 255 255 / 14%);
+    opacity: 0.5;
+    transition:
+        opacity 0.16s,
+        border-color 0.16s;
+    backdrop-filter: blur(6px);
+
+    &:last-child {
+        text-align: right;
+    }
+
+    // the side the guns are being laid on
+    &.laid {
+        opacity: 1;
+        border-color: $brass;
+    }
+}
+
+.bar {
+    @include bar;
+}
+
+.fill {
+    @include bar-fill($danger);
+
+    .ready & {
+        background: $gold;
+    }
+}
+
+.sails {
+    width: 92px;
+    padding-bottom: 11px;
+    text-align: center;
+    text-shadow: 0 1px 6px rgb(0 0 0 / 70%);
+}
+
+// canvas set, drawn as the sails themselves: one more lit for each notch
+.pips {
+    display: flex;
+    justify-content: center;
+    align-items: flex-end;
+    gap: 5px;
+    height: 30px;
+    margin-bottom: 7px;
+
+    i {
+        width: 14px;
+        background: rgb(255 255 255 / 16%);
+        border-radius: 1px 1px 5px 5px;
+        transition: background 0.16s;
+
+        &:nth-child(1) {
+            display: none;
+        }
+
+        &:nth-child(2) {
+            height: 14px;
+        }
+
+        &:nth-child(3) {
+            height: 22px;
+        }
+
+        &:nth-child(4) {
+            height: 30px;
+        }
+
+        &.set {
+            background: $text;
+        }
+    }
+}

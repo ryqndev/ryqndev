@@ -5,4 +5,6 @@ export { Geo } from './geometry/Geo';
 export type { Mesh } from './geometry/mesh';
 export { initGL } from './gl/context';
 export { addInstance, registerMesh } from './instances';
+export { setStaticLights, SHADOW_DYNAMIC, SHADOW_NONE } from './light-shadows';
+export { MATERIAL } from './materials';
 export { clearScorch, initRenderer, render, resize, setScene } from './renderer';

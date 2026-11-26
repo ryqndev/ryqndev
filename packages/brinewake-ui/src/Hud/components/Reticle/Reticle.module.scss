@@ -1,0 +1,119 @@
+@use '../../../styles/tokens' as *;
+
+// zero-size anchors at the centre of the screen; children are positioned around them
+.sight,
+.hit,
+.damage {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: 0;
+    height: 0;
+}
+
+.sight {
+    .dot {
+        position: absolute;
+        width: 4px;
+        height: 4px;
+        left: -2px;
+        top: -2px;
+        border-radius: 50%;
+        background: #fff;
+        box-shadow: 0 0 3px rgb(0 0 0 / 70%);
+    }
+
+    .ring {
+        position: absolute;
+        width: 26px;
+        height: 26px;
+        left: -14.5px;
+        top: -14.5px;
+        border: 1.5px solid $gold;
+        border-radius: 50%;
+        box-shadow: 0 0 4px rgb(0 0 0 / 50%);
+        transition:
+            border-color 0.12s,
+            transform 0.12s,
+            opacity 0.12s;
+    }
+
+    .note {
+        @include label;
+
+        position: absolute;
+        top: 24px;
+        left: -100px;
+        width: 200px;
+        text-align: center;
+        text-shadow: 0 1px 5px rgb(0 0 0 / 80%);
+    }
+
+    // that side is still reloading
+    &.loading .ring {
+        border-color: $danger;
+        transform: scale(0.7);
+    }
+
+    // looking too far ahead or astern for either battery
+    &.masked {
+        .ring {
+            border-style: dashed;
+            border-color: $text;
+            opacity: 0.4;
+        }
+
+        .dot {
+            opacity: 0.5;
+        }
+    }
+}
+
+.hit {
+    opacity: 0;
+
+    i {
+        position: absolute;
+        width: 11px;
+        height: 2px;
+        background: #fff;
+        left: -5.5px;
+        top: -1px;
+
+        &:nth-child(1) {
+            transform: rotate(45deg) translateX(22px);
+        }
+
+        &:nth-child(2) {
+            transform: rotate(135deg) translateX(22px);
+        }
+
+        &:nth-child(3) {
+            transform: rotate(225deg) translateX(22px);
+        }
+
+        &:nth-child(4) {
+            transform: rotate(315deg) translateX(22px);
+        }
+    }
+
+    &.kill i {
+        background: $gold;
+        width: 16px;
+    }
+}
+
+.damage {
+    opacity: 0;
+
+    i {
+        position: absolute;
+        left: -46px;
+        top: -170px;
+        width: 92px;
+        height: 26px;
+        border-top: 4px solid #ff4a38;
+        border-radius: 50% / 100% 100% 0 0;
+        filter: drop-shadow(0 0 6px #ff2a18);
+    }
+}

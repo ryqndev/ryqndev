@@ -1,4 +1,5 @@
 import { rnd, rnds } from '@ryqndev/rimefire-math';
+import { SHADOW_DYNAMIC } from '@ryqndev/rimefire-renderer';
 
 import { fxFlame, light } from '../fx';
 import { S } from '../state';
@@ -18,7 +19,7 @@ export function updateFires(dt: number) {
         }
         const k = Math.min(1, f.life / 0.8);
         if (Math.random() < dt * 22 * k) fxFlame(f.x + rnds(f.r * 0.5), f.y, f.z + rnds(f.r * 0.5), (0.7 + f.r * 0.5) * (0.5 + 0.5 * k));
-        light(f.x, f.y + 0.7, f.z, 11 * k * (0.8 + 0.4 * Math.random()), 4.2 * k, 0.9 * k, 6 + f.r);
+        light(f.x, f.y + 0.7, f.z, 11 * k * (0.8 + 0.4 * Math.random()), 4.2 * k, 0.9 * k, 6 + f.r, SHADOW_DYNAMIC);
         const pd = Math.hypot(p.x - f.x, p.z - f.z);
         near += k / (1 + pd * pd * 0.02);
         if (pd < f.r && Math.abs(p.y - f.y) < 1.5) hurtPlayer(9 * dt, f.x, f.z);

@@ -1,0 +1,45 @@
+@use '../../../styles/tokens' as *;
+
+.hull {
+    position: absolute;
+    left: 28px;
+    bottom: 26px;
+    width: 230px;
+    text-shadow: 0 1px 6px rgb(0 0 0 / 70%);
+}
+
+.label {
+    @include label;
+}
+
+.value {
+    @include mono;
+
+    font-size: 30px;
+    font-weight: 300;
+    line-height: 1.1;
+
+    span {
+        margin-left: 8px;
+        font-size: 12px;
+        opacity: 0.55;
+    }
+}
+
+.bar {
+    @include bar;
+}
+
+.fill {
+    @include bar-fill;
+}
+
+.low {
+    .value {
+        color: $danger;
+    }
+
+    .fill {
+        background: $danger;
+    }
+}

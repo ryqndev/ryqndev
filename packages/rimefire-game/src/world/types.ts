@@ -44,6 +44,8 @@ export interface WorldLight {
     g: number;
     b: number;
     rad: number;
+    /** shadow code: the light's index among the renderer's static lights, or SHADOW_NONE */
+    shadow: number;
 }
 export interface Glow {
     x: number;
@@ -67,6 +69,8 @@ export interface Pylon {
     hitT: number;
     col: CylCollider;
     k: number;
+    /** shadow code of the light it gives off once reignited */
+    shadow: number;
 }
 export interface Heart {
     col: CylCollider;

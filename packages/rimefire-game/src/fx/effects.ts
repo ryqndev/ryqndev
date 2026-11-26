@@ -17,7 +17,7 @@ function rdir(up = 0) {
     return dirv;
 }
 export function fxExplosion(x: number, y: number, z: number, s: number) {
-    flash(x, y + 0.4, z, 55 * s, 25 * s, 7 * s, 8 + 5 * s, 0.3);
+    flash(x, y + 0.4, z, 55 * s, 25 * s, 7 * s, 8 + 5 * s, 0.3, true);
     spawn(0, x, y + 0.2, z, 0, 0, 0, 0.11, 0.9 * s, 2.6 * s, 7, 4, 1.6, 4, 1.2, 0.2, 0.9, 1);
     const nf = 7 + ((3 * s) | 0);
     for (let i = 0; i < nf; i++) {

@@ -1,0 +1,39 @@
+@use '../../../styles/tokens' as *;
+
+.marker {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 0;
+    height: 0;
+    opacity: 0;
+    transition: opacity 0.4s;
+}
+
+.anchor {
+    position: absolute;
+    left: -12px;
+    top: -14px;
+    width: 24px;
+    font-style: normal;
+    font-size: 20px;
+    line-height: 1;
+    text-align: center;
+    color: $gold;
+    text-shadow:
+        0 0 8px rgb(240 180 70 / 70%),
+        0 1px 4px #000;
+}
+
+.distance {
+    @include mono;
+
+    position: absolute;
+    top: 11px;
+    left: -30px;
+    width: 60px;
+    text-align: center;
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    text-shadow: 0 1px 4px #000;
+}

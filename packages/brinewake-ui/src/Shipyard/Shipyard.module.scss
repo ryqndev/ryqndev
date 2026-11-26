@@ -1,0 +1,181 @@
+@use '../styles/tokens' as *;
+
+.shipyard {
+    @include layer;
+
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    opacity: 0;
+    transition: opacity 0.4s;
+
+    &.open {
+        opacity: 1;
+
+        .panel {
+            pointer-events: auto;
+            transform: none;
+        }
+    }
+}
+
+// the ship stays in view on the left; the yard's list takes the right of the screen
+.panel {
+    width: 430px;
+    max-height: calc(100% - 48px);
+    margin-right: 36px;
+    padding: 24px 26px 22px;
+    overflow-y: auto;
+    background: rgb(8 16 26 / 78%);
+    border: 1px solid rgb(201 162 90 / 40%);
+    backdrop-filter: blur(10px);
+    transform: translateX(24px);
+    transition: transform 0.4s;
+
+    header {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-end;
+        padding-bottom: 14px;
+        border-bottom: 1px solid rgb(201 162 90 / 35%);
+    }
+
+    h2 {
+        margin: 0;
+        font-family: $font-display;
+        font-size: 28px;
+        font-weight: 400;
+        letter-spacing: 0.2em;
+    }
+
+    h3 {
+        @include label;
+
+        margin: 20px 0 4px;
+        font-weight: 400;
+        color: $brass;
+        opacity: 1;
+    }
+}
+
+.purse {
+    text-align: right;
+
+    span {
+        @include label;
+
+        display: block;
+    }
+
+    b {
+        @include mono;
+
+        font-size: 24px;
+        font-weight: 300;
+        color: $gold;
+    }
+}
+
+.offer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 16px;
+    padding: 9px 0;
+    border-bottom: 1px solid rgb(255 255 255 / 7%);
+}
+
+.name {
+    font-size: 14px;
+    letter-spacing: 0.06em;
+}
+
+.detail {
+    margin-top: 4px;
+    font-size: 11px;
+    line-height: 1.45;
+    opacity: 0.62;
+}
+
+.pips {
+    display: inline-flex;
+    gap: 3px;
+    margin-right: 9px;
+    vertical-align: 1px;
+
+    i {
+        width: 9px;
+        height: 4px;
+        background: rgb(255 255 255 / 20%);
+
+        &.on {
+            background: $gold;
+        }
+    }
+}
+
+.buy {
+    @include mono;
+
+    flex: none;
+    min-width: 76px;
+    padding: 7px 10px;
+    font-size: 13px;
+    color: #1b1408;
+    background: $gold;
+    border: 0;
+    cursor: pointer;
+    transition:
+        filter 0.12s,
+        opacity 0.12s;
+
+    &:hover {
+        filter: brightness(1.15);
+    }
+
+    // not enough gold banked yet
+    &:disabled {
+        color: $text;
+        background: rgb(255 255 255 / 12%);
+        opacity: 0.55;
+        cursor: default;
+        filter: none;
+    }
+}
+
+.done {
+    @include label;
+
+    flex: none;
+    min-width: 76px;
+    text-align: center;
+    color: $sea;
+    opacity: 1;
+}
+
+.sail {
+    display: block;
+    width: 100%;
+    margin-top: 22px;
+    padding: 13px;
+    font-family: $font-display;
+    font-size: 17px;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: $text;
+    background: rgb(201 162 90 / 16%);
+    border: 1px solid $brass;
+    cursor: pointer;
+    transition: background 0.14s;
+
+    &:hover {
+        background: rgb(201 162 90 / 34%);
+    }
+}
+
+.note {
+    @include label;
+
+    margin-top: 10px;
+    text-align: center;
+}

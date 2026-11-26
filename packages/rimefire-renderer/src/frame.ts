@@ -3,6 +3,8 @@ export interface LightUniforms {
     pos: Float32Array;
     /** linear HDR rgb per light */
     col: Float32Array;
+    /** shadow code per light: SHADOW_NONE, SHADOW_DYNAMIC, or the index of a registered static light */
+    shadow: Float32Array;
     n: number;
 }
 

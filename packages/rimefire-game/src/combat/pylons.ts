@@ -6,7 +6,7 @@ import { addDebris, flash, fxIce, light, shake, spawn, sprite } from '../fx';
 import { hud } from '../hud';
 import { M } from '../models';
 import { S } from '../state';
-import { W } from '../world';
+import { PYLON_LIGHT_HEIGHT, W } from '../world';
 import { startWave } from './director';
 import { B, D } from './state';
 
@@ -33,7 +33,7 @@ export function updatePylons(dt: number) {
             q.thaw = Math.min(1.1, q.thaw + dt * 1.1);
             q.glow = damp(q.glow, 1, 1.5, dt);
             const fk = 0.85 + 0.15 * Math.sin(S.t * 9 + q.k) + 0.1 * Math.sin(S.t * 23 + q.k * 3);
-            light(q.x, q.y + 5.2, q.z, 30 * q.glow * fk, 13 * q.glow * fk, 3.6 * q.glow, 25);
+            light(q.x, q.y + PYLON_LIGHT_HEIGHT, q.z, 30 * q.glow * fk, 13 * q.glow * fk, 3.6 * q.glow, 25, q.shadow);
             sprite(0, q.x, q.y + 7.75, q.z, 2.6, 1.3 * q.glow * fk, 0.55 * q.glow * fk, 0.14 * q.glow, 1);
             if (Math.random() < dt * 9) spawn(2, q.x + rnds(0.5), q.y + 8, q.z + rnds(0.5), rnds(1.5), rnd(1.5, 4), rnds(1.5), rnd(0.8, 1.8), 0.02, 0.008, 12, 6, 1.5, 5, 1, 0.1, 1, 1, 0.5, 1.5, 0.02);
         } else q.thaw = (1 - Math.max(0, q.hp) / W.PYHP) * 0.42;

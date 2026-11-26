@@ -2,6 +2,7 @@ import { m4, m4mul, m4ortho } from '@ryqndev/rimefire-math';
 
 import { cam, project, type ScreenPoint } from './camera';
 import { FAR, FOG, GOO_CAPACITY, GOO_STRIDE, INSTANCE_STRIDE, NEAR, PARTICLE_CAPACITY, PARTICLE_STRIDE, post, R, SHR, SM, SUN, SUNCOL } from './config';
+import { initEnvironment, updateEnvironment } from './environment';
 import type { Frame } from './frame';
 import { icoSphere } from './geometry/icosphere';
 import type { Mesh } from './geometry/mesh';
@@ -9,6 +10,8 @@ import { caps, gl } from './gl/context';
 import { createProgram, type Program } from './gl/program';
 import { createFramebuffer, createTexture } from './gl/texture';
 import { meshes } from './instances';
+import { shadowTextures, shadowUniforms, updateLightShadows } from './light-shadows';
+import { createMaterialTextures, type MaterialTextures } from './materials';
 import { createNoiseTexture } from './noise';
 import * as SH from './shaders';
 
@@ -20,6 +23,49 @@ interface BloomLevel {
 }
 
 const P: Record<string, Program> = {};
+
+/** The programs that shade lit geometry: static meshes, instanced meshes and gel. */
+interface LitPrograms {
+    s: Program;
+    i: Program;
+    goo: Program;
+}
+// Two builds of the lit shaders. The enhanced one (HIGH and ULTRA) adds generated materials and
+// sky-sampled lighting; the basic one is untouched. Each is compiled the first time it is needed.
+let litBasic: LitPrograms | null = null,
+    litEnhanced: LitPrograms | null = null;
+let materials: MaterialTextures | null = null,
+    envCube: WebGLTexture | null = null;
+// light scattering (enhanced path): a half-resolution target, the march program per quality level
+// and the upsample; all created the first time they are drawn
+let volTex: WebGLTexture | null = null,
+    volFbo: WebGLFramebuffer | null = null,
+    volApply: Program | null = null;
+const volMarch: (Program | undefined)[] = [];
+// texture units reserved for the enhanced path
+const UNIT_MAT_A = 5,
+    UNIT_MAT_B = 6,
+    UNIT_ENV = 7,
+    UNIT_SHADOW_STATIC = 8,
+    UNIT_SHADOW_DYNAMIC = 9;
+
+/** HIGH and ULTRA use the enhanced shading path. */
+const enhanced = () => R.quality >= 2;
+
+function litPrograms(hi: boolean): LitPrograms {
+    if (hi) {
+        return (litEnhanced ??= {
+            s: createProgram(SH.UBER_VS, SH.UBER_FS, '#define HI'),
+            i: createProgram(SH.UBER_VS, SH.UBER_FS, '#define INST\n#define HI'),
+            goo: createProgram(SH.GOO_VS, SH.GOO_FS, '#define HI'),
+        });
+    }
+    return (litBasic ??= {
+        s: createProgram(SH.UBER_VS, SH.UBER_FS),
+        i: createProgram(SH.UBER_VS, SH.UBER_FS, '#define INST'),
+        goo: createProgram(SH.GOO_VS, SH.GOO_FS),
+    });
+}
 let tri!: WebGLVertexArrayObject, quad!: WebGLVertexArrayObject;
 let noiseTex!: WebGLTexture, shadowTex!: WebGLTexture, shadowFbo!: WebGLFramebuffer, scorchTex!: WebGLTexture, scorchFbo!: WebGLFramebuffer;
 // size-dependent targets, (re)allocated by alloc()
@@ -49,11 +95,8 @@ export function setScene(props: Mesh, terrain: Mesh) {
 
 export function initRenderer(canvas: HTMLCanvasElement) {
     R.canvas = canvas;
-    P.uberS = createProgram(SH.UBER_VS, SH.UBER_FS);
-    P.uberI = createProgram(SH.UBER_VS, SH.UBER_FS, '#define INST');
     P.shS = createProgram(SH.SHADOW_VS, SH.SHADOW_FS);
     P.shI = createProgram(SH.SHADOW_VS, SH.SHADOW_FS, '#define INST');
-    P.goo = createProgram(SH.GOO_VS, SH.GOO_FS);
     P.part = createProgram(SH.PART_VS, SH.PART_FS);
     P.snow = createProgram(SH.SNOW_VS, SH.SNOW_FS);
     P.sky = createProgram(SH.SKY_VS, SH.SKY_FS);
@@ -147,8 +190,9 @@ export function clearScorch() {
 }
 
 function alloc(w: number, h: number) {
-    for (const t of [hdrTex, depthTex, ldrTex, ...bloom.map((b) => b.t), ...aoT]) if (t) gl.deleteTexture(t);
-    for (const f of [hdrFbo, hdrFboND, ldrFbo, ...bloom.map((b) => b.f), ...aoF]) if (f) gl.deleteFramebuffer(f);
+    for (const t of [hdrTex, depthTex, ldrTex, volTex, ...bloom.map((b) => b.t), ...aoT]) if (t) gl.deleteTexture(t);
+    for (const f of [hdrFbo, hdrFboND, ldrFbo, volFbo, ...bloom.map((b) => b.f), ...aoF]) if (f) gl.deleteFramebuffer(f);
+    volTex = volFbo = null;
     const I = caps.hdr ? gl.RGBA16F : gl.RGBA8,
         Ty = caps.hdr ? gl.HALF_FLOAT : gl.UNSIGNED_BYTE;
     hdrTex = createTexture(w, h, I, gl.RGBA, Ty);
@@ -195,7 +239,7 @@ export function resize() {
 }
 
 // uniforms shared by every lit program
-function common(p: Program) {
+function common(p: Program, hi: boolean) {
     const u = p.u;
     gl.uniform3f(u.uCam, cam.x, cam.y, cam.z);
     gl.uniform3fv(u.uSunDir, SUN);
@@ -209,6 +253,18 @@ function common(p: Program) {
     gl.uniform1i(u.uNoise, 0);
     gl.uniform1i(u.uShadow, 1);
     gl.uniform1i(u.uScorch, 2);
+    if (hi) {
+        gl.uniform1i(u.uMatA, UNIT_MAT_A);
+        gl.uniform1i(u.uMatB, UNIT_MAT_B);
+        gl.uniform1i(u.uEnv, UNIT_ENV);
+        gl.uniform1i(u.uSA, UNIT_SHADOW_STATIC);
+        gl.uniform1i(u.uDA, UNIT_SHADOW_DYNAMIC);
+        gl.uniform1fv(u.uLS, shadowUniforms.codes);
+        gl.uniform3fv(u.uDL, shadowUniforms.origins);
+        gl.uniform4fv(u.uSP, shadowUniforms.static);
+        gl.uniform4fv(u.uDP, shadowUniforms.dynamic);
+        gl.uniform2fv(u.uSG, shadowUniforms.grid);
+    }
 }
 function drawInst(layer: number) {
     gl.bindBuffer(gl.ARRAY_BUFFER, instBuf);
@@ -224,6 +280,72 @@ function drawInst(layer: number) {
 function bindTex(unit: number, t: WebGLTexture | null) {
     gl.activeTexture(gl.TEXTURE0 + unit);
     gl.bindTexture(gl.TEXTURE_2D, t);
+}
+// depth-only draw of the shadow casters: the props, optionally the terrain, and unless
+// `staticOnly` every instanced mesh queued this frame
+function drawCasters(viewProj: Float32Array, staticOnly: boolean, terrain: boolean) {
+    gl.useProgram(P.shS.p);
+    gl.uniformMatrix4fv(P.shS.u.uVP, false, viewProj);
+    gl.bindVertexArray(scene.props.vao);
+    gl.drawElements(gl.TRIANGLES, scene.props.count, gl.UNSIGNED_INT, 0);
+    if (terrain) {
+        gl.bindVertexArray(scene.terrain.vao);
+        gl.drawElements(gl.TRIANGLES, scene.terrain.count, gl.UNSIGNED_INT, 0);
+    }
+    if (staticOnly) return;
+    gl.useProgram(P.shI.p);
+    gl.uniformMatrix4fv(P.shI.u.uVP, false, viewProj);
+    drawInst(0);
+}
+// sky into whatever target is bound; `capture` is set when filling the environment map
+function drawSky(unproject: Float32Array, capture: boolean) {
+    gl.useProgram(P.sky.p);
+    gl.uniformMatrix4fv(P.sky.u.uIVP, false, unproject);
+    gl.uniform3fv(P.sky.u.uSunDir, SUN);
+    gl.uniform1f(P.sky.u.uTime, F.time);
+    gl.uniform4fv(P.sky.u.uFog, FOG);
+    gl.uniform1i(P.sky.u.uNoise, 0);
+    gl.uniform1f(P.sky.u.uCapture, capture ? 1 : 0);
+    gl.bindVertexArray(tri);
+    gl.drawArrays(gl.TRIANGLES, 0, 3);
+}
+// The light-scattering march for the current quality level (ULTRA takes more samples). Also makes
+// sure the upsample program exists.
+function volumetricMarch(): Program {
+    const ultra = R.quality >= 3;
+    volApply ??= createProgram(SH.FS_VS, SH.VOLAPPLY_FS);
+    return (volMarch[+ultra] ??= createProgram(SH.FS_VS, SH.VOL_FS, `#define HI\n#define STEPS ${ultra ? 10 : 6}\n#define MOON_STEPS ${ultra ? 18 : 10}`));
+}
+// Light scattered by the air between the camera and the scene: marched at half resolution from
+// the depth buffer, then upsampled and added over the opaque scene.
+function drawVolumetrics(march: Program, w: number, h: number) {
+    const hw = w >> 1,
+        hh = h >> 1,
+        apply = volApply!;
+    if (!volTex) {
+        volTex = createTexture(hw, hh, gl.RGBA16F, gl.RGBA, gl.HALF_FLOAT, null, gl.NEAREST);
+        volFbo = createFramebuffer(volTex, null);
+    }
+    const proj = cam.proj;
+    bindTex(3, depthTex);
+    gl.disable(gl.BLEND);
+    fsPass(march, volFbo, hw, hh);
+    common(march, true);
+    gl.uniform1i(march.u.uDepth, 3);
+    gl.uniform4f(march.u.uProj, proj[14], proj[10], 1 / proj[0], 1 / proj[5]);
+    gl.uniform3f(march.u.uCR, cam.rx, cam.ry, cam.rz);
+    gl.uniform3f(march.u.uCU, cam.ux, cam.uy, cam.uz);
+    gl.uniform3f(march.u.uCF, cam.fx, cam.fy, cam.fz);
+    gl.drawArrays(gl.TRIANGLES, 0, 3);
+
+    fsPass(apply, hdrFboND, w, h);
+    bindTex(4, volTex);
+    gl.uniform1i(apply.u.uT, 4);
+    gl.uniform1i(apply.u.uDepth, 3);
+    gl.uniform4f(apply.u.uProj, proj[14], proj[10], 1 / proj[0], 1 / proj[5]);
+    gl.enable(gl.BLEND);
+    gl.blendFunc(gl.ONE, gl.ONE);
+    gl.drawArrays(gl.TRIANGLES, 0, 3);
 }
 function fsPass(p: Program, fbo: WebGLFramebuffer | null, w: number, h: number) {
     gl.bindFramebuffer(gl.FRAMEBUFFER, fbo);
@@ -293,6 +415,28 @@ export function render(frame: Frame) {
             shadowM[c * 4 + 3] = lightVP[c * 4 + 3];
         }
     }
+    // ---- enhanced path: generated materials and the sky environment map ----
+    // programs are requested up front: they compile while the rest of the frame is being set up
+    const hi = enhanced(),
+        lit = litPrograms(hi),
+        // light scattering stores depth in its target, which needs float render targets
+        march = hi && caps.hdr ? volumetricMarch() : null;
+    if (hi) {
+        gl.disable(gl.BLEND);
+        gl.disable(gl.DEPTH_TEST);
+        gl.disable(gl.CULL_FACE);
+        materials ??= createMaterialTextures(tri);
+        envCube ??= initEnvironment();
+        bindTex(0, noiseTex);
+        updateEnvironment((unproject) => drawSky(unproject, true));
+        gl.activeTexture(gl.TEXTURE0 + UNIT_MAT_A);
+        gl.bindTexture(gl.TEXTURE_2D_ARRAY, materials.a);
+        gl.activeTexture(gl.TEXTURE0 + UNIT_MAT_B);
+        gl.bindTexture(gl.TEXTURE_2D_ARRAY, materials.b);
+        gl.activeTexture(gl.TEXTURE0 + UNIT_ENV);
+        gl.bindTexture(gl.TEXTURE_CUBE_MAP, envCube);
+    }
+
     gl.disable(gl.BLEND);
     gl.enable(gl.DEPTH_TEST);
     gl.depthFunc(gl.LESS);
@@ -303,13 +447,15 @@ export function render(frame: Frame) {
     gl.clear(gl.DEPTH_BUFFER_BIT);
     gl.enable(gl.POLYGON_OFFSET_FILL);
     gl.polygonOffset(1.5, 3);
-    gl.useProgram(P.shS.p);
-    gl.uniformMatrix4fv(P.shS.u.uVP, false, lightVP);
-    gl.bindVertexArray(scene.props.vao);
-    gl.drawElements(gl.TRIANGLES, scene.props.count, gl.UNSIGNED_INT, 0);
-    gl.useProgram(P.shI.p);
-    gl.uniformMatrix4fv(P.shI.u.uVP, false, lightVP);
-    drawInst(0);
+    // the moon: props and everything instanced; the enhanced path adds the terrain itself
+    drawCasters(lightVP, false, hi);
+    if (hi) {
+        // local lights: fixed ones are baked once, the brightest fires and blasts are redrawn each frame
+        updateLightShadows(F.lights.shadow, F.lights.pos, F.lights.n, R.quality >= 3 ? 2 : 1, (vp, staticOnly) => drawCasters(vp, staticOnly, staticOnly));
+        const st = shadowTextures();
+        bindTex(UNIT_SHADOW_STATIC, st.static);
+        bindTex(UNIT_SHADOW_DYNAMIC, st.dynamic);
+    }
     gl.disable(gl.POLYGON_OFFSET_FILL);
 
     // ---- scorch map ----
@@ -358,34 +504,27 @@ export function render(frame: Frame) {
     bindTex(0, noiseTex);
     bindTex(1, shadowTex);
     bindTex(2, scorchTex);
-    gl.useProgram(P.uberS.p);
-    common(P.uberS);
-    gl.uniformMatrix4fv(P.uberS.u.uVP, false, cam.vp);
+    gl.useProgram(lit.s.p);
+    common(lit.s, hi);
+    gl.uniformMatrix4fv(lit.s.u.uVP, false, cam.vp);
     gl.bindVertexArray(scene.props.vao);
     gl.drawElements(gl.TRIANGLES, scene.props.count, gl.UNSIGNED_INT, 0);
     gl.bindVertexArray(scene.terrain.vao);
     gl.drawElements(gl.TRIANGLES, scene.terrain.count, gl.UNSIGNED_INT, 0);
-    gl.useProgram(P.uberI.p);
-    common(P.uberI);
-    gl.uniformMatrix4fv(P.uberI.u.uVP, false, cam.vp);
+    gl.useProgram(lit.i.p);
+    common(lit.i, hi);
+    gl.uniformMatrix4fv(lit.i.u.uVP, false, cam.vp);
     drawInst(0);
     if (F.gooCount) {
-        gl.useProgram(P.goo.p);
-        common(P.goo);
-        gl.uniformMatrix4fv(P.goo.u.uVP, false, cam.vp);
+        gl.useProgram(lit.goo.p);
+        common(lit.goo, hi);
+        gl.uniformMatrix4fv(lit.goo.u.uVP, false, cam.vp);
         gl.bindVertexArray(gooVao);
         gl.drawElementsInstanced(gl.TRIANGLES, gooIdx, gl.UNSIGNED_SHORT, 0, F.gooCount);
     }
     gl.depthFunc(gl.LEQUAL);
     gl.depthMask(false);
-    gl.useProgram(P.sky.p);
-    gl.uniformMatrix4fv(P.sky.u.uIVP, false, cam.sky);
-    gl.uniform3fv(P.sky.u.uSunDir, SUN);
-    gl.uniform1f(P.sky.u.uTime, F.time);
-    gl.uniform4fv(P.sky.u.uFog, FOG);
-    gl.uniform1i(P.sky.u.uNoise, 0);
-    gl.bindVertexArray(tri);
-    gl.drawArrays(gl.TRIANGLES, 0, 3);
+    drawSky(cam.sky, false);
     gl.depthFunc(gl.LESS);
     gl.disable(gl.DEPTH_TEST);
     gl.disable(gl.CULL_FACE);
@@ -411,6 +550,9 @@ export function render(frame: Frame) {
         gl.blendFunc(gl.ZERO, gl.SRC_COLOR);
         gl.drawArrays(gl.TRIANGLES, 0, 3);
     }
+
+    // ---- light scattering in the air ----
+    if (march) drawVolumetrics(march, w, h);
 
     // ---- particles + snow (manual depth test against the scene) ----
     gl.bindFramebuffer(gl.FRAMEBUFFER, hdrFboND);
@@ -447,8 +589,8 @@ export function render(frame: Frame) {
     gl.enable(gl.CULL_FACE);
     gl.depthMask(true);
     gl.depthRange(0, 0.06);
-    gl.useProgram(P.uberI.p);
-    gl.uniformMatrix4fv(P.uberI.u.uVP, false, cam.vmVP);
+    gl.useProgram(lit.i.p);
+    gl.uniformMatrix4fv(lit.i.u.uVP, false, cam.vmVP);
     drawInst(1);
     gl.depthRange(0, 1);
     gl.disable(gl.DEPTH_TEST);

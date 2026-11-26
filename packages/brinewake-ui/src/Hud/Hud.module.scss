@@ -1,0 +1,12 @@
+@use '../styles/tokens' as *;
+
+.hud {
+    @include layer;
+
+    opacity: 0;
+    transition: opacity 0.5s;
+
+    &.on {
+        opacity: 1;
+    }
+}

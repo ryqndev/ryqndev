@@ -1,8 +1,13 @@
 {
     "files": [],
     "references": [
+        { "path": "./apps/brinewake" },
         { "path": "./apps/rimefire" },
         { "path": "./apps/web" },
+        { "path": "./packages/brinewake-audio" },
+        { "path": "./packages/brinewake-game" },
+        { "path": "./packages/brinewake-renderer" },
+        { "path": "./packages/brinewake-ui" },
         { "path": "./packages/components" },
         { "path": "./packages/home" },
         { "path": "./packages/i18n" },

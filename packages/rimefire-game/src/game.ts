@@ -1,6 +1,6 @@
 import { audioTick, initAudio, sfx, suspendAudio } from '@ryqndev/rimefire-audio';
 import { clamp } from '@ryqndev/rimefire-math';
-import { cam, clearScorch, type Frame, initGL, initRenderer, post, R, render, resize, setCamera, setScene } from '@ryqndev/rimefire-renderer';
+import { cam, clearScorch, type Frame, initGL, initRenderer, post, R, render, resize, setCamera, setScene, setStaticLights, SHADOW_NONE } from '@ryqndev/rimefire-renderer';
 
 import { blobs, D, fireGel, fireSpark, foes, idleCombat, resetCombat, spawnFoe, updateCombat } from './combat';
 import { gels, goo } from './combat/state';
@@ -11,7 +11,7 @@ import { attachInput, type Input, keys, mouse, opts } from './input';
 import { buildModels } from './models';
 import { resetPlayer, swapWeapon, updatePlayer } from './player';
 import { type Mode, PL, S } from './state';
-import { buildWorld, W } from './world';
+import { buildWorld, PYLON_LIGHT_HEIGHT, W } from './world';
 
 export interface GameOptions {
     /** Exposes a `window.RF` handle and starts play without pointer lock, so scripts can drive the game. */
@@ -61,6 +61,7 @@ export function mountGame(canvas: HTMLCanvasElement, { debug = false }: GameOpti
         if (initGL(canvas)) {
             buildWorld();
             setScene(W.mesh.props, W.mesh.terrain);
+            registerFixedLights();
             initRenderer(canvas);
             buildModels();
             resetGame();
@@ -103,6 +104,16 @@ export function beginGame() {
     sfx.ui();
     if (S.mode === 'dead' || S.mode === 'win') resetGame();
     input.engage();
+}
+
+// Tells the renderer which lights never move, so it can bake their shadows once. A light's
+// position in that list is the shadow code it is submitted with every frame.
+function registerFixedLights() {
+    const fixed = [...W.lights, ...W.pylons.map((q) => ({ x: q.x, y: q.y + PYLON_LIGHT_HEIGHT, z: q.z }))];
+    const accepted = setStaticLights(fixed);
+    const code = (i: number) => (i < accepted ? i : SHADOW_NONE);
+    W.lights.forEach((l, i) => (l.shadow = code(i)));
+    W.pylons.forEach((q, i) => (q.shadow = code(W.lights.length + i)));
 }
 
 function onKey(code: string) {

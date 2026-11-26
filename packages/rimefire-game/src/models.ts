@@ -1,5 +1,5 @@
 import { m4, m4aim, PI, rng, TAU } from '@ryqndev/rimefire-math';
-import { Geo, type Mesh, registerMesh } from '@ryqndev/rimefire-renderer';
+import { Geo, MATERIAL, type Mesh, registerMesh } from '@ryqndev/rimefire-renderer';
 
 export type ModelName =
     | 'skBody' | 'skLeg' | 'lnCore' | 'lnSpike' | 'bwTorso' | 'bwArm' | 'bwLeg'
@@ -18,8 +18,10 @@ export function buildModels() {
     const rr = (a: number, b: number) => a + R() * (b - a);
     const geo = () => new Geo();
     const ice = (g: Geo, e = 0.12) => g.mat(0.15, 0, e, 3).col(ICE[0], ICE[1], ICE[2]);
-    const dark = (g: Geo, rough = 0.45) => g.mat(rough, 0.85, 0, 2).col(DARK[0], DARK[1], DARK[2]);
-    const steel = (g: Geo) => g.mat(0.32, 0.9, 0, 2).col(STEEL[0], STEEL[1], STEEL[2]);
+    // hard-surface kind for the helpers below: machine plating for enemies, casing for the weapons
+    let hard: number = MATERIAL.MACHINE;
+    const dark = (g: Geo, rough = 0.45) => g.mat(rough, 0.85, 0, hard).col(DARK[0], DARK[1], DARK[2]);
+    const steel = (g: Geo) => g.mat(0.32, 0.9, 0, hard).col(STEEL[0], STEEL[1], STEEL[2]);
     const glow = (g: Geo, r: number, gg: number, b: number, e: number) => g.mat(0.3, 0, e, 4).col(r, gg, b);
     let g: Geo;
 
@@ -163,8 +165,9 @@ export function buildModels() {
 
     // ---------------- weapons (viewmodel; -Z forward) ----------------
     // gelcaster
-    const paint = (g: Geo) => g.mat(0.42, 0.25, 0, 2).col(0.62, 0.65, 0.7);
-    const rubber = (g: Geo) => g.mat(0.9, 0, 0, 2).col(0.13, 0.135, 0.15);
+    hard = MATERIAL.WEAPON;
+    const paint = (g: Geo) => g.mat(0.42, 0.25, 0, hard).col(0.62, 0.65, 0.7);
+    const rubber = (g: Geo) => g.mat(0.9, 0, 0, hard).col(0.13, 0.135, 0.15);
     const along = (x: number, y: number, z: number) => m4aim(m4(), x, y, z, 0, 0, -1);
     g = geo();
     rubber(g).push(0, -0.025, 0.15).box(0.05, 0.05, 0.13, 0.02).pop();
@@ -172,13 +175,13 @@ export function buildModels() {
     paint(g).push(0, 0, -0.085).box(0.05, 0.058, 0.15, 0.014).pop();
     dark(g, 0.4).push(0, 0.064, -0.09).box(0.02, 0.01, 0.13, 0.004).pop();
     g.push(0, -0.075, -0.03).box(0.024, 0.035, 0.04, 0.01).pop();
-    g.mat(0.5, 0, 0.5, 2).col(0.3, 1, 0.35).push(0.052, 0.02, -0.09).box(0.003, 0.008, 0.11, 0.002).pop();
+    g.mat(0.5, 0, 0.5, hard).col(0.3, 1, 0.35).push(0.052, 0.02, -0.09).box(0.003, 0.008, 0.11, 0.002).pop();
     g.push(0.02, 0.072, -0.2).box(0.008, 0.004, 0.02, 0.002).pop();
     // barrel + flared nozzle
     g.pushM(along(0, 0, -0.22));
     steel(g).cyl(0.04, 0.2, 18, 0.006);
     paint(g).lathe([[0.028, 0.18, -1, 0], [0.04, 0.18, 0, -1], [0.05, 0.23, 1, -0.5], [0.053, 0.275, 1, 0], [0.047, 0.285, 0, 1], [0.036, 0.285, 0, 1], [0.028, 0.18, -1, 0.3]], 20);
-    g.mat(0.5, 0, 0.7, 2).col(0.25, 1, 0.3).lathe([[0.042, 0.05, 0, -1], [0.0445, 0.054, 1, 0], [0.0445, 0.066, 1, 0], [0.042, 0.07, 0, 1]], 18);
+    g.mat(0.5, 0, 0.7, hard).col(0.25, 1, 0.3).lathe([[0.042, 0.05, 0, -1], [0.0445, 0.054, 1, 0], [0.0445, 0.066, 1, 0], [0.042, 0.07, 0, 1]], 18);
     g.lathe([[0.042, 0.11, 0, -1], [0.0445, 0.114, 1, 0], [0.0445, 0.126, 1, 0], [0.042, 0.13, 0, 1]], 18);
     g.pop();
     steel(g).pushM(along(0, -0.052, -0.1)).cyl(0.015, 0.27, 10, 0.003).pop();
@@ -201,7 +204,7 @@ export function buildModels() {
     g.push(0, 0.075, 0.03).box(0.012, 0.012, 0.01, 0.003).pop();
     g.push(0, -0.07, -0.03).box(0.022, 0.035, 0.04, 0.01).pop();
     g.push(0.043, 0.0, -0.1).box(0.004, 0.03, 0.07, 0.002).pop().push(-0.043, 0.0, -0.1).box(0.004, 0.03, 0.07, 0.002).pop();
-    g.mat(0.5, 0.2, 0.5, 2).col(1, 0.45, 0.1).push(0.042, 0.035, -0.08).box(0.003, 0.006, 0.1, 0.002).pop().push(-0.042, 0.035, -0.08).box(0.003, 0.006, 0.1, 0.002).pop();
+    g.mat(0.5, 0.2, 0.5, hard).col(1, 0.45, 0.1).push(0.042, 0.035, -0.08).box(0.003, 0.006, 0.1, 0.002).pop().push(-0.042, 0.035, -0.08).box(0.003, 0.006, 0.1, 0.002).pop();
     g.pushM(along(0, 0.005, -0.2));
     steel(g).cyl(0.017, 0.38, 14, 0.003);
     dark(g, 0.3).lathe([[0.017, 0.35, 0, -1], [0.026, 0.355, 1, -0.3], [0.031, 0.4, 1, 0], [0.026, 0.41, 0, 1], [0.014, 0.41, 0, 1], [0.013, 0.36, -1, 0]], 14);
@@ -212,7 +215,7 @@ export function buildModels() {
     g = geo();
     g.pushM(along(0, 0.005, -0.2));
     for (let i = 0; i < 6; i++)
-        g.mat(0.4, 0.4, 1, 2).col(1, 0.4, 0.07).push(0, 0.125 + i * 0.036, 0).lathe([[0.016, 0, 0, -1], [0.025, 0, 0, -1], [0.028, 0.005, 1, 0], [0.028, 0.017, 1, 0], [0.025, 0.022, 0, 1], [0.016, 0.022, 0, 1]], 12).pop();
+        g.mat(0.4, 0.4, 1, hard).col(1, 0.4, 0.07).push(0, 0.125 + i * 0.036, 0).lathe([[0.016, 0, 0, -1], [0.025, 0, 0, -1], [0.028, 0.005, 1, 0], [0.028, 0.017, 1, 0], [0.025, 0.022, 0, 1], [0.016, 0.022, 0, 1]], 12).pop();
     g.pop();
     M.sparkCoil = registerMesh(g);
     // pilot flame + muzzle flash (emissive)

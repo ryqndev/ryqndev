@@ -14,6 +14,10 @@ void main(){
   vec3 Hs=normalize(uSunDir+V);
   col+=uSunCol*sh*pow(max(dot(N,Hs),0.),140.)*1.6;
   col+=fr*vec3(.01,.16,.05);
+#ifdef HI
+  // wet surface: a sharp reflection of the sky, strongest at grazing angles
+  col+=envS(reflect(-V,N),.1)*(.05+.55*fr);
+#endif
   float bub=smoothstep(.8,.93,texture(uNoise,vL.xz*.45+vK.z*3.).a);
   col+=bub*vec3(.06,.5,.12)*.5*NdV;
   if(heat>0.){
