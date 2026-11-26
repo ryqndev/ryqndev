@@ -1,12 +1,13 @@
 import { sfx } from '@ryqndev/brinewake-audio';
 import { cam } from '@ryqndev/brinewake-renderer';
-import { rnd, rnds } from '@ryqndev/rimefire-math';
+import { rnd, rnds } from '@ryqndev/kiln-math';
 
 import { addDebris, fxExplosion, fxHit, shake } from '../fx';
 import { hud } from '../hud';
 import { M } from '../models';
 import { saveProgress } from '../save';
 import { PL, S } from '../state';
+import { ceaseFire } from './battery';
 import { dropLoot } from './loot';
 import { type Ship, TEAM } from './types';
 
@@ -40,7 +41,7 @@ function sinkShip(s: Ship) {
     s.dead = true;
     s.hp = 0;
     s.sink = 0.001;
-    s.vol[0].t = s.vol[1].t = -1;
+    ceaseFire(s);
     const size = s.hl / 9;
     fxExplosion(s.x, s.y + 2, s.z, 0.7 + size * 0.5);
     sfx.sink(s.x, 2, s.z);

@@ -1,27 +1,43 @@
-import { beginGame, type HudMode, resetProgress } from '@ryqndev/brinewake-game';
+import { beginGame, type HudMode, leaveDrydock, openDrydock, resetProgress } from '@ryqndev/brinewake-game';
+import { type Binding, clock, Controls, Overlay as OverlayLayer, OverlayFootnote, OverlayNotice, OverlayPrompt, RunStats } from '@ryqndev/kiln-ui';
 import clsx from 'clsx';
-import { memo, type MouseEvent, useState } from 'react';
+import { memo, type MouseEvent, type ReactNode, useState } from 'react';
 
-import { useHud } from '../hooks/useHud';
-import { useViewportZoom } from '../hooks/useViewportZoom';
-import { Controls } from './components/Controls/Controls';
-import { RunStats } from './components/RunStats/RunStats';
+import { HUD, useHud } from '../hooks/useHud';
 import cn from './Overlay.module.scss';
 
-type Screen = Exclude<HudMode, 'play' | 'port'>;
+const BINDINGS: Binding[] = [
+    ['W / S', 'set or take in sail'],
+    ['A / D', 'helm to port, starboard'],
+    ['MOUSE', 'look · lay the guns on that side'],
+    ['LMB', 'fire the broadside'],
+    ['RMB', 'spyglass'],
+    ['F', 'drop anchor at port'],
+    ['G', 'graphics quality'],
+    ['ESC', 'pause'],
+];
 
-/** Full-screen menus: title, pause, lost ship and victory. Clicking it starts or resumes play. */
-export const Overlay = memo(function Overlay() {
-    const mode = useHud((s) => s.mode);
-    const veteran = useHud((s) => s.gold > 0 || s.stats.sunk > 0 || s.cls > 0);
-    const zoom = useViewportZoom();
-    // keep showing the last screen while the overlay fades out into play
-    const [screen, setScreen] = useState<Screen>('title');
+/** The career so far, shown when a ship is lost and when the admiral is beaten. */
+const Summary = memo(function Summary() {
+    const stats = useHud((s) => s.stats);
+
+    return (
+        <RunStats
+            entries={[
+                [clock(stats.time), 'Under sail'],
+                [String(stats.sunk), 'Ships sunk'],
+                [String(stats.plunder), 'Gold banked'],
+            ]}
+        />
+    );
+});
+
+/** Throws the save away. */
+const StartOver = memo(function StartOver() {
+    const away = useHud((s) => s.mode === 'play' || s.mode === 'port');
     // starting over takes two clicks, so a stray one cannot sink a career
     const [sure, setSure] = useState(false);
-    const off = mode === 'play' || mode === 'port';
-    if (!off && mode !== screen) setScreen(mode);
-    if (off && sure) setSure(false);
+    if (away && sure) setSure(false);
 
     const startOver = (e: MouseEvent) => {
         e.stopPropagation();
@@ -30,51 +46,85 @@ export const Overlay = memo(function Overlay() {
     };
 
     return (
-        <div className={clsx(cn.overlay, off && cn.off)} style={{ zoom }} onClick={beginGame}>
-            {screen === 'title' && (
-                <>
-                    <h1>BRINEWAKE</h1>
-                    <p>Take what floats. Bank what you can carry.</p>
-                    <Controls />
-                    <div className={cn.prompt}>{veteran ? 'CLICK TO PUT BACK TO SEA' : 'CLICK TO WEIGH ANCHOR'}</div>
-                    <div className={cn.footnote}>Everything here is generated in code · desktop · mouse + keyboard</div>
-                </>
-            )}
-            {screen === 'pause' && (
-                <>
-                    <h2>HOVE TO</h2>
-                    <Controls />
-                    <div className={cn.prompt}>CLICK TO RESUME</div>
-                </>
-            )}
-            {screen === 'dead' && (
-                <>
-                    <h2>LOST WITH ALL HANDS</h2>
-                    <p>The hold went down with her</p>
-                    <RunStats />
-                    <div className={cn.prompt}>CLICK TO FIT OUT AND SAIL AGAIN</div>
-                </>
-            )}
-            {screen === 'win' && (
-                <>
-                    <h2>THE ADMIRAL IS SUNK</h2>
-                    <p>These waters are yours</p>
-                    <RunStats />
-                    <div className={cn.prompt}>CLICK TO KEEP SAILING</div>
-                </>
-            )}
-            {screen === 'unsupported' && (
-                <p className={cn.unsupported}>
-                    BRINEWAKE NEEDS WEBGL 2
-                    <br />
-                    enable hardware acceleration or try another browser
-                </p>
-            )}
-            {veteran && (screen === 'title' || screen === 'pause') && (
-                <button className={clsx(cn.reset, sure && cn.sure)} onClick={startOver}>
-                    {sure ? 'Click again to scuttle your save' : 'Start over'}
-                </button>
-            )}
-        </div>
+        <button className={clsx(cn.reset, sure && cn.sure)} onClick={startOver}>
+            {sure ? 'Click again to scuttle your save' : 'Start over'}
+        </button>
     );
+});
+
+// a button on a menu screen must not also count as the click that starts play
+const only = (act: () => void) => (e: MouseEvent) => {
+    e.stopPropagation();
+    act();
+};
+
+/** The way into the drydock, from the title screen. */
+const DrydockDoor = () => (
+    <button className={cn.drydock} onClick={only(openDrydock)}>
+        Drydock · build and try any ship
+    </button>
+);
+
+/** The way back out of it, from any menu shown during sea trials. */
+const DrydockExit = () => (
+    <button className={cn.reset} onClick={only(leaveDrydock)}>
+        Leave the drydock
+    </button>
+);
+
+/** Full-screen menus: title, pause, lost ship and victory. Clicking it starts or resumes play. */
+export const Overlay = memo(function Overlay() {
+    const veteran = useHud((s) => s.gold > 0 || s.stats.sunk > 0 || s.cls > 0);
+    const drydock = useHud((s) => s.drydock);
+    // the drydock has no save to scuttle: its menus offer the way out instead
+    const corner = drydock ? <DrydockExit /> : veteran && <StartOver />;
+
+    // play and port have no screen: the overlay fades out over the game
+    const screens: Partial<Record<HudMode, ReactNode>> = {
+        title: (
+            <>
+                <h1>BRINEWAKE</h1>
+                <p>Take what floats. Bank what you can carry.</p>
+                <Controls bindings={BINDINGS} />
+                <OverlayPrompt>{veteran ? 'CLICK TO PUT BACK TO SEA' : 'CLICK TO WEIGH ANCHOR'}</OverlayPrompt>
+                <OverlayFootnote>Everything here is generated in code · desktop · mouse + keyboard</OverlayFootnote>
+                <DrydockDoor />
+                {corner}
+            </>
+        ),
+        pause: (
+            <>
+                <h2>HOVE TO</h2>
+                <Controls bindings={BINDINGS} />
+                <OverlayPrompt>CLICK TO RESUME</OverlayPrompt>
+                {corner}
+            </>
+        ),
+        dead: (
+            <>
+                <h2>LOST WITH ALL HANDS</h2>
+                <p>The hold went down with her</p>
+                <Summary />
+                <OverlayPrompt>CLICK TO FIT OUT AND SAIL AGAIN</OverlayPrompt>
+                {drydock && <DrydockExit />}
+            </>
+        ),
+        win: (
+            <>
+                <h2>THE ADMIRAL IS SUNK</h2>
+                <p>These waters are yours</p>
+                <Summary />
+                <OverlayPrompt>CLICK TO KEEP SAILING</OverlayPrompt>
+            </>
+        ),
+        unsupported: (
+            <OverlayNotice>
+                BRINEWAKE NEEDS WEBGL 2
+                <br />
+                enable hardware acceleration or try another browser
+            </OverlayNotice>
+        ),
+    };
+
+    return <OverlayLayer hud={HUD} screens={screens} onBegin={beginGame} />;
 });

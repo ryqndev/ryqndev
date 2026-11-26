@@ -1,7 +1,6 @@
 /** Floats per instance: 3x4 model matrix rows, tint rgb + flash, emissive / dissolve / 2 spare. */
 export const INSTANCE_STRIDE = 20;
-/** Floats per particle and the most the renderer will draw in one frame. */
-export const PARTICLE_STRIDE = 16;
+/** The most particles the renderer will draw in one frame; kiln-gl's PARTICLE_STRIDE floats each. */
 export const PARTICLE_CAPACITY = 4900;
 /** Floats per gel blob and the most the renderer will draw in one frame. */
 export const GOO_STRIDE = 12;

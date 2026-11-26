@@ -1,3 +1,6 @@
+import { type Sailor, TAVERN_SIZE, tavernful } from './ships/crew';
+import { UPGRADES } from './ships/defs';
+import { type Build, type Slot, STOCK } from './ships/fittings';
 import type { Ship } from './ships/types';
 
 export type Mode ='title' | 'play' | 'pause' | 'port' | 'dead' | 'win';
@@ -13,13 +16,24 @@ export interface Stats {
 }
 
 /** Everything that survives between sessions. */
-export interface Progress {
+export interface Progress extends Build {
     /** gold banked at port: what the shipyard takes */
     gold: number;
-    /** hull owned: 0 sloop, 1 brig, 2 galleon */
+    /** the hull in commission: 0 sloop, 1 brig, 2 galleon */
     cls: number;
-    /** level of each upgrade, indexed like UPGRADES */
+    /** every hull owned, indexed like CLASSES */
+    hulls: boolean[];
+    /** level of each improvement, indexed like UPGRADES */
     levels: number[];
+    /** the fitting in each slot, and the id of every fitting owned */
+    fit: Record<Slot, string>;
+    owned: string[];
+    /** the company: everyone hired, with the station each holds (null: ashore) */
+    crew: Sailor[];
+    /** recruits at the tavern, changed for new faces each time she comes into port */
+    tavern: Sailor[];
+    /** the next sailor's id */
+    nextId: number;
     escorts: number;
     /** notoriety: grows with every ship sunk and decides who comes hunting */
     renown: number;
@@ -44,6 +58,11 @@ export interface GameState {
     fire: number;
     /** seconds since the player's ship was lost */
     deadT: number;
+    /**
+     * In the drydock: the shipyard as a mode of its own. `prog` is then a throwaway career with a
+     * purse that buys everything, and nothing is saved.
+     */
+    drydock: boolean;
     prog: Progress;
 }
 
@@ -65,13 +84,29 @@ export interface PlayerState {
     canDock: boolean;
     /** broadsides fired this session, for the tutorial hints */
     fired: number;
+    /** 0..1: her sails loosed at anchor, so the yard can show her cloth and rig */
+    dress: number;
     /** debug: ignore damage */
     god: boolean;
 }
 
-export const PL: PlayerState = { ship: null!, camYaw: 0, camPitch: -0.2, dist: 1, zoom: 0, side: -1, aimX: 0, aimZ: 0, canDock: false, fired: 0, god: false };
+export const PL: PlayerState = { ship: null!, camYaw: 0, camPitch: -0.2, dist: 1, zoom: 0, side: -1, aimX: 0, aimZ: 0, canDock: false, fired: 0, dress: 0, god: false };
 
-export const newProgress = (): Progress => ({ gold: 0, cls: 0, levels: [0, 0, 0, 0, 0, 0], escorts: 0, renown: 0, won: false, stats: { sunk: 0, plunder: 0, time: 0 } });
+export const newProgress = (): Progress => ({
+    gold: 0,
+    cls: 0,
+    hulls: [true, false, false],
+    levels: UPGRADES.map(() => 0),
+    fit: { ...STOCK },
+    owned: [...new Set(Object.values(STOCK))],
+    crew: [],
+    tavern: tavernful(1, 0),
+    nextId: 1 + TAVERN_SIZE,
+    escorts: 0,
+    renown: 0,
+    won: false,
+    stats: { sunk: 0, plunder: 0, time: 0 },
+});
 
 /** Shared mutable game state. One game runs per page, so this is a module singleton. */
 export const S: GameState = {
@@ -84,5 +119,6 @@ export const S: GameState = {
     hold: 0,
     fire: 0,
     deadT: 0,
+    drydock: false,
     prog: newProgress(),
 };

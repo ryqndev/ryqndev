@@ -1,75 +1,5 @@
 @use '../styles/tokens' as *;
 
-.overlay {
-    @include layer;
-
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-direction: column;
-    text-align: center;
-    background: radial-gradient(ellipse at 50% 45%, rgb(6 14 24 / 20%), rgb(3 8 16 / 80%));
-    transition: opacity 0.5s;
-    pointer-events: auto;
-    cursor: pointer;
-
-    &.off {
-        opacity: 0;
-        pointer-events: none;
-    }
-
-    h1 {
-        margin: 0;
-        font-family: $font-display;
-        font-size: clamp(44px, 8.4vw, 120px);
-        font-weight: 400;
-        letter-spacing: 0.26em;
-        margin-right: -0.26em;
-        line-height: 1;
-        background: linear-gradient(180deg, #fff6df 18%, $gold 58%, #c8552e 100%);
-        -webkit-background-clip: text;
-        background-clip: text;
-        color: transparent;
-        filter: drop-shadow(0 4px 26px rgb(0 0 0 / 55%));
-    }
-
-    h2 {
-        margin: 0;
-        font-family: $font-display;
-        font-size: clamp(26px, 4.2vw, 54px);
-        font-weight: 400;
-        letter-spacing: 0.26em;
-        margin-right: -0.26em;
-    }
-
-    p {
-        margin: 18px 0 0;
-        font-size: 13px;
-        letter-spacing: 0.34em;
-        text-transform: uppercase;
-        opacity: 0.85;
-    }
-}
-
-.prompt {
-    margin-top: 44px;
-    font-size: 13px;
-    letter-spacing: 0.4em;
-    color: $gold;
-    animation: pulse 1.6s ease-in-out infinite;
-}
-
-.footnote {
-    position: absolute;
-    bottom: 22px;
-    left: 0;
-    right: 0;
-    font-size: 10px;
-    letter-spacing: 0.2em;
-    opacity: 0.45;
-    text-transform: uppercase;
-}
-
 .reset {
     position: absolute;
     right: 24px;
@@ -99,17 +29,16 @@
     }
 }
 
-.overlay .unsupported {
-    margin: 0;
-    font-size: 14px;
-    letter-spacing: 0.2em;
-    line-height: 1.8;
-    color: $gold;
-    opacity: 1;
-}
+// the other bottom corner of the title screen
+.drydock {
+    @extend .reset;
 
-@keyframes pulse {
-    50% {
-        opacity: 0.35;
+    right: auto;
+    left: 24px;
+    border-color: rgb(201 162 90 / 55%);
+    opacity: 0.85;
+
+    &:hover {
+        border-color: $gold;
     }
 }

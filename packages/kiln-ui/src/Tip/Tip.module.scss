@@ -1,0 +1,28 @@
+@use '../styles/tokens' as *;
+
+.tip {
+    position: absolute;
+    left: 50%;
+    bottom: var(--kiln-tip-bottom, 17%);
+    transform: translateX(-50%);
+    padding: 9px 16px;
+    background: var(--kiln-tip-bg, rgb(8 14 22 / 55%));
+    border-left: 2px solid $hint;
+    font-size: 13px;
+    letter-spacing: 0.08em;
+    opacity: 0;
+    transition: opacity 0.4s;
+    white-space: nowrap;
+    backdrop-filter: blur(6px);
+
+    &.on {
+        opacity: 1;
+    }
+
+    kbd {
+        font: inherit;
+        font-weight: 700;
+        color: $hint;
+        margin: 0 2px;
+    }
+}

@@ -1,6 +1,6 @@
-import { m4, m4aim, m4mul, m4trs, type Mat4, TAU } from '@ryqndev/rimefire-math';
+import { gl } from '@ryqndev/kiln-gl';
+import { m4, m4aim, m4mul, m4trs, type Mat4, TAU } from '@ryqndev/kiln-math';
 
-import { gl } from '../gl/context';
 import type { Mesh } from './mesh';
 
 /** Material kinds a vertex can carry (Geo.mat's `kind`); the surface shader shades each differently. */
@@ -18,7 +18,20 @@ export const MATERIAL = {
     METAL: 5,
     /** foliage: soft wrapped lighting */
     LEAF: 6,
+    /**
+     * Coursed stone blocks on walls, flagstones where it lies flat. For this and the two kinds below,
+     * Geo.mat's `metal` and `emis` mean something else: `metal` 1 marks a surface of revolution about
+     * a vertical axis (a tower), and `emis` then carries its radius / ROUND_SCALE so courses wrap it.
+     */
+    STONE: 7,
+    /** terracotta barrel tiles, laid in courses down the slope */
+    TILE: 8,
+    /** limewashed plaster: blotched, rain-streaked, grimy at the foot and fallen away to brick in places */
+    PLASTER: 9,
 } as const;
+
+/** Radius in metres that `emis` = 1 stands for on a round STONE, TILE or PLASTER surface. */
+export const ROUND_SCALE = 12.75;
 
 // ---------------------------------------------------------------------------
 // Procedural geometry builder. Vertex = pos(3f) normal+sway(4i8) color+kind(4u8) rough/metal/emis/ao(4u8)

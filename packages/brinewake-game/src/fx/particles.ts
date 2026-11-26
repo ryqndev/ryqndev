@@ -1,5 +1,5 @@
 import { env, PARTICLE_CAPACITY, PARTICLE_STRIDE } from '@ryqndev/brinewake-renderer';
-import { rnds, TAU } from '@ryqndev/rimefire-math';
+import { rnds, TAU } from '@ryqndev/kiln-math';
 
 const MAXS = 400;
 export const MAXP = PARTICLE_CAPACITY - MAXS;

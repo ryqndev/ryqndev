@@ -1,3 +1,5 @@
+import type { Mesh } from '@ryqndev/brinewake-renderer';
+
 import type { HullModel } from '../models';
 
 /** Whose side a ship is on. Shot never harms its own side. */
@@ -33,12 +35,32 @@ export interface ShipType {
     canvas: number[];
 }
 
-/** One side's broadside in progress: guns fire in a ripple, bow to stern. */
-export interface Volley {
-    /** seconds since the first gun fired; negative when idle */
+/** What the guns of one battery do. */
+export interface GunStats {
+    /** damage per ball */
+    dmg: number;
+    /** seconds between broadsides */
+    reload: number;
+    /** muzzle speed, m/s: it sets the range */
+    shot: number;
+    /** aiming error as a fraction of the range */
+    spread: number;
+    /** how big the gun sounds: 1 is a six-pounder */
+    heft: number;
+}
+
+/**
+ * One side's guns: what they are, their reload, and any broadside under way. The guns of a broadside go off
+ * together, each a ragged instant apart. Owned by battery.ts: go through it, not the fields.
+ */
+export interface Battery {
+    gun: GunStats;
+    /** seconds of reloading left; 0 when ready */
+    left: number;
+    /** seconds since the order to fire; negative when no broadside is under way */
     t: number;
-    /** guns fired so far */
-    n: number;
+    /** when each gun goes off, seconds after the order; negative once it has fired */
+    at: number[];
     /** the point on the sea it was laid on */
     tx: number;
     tz: number;
@@ -69,12 +91,16 @@ export interface Ship {
     max: number;
     speed: number;
     turn: number;
-    dmg: number;
-    reload: number;
-    shot: number;
-    /** reload timers and volleys, port then starboard */
-    rl: [number, number];
-    vol: [Volley, Volley];
+    /** hull her carpenter mends each second while she is afloat; 0 without one */
+    mend: number;
+    /** the colours she wears, in linear light: wale and flag, and sailcloth */
+    paint: number[];
+    cloth: number[];
+    /** the device on her square sails, as the mesh to draw over each (null: none), and the colour it is painted */
+    sigil: Mesh | null;
+    ink: number[];
+    /** her batteries, port then starboard */
+    bat: [Battery, Battery];
     /** hit glow, fading */
     flash: number;
     /** seconds since she started to go down; 0 while afloat */

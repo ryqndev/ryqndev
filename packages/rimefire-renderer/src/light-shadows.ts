@@ -1,7 +1,6 @@
-import { m4, m4mul, m4persp, type Mat4 } from '@ryqndev/rimefire-math';
+import { createFramebuffer, createTexture, gl } from '@ryqndev/kiln-gl';
+import { m4, m4mul, m4persp, type Mat4 } from '@ryqndev/kiln-math';
 
-import { gl } from './gl/context';
-import { createFramebuffer, createTexture } from './gl/texture';
 
 /** Shadow codes a light can carry in `LightUniforms.shadow`. A value of 0 or more is a static tile. */
 export const SHADOW_NONE = -1;

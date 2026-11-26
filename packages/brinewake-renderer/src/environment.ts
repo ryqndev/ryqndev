@@ -1,4 +1,4 @@
-import { smooth, TAU } from '@ryqndev/rimefire-math';
+import { smooth, TAU } from '@ryqndev/kiln-math';
 
 /**
  * The lighting state every shader reads: one directional light (the sun, or the moon at night),

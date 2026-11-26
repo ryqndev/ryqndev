@@ -1,4 +1,4 @@
-import { m4, m4inv, m4mul, m4persp, m4trs, type Mat4 } from '@ryqndev/rimefire-math';
+import { m4, m4inv, m4mul, m4persp, m4trs, type Mat4 } from '@ryqndev/kiln-math';
 
 import { FAR, NEAR, R } from './config';
 

@@ -9,7 +9,7 @@ const root = join(import.meta.dirname, '..');
 const site = join(root, 'apps/web/build');
 
 // app build output -> path it is served from
-const mounts = { 'apps/rimefire/build': 'rimefire' };
+const mounts = { 'apps/rimefire/build': 'rimefire', 'apps/brinewake/build': 'brinewake' };
 
 for (const [from, to] of Object.entries(mounts)) {
     const src = join(root, from);

@@ -8,9 +8,10 @@ in vec3 vQ;
 in vec4 vT;
 #endif
 out vec4 o;
+float hash(vec2 p){return fract(sin(dot(p,vec2(12.9898,78.233)))*43758.5453);}
 void main(){
   vec3 N=normalize(vN),V=normalize(uCam-vP);
-  // material: 0 paint, 1 terrain, 2 wood, 3 cloth, 4 emissive, 5 metal, 6 leaf
+  // material: 0 paint, 1 terrain, 2 wood, 3 cloth, 4 emissive, 5 metal, 6 leaf, 7 stone, 8 tile, 9 plaster
   float kind=floor(vC.a*255.+.5);
   vec3 alb=vC.rgb*vC.rgb;
   float rough=vM.x,metal=vM.y,emis=vM.z,ao=vM.w;
@@ -20,8 +21,9 @@ void main(){
   vec3 tint=vec3(1.);
 #endif
   if(kind>3.5&&kind<4.5){
-    // glass by day, a lit lamp once the environment calls for it
-    o=vec4(fog(alb*emis*(.5+26.*uEnv.z),vP),1.);
+    // glass by day, catching the sky; a lit lamp once the environment calls for it
+    vec3 Rg=reflect(-V,N);Rg.y=abs(Rg.y);
+    o=vec4(fog(alb*emis*(.16+26.*uEnv.z)+skyBase(Rg)*(.06+.5*pow(1.-max(dot(N,V),0.),4.)),vP),1.);
     return;
   }
   // noise projected along the three axes of the object's own frame, so patterns ride with a hull
@@ -42,6 +44,8 @@ void main(){
     vec3 grass=mix(vec3(.05,.16,.03),vec3(.16,.24,.05),d2.g)*(.6+.7*gr.r);
     vec3 rock=vec3(.17,.16,.15)*(.5+.9*d2.r);
     alb=mix(sand,grass,smoothstep(2.4,5.5,h));
+    // the town's streets and yards: earth trodden bare, greener toward its edges
+    alb=mix(alb,vec3(.34,.27,.18)*(.7+.5*gr.r)*(.85+.3*d2.b),(1.-vC.r)*(.72+.28*d2.g));
     alb=mix(alb,rock,smoothstep(.3,.5,slope+(d2.r-.5)*.25));
     // darker wet sand at the waterline, then the sea's own colour as the bed drops away
     float wet=smoothstep(1.2,.1,vP.y);
@@ -74,10 +78,61 @@ void main(){
   }else if(kind<5.5){
     alb*=.8+.4*n1;
     rough=clamp(rough+(n1-.5)*.25,.1,1.);
-  }else{
+  }else if(kind<6.5){
     alb*=.65+.7*n1;
     wrap=.6;
     thru=max(dot(-N,uSunDir),0.)*.25;
+  }else{
+    // masonry: laid out along the wall and up it, whichever way the wall faces. `metal` marks a
+    // round tower, whose courses wrap it by angle at the radius carried in `emis`.
+    vec2 tn=normalize(vec2(-vQ.z,vQ.x)+1e-5);
+    float u=metal>.5?atan(vQ.z,vQ.x+1e-5)*emis*12.75:dot(vO.xz,tn);
+    float foot=smoothstep(.86,.56,ao);
+    metal=0.;
+    if(kind<7.5){
+      // stone: coursed blocks on a wall, flagstones on the flat, each its own shade
+      float top=step(.7,abs(vQ.y));
+      vec2 q=mix(vec2(u/.92,vO.y/.46),(vO.xz+(ty.gb-.5)*.3)/1.15,top);
+      q.x+=.5*mod(floor(q.y),2.);
+      vec2 f=fract(q);
+      float h1=hash(floor(q));
+      float joint=smoothstep(0.,.06,f.x)*smoothstep(1.,.94,f.x)*smoothstep(0.,.1,f.y)*smoothstep(1.,.9,f.y);
+      alb*=(.66+.55*h1)*(.42+.58*joint)*(.78+.44*n1);
+      // weed and damp creeping up from the ground or the tide
+      alb=mix(alb,alb*vec3(.5,.62,.42),foot*(.35+.65*n1)*(1.-top)*.8);
+      rough=clamp(rough+(h1-.5)*.2,.4,1.);
+      ao*=.6+.4*joint;
+      N=normalize(N-(g-N*dot(g,N))*.8);
+    }else if(kind<8.5){
+      // barrel tiles: crowns and gutters running down the slope, courses across it
+      float v=vO.y/max(sqrt(1.-vQ.y*vQ.y),.25);
+      vec2 q=vec2(u*2.7,v*2.3);
+      vec2 f=fract(q);
+      float h1=hash(floor(q)),crown=1.-abs(f.x-.5)*2.;
+      alb*=(.5+.62*crown)*(.72+.5*h1)*(.6+.4*smoothstep(0.,.22,f.y))*(.8+.4*n1);
+      // old tiles: lichen and soot in drifts
+      float age=texture(uNoise,vec2(u,v)*.06).r;
+      alb=mix(alb,alb*vec3(.55,.6,.5)+vec3(.012,.016,.008),smoothstep(.5,.72,age)*.75);
+      rough=clamp(rough+(h1-.5)*.2,.5,1.);
+      ao*=.65+.35*crown;
+      N=normalize(N+vec3(tn.x,0.,tn.y)*(.5-f.x)*1.1);
+    }else{
+      // plaster: blotched by sun and rain, streaked under the eaves, grimy at the foot of the wall
+      float blot=texture(uNoise,vec2(u,vO.y)*.05).r;
+      float streak=texture(uNoise,vec2(u*.13,vO.y*.011)).r;
+      alb*=(.78+.3*blot)*(1.-.22*smoothstep(.45,.8,streak));
+      alb=mix(alb,alb*vec3(.5,.46,.38),foot*(.4+.6*blot)*.75);
+      // and fallen away here and there, baring the brick
+      float bare=smoothstep(.73,.77,blot*.55+n1*.45+foot*.12);
+      vec2 q=vec2(u/.46,vO.y/.15);
+      q.x+=.5*mod(floor(q.y),2.);
+      vec2 f=fract(q);
+      float joint=smoothstep(0.,.08,f.x)*smoothstep(1.,.92,f.x)*smoothstep(0.,.16,f.y)*smoothstep(1.,.84,f.y);
+      alb=mix(alb,vec3(.3,.11,.07)*(.6+.7*hash(floor(q)))*(.5+.5*joint),bare);
+      rough=.93;
+      ao*=1.-.25*bare;
+      N=normalize(N-(g-N*dot(g,N))*(.3+.5*bare));
+    }
   }
   float sh=shadowAt(vP,normalize(vN));
   vec3 col=lit(vP,N,V,alb,rough,metal,ao,wrap,sh);

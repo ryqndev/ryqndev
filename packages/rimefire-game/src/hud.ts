@@ -1,12 +1,13 @@
+import { createHud, type HudCore } from '@ryqndev/kiln-core';
 import { cam, project } from '@ryqndev/rimefire-renderer';
-import { createStore } from 'zustand/vanilla';
 
 import type { Director } from './combat/types';
 import { type Mode, S, type Stats } from './state';
 import { type Pylon, W } from './world';
 
 export type HudMode = Mode | 'unsupported';
-export type TipKind = 'coat' | 'swap' | 'pylon' | 'toast';
+/** Onboarding hints, by name. */
+export type Hint = 'coat' | 'swap' | 'pylon';
 
 export interface PylonMarker {
     lit: boolean;
@@ -17,13 +18,11 @@ export interface PylonMarker {
 }
 
 /**
- * Everything the HUD shows. The simulation writes a value only when it actually changes, so React
- * re-renders on changes rather than every frame. The few things that do change every frame
- * (fades, world-anchored marker positions) live in `hudSignals` instead.
+ * Everything the HUD shows, on top of what every kiln HUD has (mode, banner, tip, frame rate).
+ * The few things that change every frame (fades, world-anchored marker positions) live in
+ * `hudSignals` instead.
  */
-export interface HudState {
-    mode: HudMode;
-    stats: Stats;
+export interface HudState extends HudCore<HudMode, Stats, Hint> {
     weapon: number;
     /** gel tank, 0..100 */
     gel: number;
@@ -41,130 +40,77 @@ export interface HudState {
     nodes: boolean[];
     chain: number;
     chainOn: boolean;
-    banner: { title: string; sub: string };
-    bannerOn: boolean;
-    tip: { kind: TipKind; text: string };
-    tipOn: boolean;
-    fps: string;
     pylons: PylonMarker[];
 }
-
-export const hudStore = createStore<HudState>(() => ({
-    mode: 'title',
-    stats: { det: 0, best: 0, kills: 0, time: 0 },
-    weapon: 0,
-    gel: 100,
-    dry: false,
-    heat: 0,
-    hp: 100,
-    lit: 0,
-    objective: 0,
-    bossOn: false,
-    bossHp: 200,
-    bossArmored: true,
-    nodes: [true, true, true, true],
-    chain: 0,
-    chainOn: false,
-    banner: { title: '', sub: '' },
-    bannerOn: false,
-    tip: { kind: 'coat', text: '' },
-    tipOn: false,
-    fps: '',
-    pylons: [],
-}));
 
 /** Floats per pylon in `hudSignals.markers`: x, y in normalised screen space, then 1 when in front of the camera. */
 export const MARKER_STRIDE = 3;
 
-/**
- * Values that change every frame. They deliberately bypass React: HUD components read them in a
- * frame callback (see onHudFrame) and write straight to the DOM.
- */
-export const hudSignals = {
-    /** hit-marker opacity and whether the last hit was a kill */
-    hit: 0,
-    hitKill: false,
-    /** "no effect" notice opacity */
-    resist: 0,
-    /** damage-direction arc: opacity and rotation in degrees */
-    dmg: 0,
-    dmgRot: 0,
-    markers: new Float32Array(3 * MARKER_STRIDE),
-};
+const core = createHud<HudState, { resist: number; markers: Float32Array }>(
+    {
+        mode: 'title',
+        stats: { det: 0, best: 0, kills: 0, time: 0 },
+        weapon: 0,
+        gel: 100,
+        dry: false,
+        heat: 0,
+        hp: 100,
+        lit: 0,
+        objective: 0,
+        bossOn: false,
+        bossHp: 200,
+        bossArmored: true,
+        nodes: [true, true, true, true],
+        chain: 0,
+        chainOn: false,
+        banner: { title: '', sub: '' },
+        bannerOn: false,
+        tip: { kind: 'coat', text: '' },
+        tipOn: false,
+        fps: '',
+        pylons: [],
+    },
+    {
+        /** "no effect" notice opacity */
+        resist: 0,
+        markers: new Float32Array(3 * MARKER_STRIDE),
+    },
+    { banner: 3.4, toast: 1.6, kill: 0.42 }
+);
 
-type FrameListener = (dt: number) => void;
-const frameListeners: FrameListener[] = [];
-/** Subscribes to the game's frame tick, after the simulation and HUD state have updated. */
-export function onHudFrame(fn: FrameListener): () => void {
-    frameListeners.push(fn);
-    return () => {
-        const i = frameListeners.indexOf(fn);
-        if (i >= 0) frameListeners.splice(i, 1);
-    };
-}
+export const hudStore = core.store;
+/** Values that change every frame: the core hit marker and damage arc, plus this game's own. */
+export const hudSignals = core.signals;
+export const onHudFrame = core.onFrame;
 
-let banT = 0,
-    tipT = 0,
-    hmT = 0,
-    resT = 0,
-    ddT = 0,
-    ddA = 0;
+let resT = 0;
 const pj = { x: 0, y: 0, w: 0 };
+const put = core.put;
 
 const markerDistance = (q: Pylon) => Math.hypot(q.x - cam.x, q.z - cam.z) | 0;
 const markerProgress = (q: Pylon) => Math.round((1 - Math.max(0, q.hp) / W.PYHP) * 20);
 
-// collects this frame's changes so the store is written at most once per frame
-let cur: HudState = hudStore.getState();
-let next: Partial<HudState> | null = null;
-function put<K extends keyof HudState>(k: K, v: HudState[K]) {
-    if (cur[k] !== v) (next ??= {})[k] = v;
-}
-
 export const hud = {
     mode(mode: HudMode) {
-        hudStore.setState({ mode, stats: { ...S.stats } });
+        core.mode(mode, { ...S.stats });
     },
-    hit(kill: boolean) {
-        hmT = kill ? 0.42 : 0.2;
-        hudSignals.hitKill = kill;
-    },
+    hit: core.hit,
     resist() {
         resT = 1.1;
     },
     /** `a` is the world-space heading the damage came from */
-    dmgDir(a: number) {
-        ddT = 1;
-        ddA = a;
-    },
-    banner(title: string, sub = '') {
-        hudStore.setState({ banner: { title, sub }, bannerOn: true });
-        banT = 3.4;
-    },
-    tip(kind: TipKind, dur = 5, text = '') {
-        const s = hudStore.getState();
-        if (!s.tipOn || s.tip.kind !== kind || s.tip.text !== text) hudStore.setState({ tip: { kind, text }, tipOn: true });
-        tipT = dur;
-    },
-    toast(text: string) {
-        hud.tip('toast', 1.6, text);
-    },
-    fps(text: string) {
-        if (hudStore.getState().fps !== text) hudStore.setState({ fps: text });
-    },
+    dmgDir: core.dmgDir,
+    banner: core.banner,
+    tip: core.tip,
+    toast: core.toast,
+    fps: core.fps,
     /** Runs once per frame: publishes changed values, advances timers, refreshes the per-frame signals. */
     update(dt: number, D: Director) {
         const p = S.pl;
-        cur = hudStore.getState();
-        if (banT > 0 && (banT -= dt) <= 0) put('bannerOn', false);
-        if (tipT > 0 && (tipT -= dt) <= 0) put('tipOn', false);
-        hmT = Math.max(0, hmT - dt);
+        // dmgDir() is given the heading towards the attacker, so the arc is turned half way round
+        const cur = core.begin(dt, p.yaw + Math.PI);
         resT = Math.max(0, resT - dt);
-        ddT = Math.max(0, ddT - dt * 1.3);
-        hudSignals.hit = Math.min(1, hmT * 6);
         hudSignals.resist = Math.min(1, resT * 3);
-        hudSignals.dmg = ddT;
-        if (ddT > 0) hudSignals.dmgRot = (-(ddA - p.yaw) * 180) / Math.PI + 180;
 
         put('weapon', p.weapon);
         put('gel', Math.round(p.gel));
@@ -205,10 +151,6 @@ export const hud = {
         }
         if (stale) put('pylons', pylons.map((q) => ({ lit: q.lit, dist: markerDistance(q), progress: markerProgress(q) })));
 
-        if (next) {
-            hudStore.setState(next);
-            next = null;
-        }
-        for (let i = 0; i < frameListeners.length; i++) frameListeners[i](dt);
+        core.commit(dt);
     },
 };

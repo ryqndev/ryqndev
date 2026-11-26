@@ -1,9 +1,9 @@
 import { hudSignals, RELOAD_STEPS } from '@ryqndev/brinewake-game';
+import { useHudFrame } from '@ryqndev/kiln-ui';
 import clsx from 'clsx';
 import { memo, useRef } from 'react';
 
 import { useHud } from '../../../hooks/useHud';
-import { useHudFrame } from '../../../hooks/useHudFrame';
 import cn from './Reticle.module.scss';
 
 /** Centre-screen feedback: the gun sight, the hit marker and the arc showing where fire is coming from. */

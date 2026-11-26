@@ -1,5 +1,5 @@
 import { addInstance, type Mesh, seaHeight } from '@ryqndev/brinewake-renderer';
-import { m4, m4trs, rnd, rnds, TAU } from '@ryqndev/rimefire-math';
+import { m4, m4trs, rnd, rnds, TAU } from '@ryqndev/kiln-math';
 
 import { S } from '../state';
 

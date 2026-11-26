@@ -1,0 +1,163 @@
+@use '../../../styles/tokens' as *;
+
+.sheet {
+    position: absolute;
+    bottom: 36px;
+    left: 36px;
+    width: 340px;
+    padding: 18px 20px 16px;
+    background: rgb(8 16 26 / 72%);
+    border: 1px solid rgb(201 162 90 / 30%);
+    backdrop-filter: blur(10px);
+}
+
+.title {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-bottom: 14px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid rgb(201 162 90 / 30%);
+
+    b {
+        font-family: $font-display;
+        font-size: 24px;
+        font-weight: 400;
+        letter-spacing: 0.14em;
+    }
+
+    span {
+        @include label;
+    }
+}
+
+.gauge {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-top: 9px;
+}
+
+.label {
+    @include label;
+
+    flex: none;
+    width: 68px;
+}
+
+.bar {
+    position: relative;
+    flex: 1;
+    height: 5px;
+    background: rgb(255 255 255 / 14%);
+
+    i {
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        left: 0;
+        background: $text;
+        transition:
+            width 0.16s,
+            left 0.16s;
+    }
+
+    // what the offer would add, or take away
+    .good {
+        background: $sea;
+    }
+
+    .bad {
+        background: $danger;
+    }
+}
+
+.value {
+    @include mono;
+
+    flex: none;
+    width: 44px;
+    font-size: 13px;
+    text-align: right;
+}
+
+// the company's figures, two to a row
+.company {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 5px 22px;
+    margin-top: 12px;
+    padding-top: 12px;
+    border-top: 1px solid rgb(255 255 255 / 10%);
+}
+
+.line {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+
+    .label {
+        width: auto;
+    }
+
+    .value {
+        width: auto;
+    }
+}
+
+.good {
+    color: $sea;
+}
+
+.bad {
+    color: $danger;
+}
+
+.guns {
+    width: 100%;
+    margin-top: 16px;
+    padding-top: 4px;
+    border-top: 1px solid rgb(255 255 255 / 10%);
+    border-collapse: collapse;
+
+    th,
+    td {
+        padding: 4px 0;
+        text-align: right;
+    }
+
+    tbody th {
+        @include label;
+
+        width: 80px;
+        font-weight: 400;
+        text-align: left;
+    }
+
+    thead th {
+        padding: 12px 0 6px;
+        font-size: 12px;
+        font-weight: 400;
+        letter-spacing: 0.04em;
+
+        span {
+            @include label;
+
+            display: block;
+            margin-bottom: 2px;
+            color: $brass;
+            opacity: 1;
+        }
+    }
+
+    td {
+        @include mono;
+
+        font-size: 13px;
+    }
+
+    // a different gun is being tried in this battery
+    .changed {
+        color: $gold;
+    }
+}

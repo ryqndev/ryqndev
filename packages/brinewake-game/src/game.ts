@@ -1,23 +1,29 @@
 import { audioTick, initAudio, sfx, suspendAudio } from '@ryqndev/brinewake-audio';
-import { cam, clearFoam, env, type Frame, initGL, initRenderer, post, R, render, resize, setDayPhase, setScene, setTerrainMap } from '@ryqndev/brinewake-renderer';
-import { clamp, TAU } from '@ryqndev/rimefire-math';
+import { cam, clearFoam, env, type Frame, initGL, initRenderer, post, R, render, resize, setCamera, setDayPhase, setScene, setTerrainMap } from '@ryqndev/brinewake-renderer';
+import { attachInput, createFpsMeter, createResolutionGovernor, type Input, keys, listen, mouse, opts } from '@ryqndev/kiln-core';
+import { clamp, damp, smooth, TAU } from '@ryqndev/kiln-math';
 
-import { listen } from './dom';
 import { clearParticles, debris, foam, gpu, light, lightU, pcount, sprite, updateDebris, updateLights, updateParticles } from './fx';
 import { hud } from './hud';
-import { attachInput, type Input, keys, mouse, opts } from './input';
 import { buildModels } from './models';
-import { orbitCamera, placeCamera, playerKey, spawnPlayer, updatePlayer } from './player';
+import { moor, orbitCamera, placeCamera, playerKey, spawnPlayer, updatePlayer } from './player';
 import { clearProgress, loadProgress, saveProgress } from './save';
 import { balls, D, fireBroadside, FOES, hurtShip, INFAMY, infamyOf, loot, makeShip, resetDirector, resetShips, ships, TEAM, updateShips } from './ships';
-import { launchEscort } from './shipyard';
+import { shipStats } from './ships/fittings';
+import { launchEscort, previewBuild, restock } from './shipyard';
 import { type Mode, newProgress, PL, S } from './state';
-import { buildWorld, hmap, HN, W } from './world';
+import { buildTownLife, updateTown } from './town';
+import { buildWorld, height, hmap, HN, W } from './world';
 
 export interface GameOptions {
     /** Exposes a `window.BW` handle and starts play without pointer lock, so scripts can drive the game. */
     debug?: boolean;
+    /** Opens straight into the drydock instead of the title screen. */
+    drydock?: boolean;
 }
+
+/** What the drydock's yard will stand a build: enough for everything it sells, many times over. */
+const DRYDOCK_PURSE = 1_000_000;
 
 const QUALITY_NAMES = ['LOW', 'MEDIUM', 'HIGH', 'ULTRA'];
 const DEFAULT_SENS = 0.0022;
@@ -34,20 +40,104 @@ let input: Input | null = null;
 let rafId = 0;
 
 let last = 0,
-    avg = 16.7,
-    pace = 16.7,
-    // smoothed frame time when resolution was last cut, while that cut is on trial
-    shedFrom = 0,
-    cool = 3,
     showFps = false,
-    fpsN = 0,
-    fpsT = 0,
     tipStage = 0,
     tipT = 0,
     // seconds under sail since the anchor last came up
     atSea = 0,
     // counts up once the admiral is beaten, until the victory screen
     winT = -1;
+
+// debug: a fixed viewpoint for looking the world over, as [x, y, z, yaw, pitch, fov]
+const spy: { view: number[] | null } = { view: null };
+
+const governor = createResolutionGovernor(R, resize);
+const fpsMeter = createFpsMeter();
+
+// The circling camera's stand-off, height and sideways slide (as a fraction of the stand-off). They
+// follow what the scene asks for instead of jumping to it: the ship can change size under the
+// camera in a single frame, when the yard tries another hull on her.
+const orbit = { r: 0, v: 0, h: 0, aside: 0, on: false };
+/** How briskly the stand-off closes on its target, rad/s: about three quarters of a second to settle. */
+const ORBIT_SPRING = 6.5;
+
+/**
+ * How the player has turned the ship round in the yard: a heading added to the camera's slow
+ * circling, a tilt added to its elevation, and a zoom on its distance. Dragging the view holds the
+ * circling still; it picks up again once the view has been left alone for LOOK_REST seconds.
+ */
+const look = { yaw: 0, tilt: 0, zoom: 1, idle: 99, held: false, x: 0, y: 0 };
+const LOOK_REST = 5;
+/** Radians the view turns for each pixel dragged, sideways and up or down. */
+const LOOK_TURN = 0.006,
+    LOOK_TILT = 0.004;
+
+// drag on the sea to turn the ship round, wheel to come closer or stand off, double-click to let go
+function attachLook(canvas: HTMLCanvasElement): (() => void)[] {
+    const release = () => {
+        look.held = false;
+        canvas.style.cursor = S.mode === 'port' ? 'grab' : '';
+    };
+    return [
+        listen(canvas, 'pointerdown', (e) => {
+            if (S.mode !== 'port' || e.button !== 0) return;
+            look.held = true;
+            look.x = e.clientX;
+            look.y = e.clientY;
+            canvas.setPointerCapture(e.pointerId);
+            canvas.style.cursor = 'grabbing';
+        }),
+        listen(canvas, 'pointermove', (e) => {
+            if (!look.held) return;
+            // the ship follows the hand: dragging right brings her far side round, dragging down looks from higher
+            look.yaw -= (e.clientX - look.x) * LOOK_TURN;
+            look.tilt = clamp(look.tilt + (e.clientY - look.y) * LOOK_TILT, -1.4, 1.4);
+            look.x = e.clientX;
+            look.y = e.clientY;
+            look.idle = 0;
+        }),
+        listen(canvas, 'pointerup', release),
+        listen(canvas, 'pointercancel', release),
+        listen(
+            canvas,
+            'wheel',
+            (e) => {
+                if (S.mode !== 'port') return;
+                // by how far the wheel moved, so a trackpad's stream of small steps zooms as gently as a
+                // mouse wheel's few big ones (a wheel reporting in lines, not pixels, is scaled to match)
+                const travel = clamp(e.deltaY * (e.deltaMode === 1 ? 33 : 1), -150, 150);
+                look.zoom = clamp(look.zoom * Math.exp(travel * 0.0012), 0.35, 2.4);
+                look.idle = 0;
+                e.preventDefault();
+            },
+            { passive: false }
+        ),
+        listen(canvas, 'dblclick', () => {
+            if (S.mode !== 'port') return;
+            look.tilt = 0;
+            look.zoom = 1;
+            look.idle = LOOK_REST;
+        }),
+    ];
+}
+
+function easeOrbit(r: number, h: number, aside: number, dt: number, brisk = false) {
+    // the first frame of circling starts where it is asked to: there is nothing to ease from
+    if (!orbit.on) {
+        orbit.r = r;
+        orbit.v = 0;
+        orbit.h = h;
+        orbit.aside = aside;
+        return;
+    }
+    // a critically damped spring: it sets off gently as well as arriving gently, and never overshoots
+    // while the player has hold of the view it keeps close under the hand; left alone it drifts
+    const w = brisk ? ORBIT_SPRING * 2.6 : ORBIT_SPRING;
+    orbit.v += ((r - orbit.r) * w - 2 * orbit.v) * w * dt;
+    orbit.r += orbit.v * dt;
+    orbit.h = damp(orbit.h, h, brisk ? 14 : 3, dt);
+    orbit.aside = damp(orbit.aside, aside, 3, dt);
+}
 
 // the renderer's view of the simulation; every buffer is reused across frames
 const frameInput: Frame = { time: 0, dt: 0, lights: lightU, particles: gpu, particleCount: 0, foam, focusX: 0, focusZ: 0 };
@@ -56,7 +146,7 @@ const frameInput: Frame = { time: 0, dt: 0, lights: lightU, particles: gpu, part
  * Mounts the game on a canvas and starts its loop. Returns a function that stops the loop and
  * removes every listener; mounting again on the same canvas resumes where it left off.
  */
-export function mountGame(canvas: HTMLCanvasElement, { debug = false }: GameOptions = {}): () => void {
+export function mountGame(canvas: HTMLCanvasElement, { debug = false, drydock = false }: GameOptions = {}): () => void {
     if (bound && bound !== canvas) throw new Error('brinewake: the game can only be mounted on one canvas per page');
     if (!bound) {
         bound = canvas;
@@ -67,8 +157,10 @@ export function mountGame(canvas: HTMLCanvasElement, { debug = false }: GameOpti
             setTerrainMap(hmap, HN);
             initRenderer(canvas);
             buildModels();
+            buildTownLife();
             resetVoyage();
             setMode('title');
+            if (drydock) enterDrydock();
         } else {
             supported = false;
             hud.mode('unsupported');
@@ -84,9 +176,9 @@ export function mountGame(canvas: HTMLCanvasElement, { debug = false }: GameOpti
         onRelease: () => setMode('pause'),
         onKey,
     });
-    const off = [listen(window, 'resize', resize), listen(document, 'visibilitychange', () => suspendAudio(document.hidden))];
+    const off = [listen(window, 'resize', resize), listen(document, 'visibilitychange', () => suspendAudio(document.hidden)), ...attachLook(canvas)];
     if (debug) {
-        (window as unknown as Record<string, unknown>).BW = { S, PL, W, R, D, cam, post, env, ships, loot, balls, keys, mouse, opts, FOES, TEAM, makeShip, hurtShip, fireBroadside, setMode, dock, resetVoyage };
+        (window as unknown as Record<string, unknown>).BW = { S, PL, W, R, D, cam, post, env, ships, loot, balls, keys, mouse, opts, FOES, TEAM, makeShip, hurtShip, fireBroadside, setMode, dock, resetVoyage, height, spy };
     }
     last = performance.now();
     rafId = requestAnimationFrame(frame);
@@ -105,6 +197,7 @@ export function beginGame() {
     initAudio();
     sfx.ui();
     if (S.mode === 'dead') relaunch();
+    previewBuild(null);
     if (S.mode === 'port' || S.mode === 'title') atSea = 0;
     input.engage();
 }
@@ -112,24 +205,60 @@ export function beginGame() {
 /** Drops anchor at the home port: banks the hold, repairs the hull and opens the shipyard. */
 export function dock() {
     if (S.mode !== 'play' || !PL.canDock) return;
+    // the purser makes the most of the hold, and the crew take their shares before the captain sees any
     const s = PL.ship,
-        banked = Math.round(S.hold);
+        { bank, share } = shipStats(S.prog),
+        gross = Math.round(S.hold * bank),
+        cut = Math.round(gross * share),
+        banked = gross - cut;
     s.sail = 0;
     s.rudder = 0;
     s.hp = s.max;
     S.prog.gold += banked;
     S.prog.stats.plunder += banked;
     S.hold = 0;
+    restock();
     saveProgress();
     setMode('port');
     sfx.bell();
-    if (banked) hud.banner('PLUNDER BANKED', banked + ' gold ashore');
+    if (gross) hud.banner('PLUNDER BANKED', banked + ' gold ashore' + (cut ? ' · ' + cut + ' to the crew' : ''));
+    if (document.pointerLockElement) document.exitPointerLock();
+}
+
+// swaps the career for a throwaway one with a bare sloop and a bottomless purse, and opens the yard
+function enterDrydock() {
+    S.drydock = true;
+    S.prog = { ...newProgress(), gold: DRYDOCK_PURSE };
+    resetVoyage();
+    setMode('port');
+}
+
+/**
+ * Opens the drydock from the title screen: the shipyard as a mode of its own, where anything can
+ * be bought and fitted, and taken to sea to try. The real career is left exactly as it was.
+ * Call from a click handler, so the yard has its sounds.
+ */
+export function openDrydock() {
+    if (!supported || !bound || S.mode !== 'title') return;
+    initAudio();
+    sfx.ui();
+    enterDrydock();
+}
+
+/** Leaves the drydock for the title screen, with the real career back in hand. */
+export function leaveDrydock() {
+    if (!S.drydock) return;
+    S.drydock = false;
+    S.prog = loadProgress();
+    resetVoyage();
+    setMode('title');
     if (document.pointerLockElement) document.exitPointerLock();
 }
 
 /** Throws the save away and starts over from a bare sloop. */
 export function resetProgress() {
-    if (!supported || !bound) return;
+    // the drydock has no save of its own to throw away, and must not reach the real one
+    if (!supported || !bound || S.drydock) return;
     clearProgress();
     S.prog = newProgress();
     S.day = 0.07;
@@ -177,7 +306,7 @@ function onKey(code: string) {
     else if (code === 'KeyG') {
         R.quality = (R.quality + 1) % QUALITY_NAMES.length;
         R.dyn = 1;
-        shedFrom = 0;
+        governor.reset();
         resize();
         hud.toast('GRAPHICS · ' + QUALITY_NAMES[R.quality]);
     } else if (code === 'KeyP') showFps = !showFps;
@@ -190,7 +319,12 @@ function onKey(code: string) {
 function setMode(m: Mode) {
     S.mode = m;
     hud.mode(m);
+    // in the yard the sea is there to be dragged: it turns the ship round
+    look.held = false;
+    if (bound) bound.style.cursor = m === 'port' ? 'grab' : '';
     if (m !== 'play') mouse.l = mouse.r = false;
+    // in port she lies alongside the wharf, wherever in the roads she dropped anchor
+    if (m === 'port') moor();
 }
 
 // onboarding hints, advanced by what the player has actually done
@@ -232,43 +366,15 @@ function frame(now: number) {
     const rdt = Math.min(0.05, Math.max(0.001, (now - last) / 1000));
     last = now;
 
-    // Dynamic resolution: shed pixels when frames run long, creep back when there is headroom.
-    // `pace` is the frame time to hold: 60 Hz, unless the display itself turns out to be slower.
-    // A 30 Hz power-saving cap looks exactly like a struggling GPU, so each cut is checked a moment
-    // later: if it bought nothing, the display is the limit, and the pixels are given back.
-    avg += (rdt * 1000 - avg) * 0.06;
-    pace = Math.max(16.7, Math.min(pace, avg));
-    cool -= rdt;
-    if (shedFrom > 0) {
-        if (cool <= 0) {
-            if (avg > shedFrom * 0.94) {
-                pace = avg;
-                R.dyn = Math.min(1, R.dyn + 0.1);
-                resize();
-            }
-            shedFrom = 0;
-            cool = 1.5;
-        }
-    } else if (avg > pace * 1.29 && cool <= 0 && R.dyn > 0.56) {
-        shedFrom = avg;
-        R.dyn = Math.max(0.55, R.dyn - 0.1);
-        resize();
-        cool = 1.5;
-    } else if (avg < pace * 1.035 && cool < -12 && R.dyn < 1) {
-        R.dyn = Math.min(1, R.dyn + 0.05);
-        resize();
-        cool = 2;
-    }
+    governor.tick(rdt);
     if (showFps) {
-        fpsN++;
-        if ((fpsT += rdt) > 0.5) {
-            hud.fps(Math.round(fpsN / fpsT) + ' fps · ' + R.w + '×' + R.h);
-            fpsN = fpsT = 0;
-        }
+        const fps = fpsMeter(rdt);
+        if (fps !== null) hud.fps(fps + ' fps · ' + R.w + '×' + R.h);
     } else hud.fps('');
 
     const m = S.mode,
         p = PL.ship;
+    PL.dress = damp(PL.dress, m === 'port' ? 1 : 0, 2.5, rdt);
     const dt = m === 'pause' ? 0 : m === 'dead' ? rdt * 0.5 : rdt;
     S.t += dt;
     // night passes quicker than day: it is a mood, not a place to get lost in
@@ -306,10 +412,27 @@ function frame(now: number) {
         // nobody is at the helm: the world carries on, and the camera circles the ship
         if (m === 'dead') S.deadT += rdt;
         else p.rudder = 0;
+        if (m === 'port') moor(rdt);
         const wide = m === 'title' || m === 'win';
-        orbitCamera(p.x, 5, p.z, p.hl * 2 + (wide ? 34 : 24), wide ? 13 : 9 + Math.min(16, S.deadT * 1.5), S.t * 0.05 + W.port.yaw + 2.4);
+        // in port the shipyard takes the right of the screen: the ship is framed in what is left
+        let radius = p.hl * 2 + (wide ? 34 : 24),
+            rise = wide ? 13 : 9 + Math.min(16, S.deadT * 1.5);
+        const handled = m === 'port' && (look.held || look.idle < LOOK_REST);
+        if (m === 'port') {
+            // the player's own view of her: the same circle, tilted and stood off as they have set it,
+            // and held still for as long as they are looking
+            const far = Math.hypot(radius, rise) * look.zoom,
+                tilt = clamp(Math.atan2(rise, radius) + look.tilt, 0.03, 1.35);
+            radius = far * Math.cos(tilt);
+            rise = far * Math.sin(tilt);
+            look.idle += rdt;
+            if (handled) look.yaw -= 0.05 * dt;
+        }
+        easeOrbit(radius, rise, m === 'port' ? 0.2 : 0, rdt, handled);
+        orbitCamera(p.x, 5, p.z, orbit.r, orbit.h, S.t * 0.05 + W.port.yaw + 2.4 + look.yaw, orbit.r * orbit.aside);
         updateShips(dt, false);
     }
+    orbit.on = m !== 'play' && m !== 'pause';
 
     // lanterns ashore, lit from dusk to dawn
     if (env.lamp > 0.05)
@@ -318,6 +441,7 @@ function frame(now: number) {
             sprite(0, l.x, l.y, l.z, l.glow * 0.4, l.r * 0.3, l.g * 0.3, l.b * 0.3, env.lamp);
             sprite(0, l.x, l.y, l.z, l.glow * 2, l.r * 0.012, l.g * 0.012, l.b * 0.012, env.lamp);
         }
+    updateTown(dt);
     updateDebris(dt);
     updateParticles(dt);
     updateLights(dt, cam.x, cam.y, cam.z);
@@ -334,7 +458,15 @@ function frame(now: number) {
     frameInput.time = S.t;
     frameInput.dt = dt;
     frameInput.particleCount = pcount.n;
-    frameInput.focusX = p.x;
-    frameInput.focusZ = p.z;
+    // in the roads the sun's shadows are shared between the ship and the town behind her
+    const ashore = 0.5 * smooth(420, 190, Math.hypot(p.x - W.port.tx, p.z - W.port.tz));
+    frameInput.focusX = p.x + (W.port.tx - p.x) * ashore;
+    frameInput.focusZ = p.z + (W.port.tz - p.z) * ashore;
+    if (spy.view) {
+        const [x, y, z, yaw, pitch, fov = 1] = spy.view;
+        setCamera(x, y, z, yaw, pitch, 0, fov);
+        frameInput.focusX = x - Math.sin(yaw) * 90;
+        frameInput.focusZ = z - Math.cos(yaw) * 90;
+    }
     render(frameInput);
 }

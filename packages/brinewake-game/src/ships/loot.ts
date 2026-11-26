@@ -1,6 +1,6 @@
 import { sfx } from '@ryqndev/brinewake-audio';
 import { addInstance, seaHeight } from '@ryqndev/brinewake-renderer';
-import { clamp, m4trs, rnd, rnds } from '@ryqndev/rimefire-math';
+import { clamp, m4trs, rnd, rnds } from '@ryqndev/kiln-math';
 
 import { spawn, sprite } from '../fx';
 import { hud } from '../hud';

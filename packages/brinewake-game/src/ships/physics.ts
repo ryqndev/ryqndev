@@ -1,16 +1,18 @@
 import { sfx } from '@ryqndev/brinewake-audio';
 import { cam, seaHeight, shoreCalm } from '@ryqndev/brinewake-renderer';
-import { damp } from '@ryqndev/rimefire-math';
+import { damp } from '@ryqndev/kiln-math';
 
 import { fxFroth, fxSpray, shake, stampFoam } from '../fx';
 import { S } from '../state';
-import { height, SEA } from '../world';
+import { height, SEA, W } from '../world';
 import { hurtShip } from './damage';
 import { ships } from './state';
 import type { Ship } from './types';
 
 /** How long a lost ship takes to go under, seconds. */
 export const SINK_TIME = 9;
+/** Everything solid in the home port lies within this many metres of the middle of the town. */
+const HARBOUR = 260;
 // spray is only worth simulating this close to the camera, metres squared
 const SPRAY_RANGE2 = 260 * 260;
 
@@ -21,6 +23,7 @@ export function sailShip(s: Ship, dt: number) {
         return;
     }
     s.canvas = damp(s.canvas, s.sail / 3, 1.2, dt);
+    if (s.mend > 0 && s.hp < s.max) s.hp = Math.min(s.max, s.hp + s.mend * dt);
     // a holed ship is a slow ship
     const target = s.canvas * s.speed * (s.hp < s.max * 0.3 ? 0.8 : 1);
     s.v += (target - s.v) * (1 - Math.exp(-(target > s.v ? 0.3 : 0.5) * dt));
@@ -65,6 +68,21 @@ export function sailShip(s: Ship, dt: number) {
         }
         s.v *= Math.max(0, 1 - 5 * dt);
     }
+
+    // ---- piers, the slip and hulls at their moorings: shouldered off, and all way lost on them ----
+    if ((s.x - W.port.tx) ** 2 + (s.z - W.port.tz) ** 2 < HARBOUR * HARBOUR)
+        for (const o of W.solids)
+            for (let k = -1; k <= 1; k++) {
+                const ox = s.x + fx * s.hl * 0.62 * k - o[0],
+                    oz = s.z + fz * s.hl * 0.62 * k - o[1],
+                    d = Math.hypot(ox, oz),
+                    reach = s.hb + o[2];
+                if (d >= reach || d < 1e-3) continue;
+                const push = (reach - d) * Math.min(1, dt * 8);
+                s.x += (ox / d) * push;
+                s.z += (oz / d) * push;
+                s.v *= Math.max(0, 1 - 4 * dt);
+            }
 
     // ---- attitude: ride the swell sampled at the bow, the stern and either beam ----
     const t = S.t,

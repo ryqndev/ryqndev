@@ -1,7 +1,10 @@
 import { project } from '@ryqndev/brinewake-renderer';
-import { createStore } from 'zustand/vanilla';
+import { createHud, type HudCore } from '@ryqndev/kiln-core';
 
-import { INFAMY, infamyOf } from './ships/defs';
+import { reloadProgress } from './ships/battery';
+import type { Sailor } from './ships/crew';
+import { INFAMY, infamyOf, UPGRADES } from './ships/defs';
+import { type Slot, SLOTS, STOCK } from './ships/fittings';
 import { loot, ships } from './ships/state';
 import { TEAM } from './ships/types';
 import { holdCap } from './shipyard';
@@ -9,19 +12,18 @@ import { type Mode, PL, S, type Stats } from './state';
 import { W } from './world';
 
 export type HudMode = Mode | 'unsupported';
-export type TipKind = 'sail' | 'aim' | 'plunder' | 'bank' | 'dock' | 'full' | 'toast';
+/** Onboarding hints, by name. */
+export type Hint = 'sail' | 'aim' | 'plunder' | 'bank' | 'dock' | 'full';
 
 /** Steps a broadside's reload gauge is published in. */
 export const RELOAD_STEPS = 12;
 
 /**
- * Everything the HUD shows. The simulation writes a value only when it actually changes, so React
- * re-renders on changes rather than every frame. The few things that do change every frame
- * (fades, world-anchored markers, the chart) live in `hudSignals` instead.
+ * Everything the HUD shows, on top of what every kiln HUD has (mode, banner, tip, frame rate).
+ * The few things that change every frame (world-anchored markers, the chart) live in `hudSignals`
+ * instead.
  */
-export interface HudState {
-    mode: HudMode;
-    stats: Stats;
+export interface HudState extends HudCore<HudMode, Stats, Hint> {
     hp: number;
     maxHp: number;
     /** plunder aboard, the most the hold takes, and gold banked at port */
@@ -38,41 +40,19 @@ export interface HudState {
     infamy: number;
     /** progress toward the next level of infamy, 0..10 */
     wanted: number;
+    /** the player's build and what they own: see Progress */
     cls: number;
+    hulls: boolean[];
     levels: number[];
+    fit: Record<Slot, string>;
+    owned: string[];
+    crew: Sailor[];
+    tavern: Sailor[];
     escorts: number;
     won: boolean;
-    banner: { title: string; sub: string };
-    bannerOn: boolean;
-    tip: { kind: TipKind; text: string };
-    tipOn: boolean;
-    fps: string;
+    /** in the drydock: the shipyard on its own, on a career that is not kept */
+    drydock: boolean;
 }
-
-export const hudStore = createStore<HudState>(() => ({
-    mode: 'title',
-    stats: { sunk: 0, plunder: 0, time: 0 },
-    hp: 100,
-    maxHp: 100,
-    hold: 0,
-    cap: 300,
-    gold: 0,
-    sail: 0,
-    port: RELOAD_STEPS,
-    starboard: RELOAD_STEPS,
-    side: -1,
-    infamy: 0,
-    wanted: 0,
-    cls: 0,
-    levels: [0, 0, 0, 0, 0, 0],
-    escorts: 0,
-    won: false,
-    banner: { title: '', sub: '' },
-    bannerOn: false,
-    tip: { kind: 'sail', text: '' },
-    tipOn: false,
-    fps: '',
-}));
 
 /** Floats per ship marker in `hudSignals.targets`: x, y in normalised screen space, hull 0..1, team. */
 export const TARGET_STRIDE = 4;
@@ -82,95 +62,82 @@ export const BLIP_STRIDE = 3;
 export const MAX_BLIPS = 64;
 export const BLIP = { NAVY: 0, TRADE: 1, FRIEND: 2, LOOT: 3, FLAGSHIP: 4 } as const;
 
-/**
- * Values that change every frame. They deliberately bypass React: HUD components read them in a
- * frame callback (see onHudFrame) and write straight to the DOM or a canvas.
- */
-export const hudSignals = {
-    /** hit-marker opacity and whether the last hit sank its target */
-    hit: 0,
-    hitKill: false,
-    /** damage-direction arc: opacity and rotation in degrees */
-    dmg: 0,
-    dmgRot: 0,
-    /** ships worth a health bar, nearest first come first served */
-    targets: new Float32Array(MAX_TARGETS * TARGET_STRIDE),
-    targetCount: 0,
-    blips: new Float32Array(MAX_BLIPS * BLIP_STRIDE),
-    blipCount: 0,
-    /** the player's ship on the chart: world x, world z, heading */
-    self: new Float32Array(3),
-    /** the home port's waypoint: x, y in normalised screen space, 1 when in front of the camera, metres away */
-    home: new Float32Array(4),
-};
+const core = createHud<HudState, { targets: Float32Array; targetCount: number; blips: Float32Array; blipCount: number; self: Float32Array; home: Float32Array }>(
+    {
+        mode: 'title',
+        stats: { sunk: 0, plunder: 0, time: 0 },
+        hp: 100,
+        maxHp: 100,
+        hold: 0,
+        cap: 300,
+        gold: 0,
+        sail: 0,
+        port: RELOAD_STEPS,
+        starboard: RELOAD_STEPS,
+        side: -1,
+        infamy: 0,
+        wanted: 0,
+        cls: 0,
+        hulls: [true, false, false],
+        levels: UPGRADES.map(() => 0),
+        fit: { ...STOCK },
+        owned: [],
+        crew: [],
+        tavern: [],
+        escorts: 0,
+        won: false,
+        drydock: false,
+        banner: { title: '', sub: '' },
+        bannerOn: false,
+        tip: { kind: 'sail', text: '' },
+        tipOn: false,
+        fps: '',
+    },
+    {
+        /** ships worth a health bar, nearest first come first served */
+        targets: new Float32Array(MAX_TARGETS * TARGET_STRIDE),
+        targetCount: 0,
+        blips: new Float32Array(MAX_BLIPS * BLIP_STRIDE),
+        blipCount: 0,
+        /** the player's ship on the chart: world x, world z, heading */
+        self: new Float32Array(3),
+        /** the home port's waypoint: x, y in normalised screen space, 1 when in front of the camera, metres away */
+        home: new Float32Array(4),
+    },
+    { banner: 4, toast: 2.2, kill: 0.5 }
+);
 
-type FrameListener = (dt: number) => void;
-const frameListeners: FrameListener[] = [];
-/** Subscribes to the game's frame tick, after the simulation and HUD state have updated. */
-export function onHudFrame(fn: FrameListener): () => void {
-    frameListeners.push(fn);
-    return () => {
-        const i = frameListeners.indexOf(fn);
-        if (i >= 0) frameListeners.splice(i, 1);
-    };
-}
+export const hudStore = core.store;
+/** Values that change every frame: the core hit marker and damage arc, plus this game's own. */
+export const hudSignals = core.signals;
+export const onHudFrame = core.onFrame;
 
-let banT = 0,
-    tipT = 0,
-    hmT = 0,
-    ddT = 0,
-    ddA = 0;
+// true while a published list of sailors still says what the game's own does
+const sameSailors = (a: Sailor[], b: Sailor[]) => a.length === b.length && a.every((s, i) => s.id === b[i].id && s.post === b[i].post && s.name === b[i].name && s.cost === b[i].cost);
+// React is handed copies: the game goes on changing its own
+const copies = (list: Sailor[]) => list.map((s) => ({ ...s }));
+
 const pj = { x: 0, y: 0, w: 0 };
 /** How far off a ship still gets a health bar, metres. */
 const TARGET_RANGE = 420;
-
-// collects this frame's changes so the store is written at most once per frame
-let cur: HudState = hudStore.getState();
-let next: Partial<HudState> | null = null;
-function put<K extends keyof HudState>(k: K, v: HudState[K]) {
-    if (cur[k] !== v) (next ??= {})[k] = v;
-}
+const put = core.put;
 
 export const hud = {
     mode(mode: HudMode) {
-        hudStore.setState({ mode, stats: { ...S.prog.stats } });
+        core.mode(mode, { ...S.prog.stats });
     },
-    hit(kill: boolean) {
-        hmT = kill ? 0.5 : 0.2;
-        hudSignals.hitKill = kill;
-    },
-    /** `a` is the world-space heading the damage came from */
-    dmgDir(a: number) {
-        ddT = 1;
-        ddA = a;
-    },
-    banner(title: string, sub = '') {
-        hudStore.setState({ banner: { title, sub }, bannerOn: true });
-        banT = 4;
-    },
-    tip(kind: TipKind, dur = 5, text = '') {
-        const s = hudStore.getState();
-        if (!s.tipOn || s.tip.kind !== kind || s.tip.text !== text) hudStore.setState({ tip: { kind, text }, tipOn: true });
-        tipT = dur;
-    },
-    toast(text: string) {
-        hud.tip('toast', 2.2, text);
-    },
-    fps(text: string) {
-        if (hudStore.getState().fps !== text) hudStore.setState({ fps: text });
-    },
+    hit: core.hit,
+    /** `a` is the world-space heading the shot was travelling */
+    dmgDir: core.dmgDir,
+    banner: core.banner,
+    tip: core.tip,
+    toast: core.toast,
+    fps: core.fps,
     /** Runs once per frame: publishes changed values, advances timers, refreshes the per-frame signals. */
     update(dt: number) {
         const p = PL.ship,
             prog = S.prog;
-        cur = hudStore.getState();
-        if (banT > 0 && (banT -= dt) <= 0) put('bannerOn', false);
-        if (tipT > 0 && (tipT -= dt) <= 0) put('tipOn', false);
-        hmT = Math.max(0, hmT - dt);
-        ddT = Math.max(0, ddT - dt * 1.3);
-        hudSignals.hit = Math.min(1, hmT * 6);
-        hudSignals.dmg = ddT;
-        if (ddT > 0) hudSignals.dmgRot = (-(ddA - PL.camYaw) * 180) / Math.PI;
+        const cur = core.begin(dt, PL.camYaw);
 
         put('hp', Math.max(0, Math.ceil(p.hp)));
         put('maxHp', Math.round(p.max));
@@ -178,8 +145,8 @@ export const hud = {
         put('cap', holdCap());
         put('gold', prog.gold);
         put('sail', p.sail);
-        put('port', Math.round((1 - p.rl[0] / p.reload) * RELOAD_STEPS));
-        put('starboard', Math.round((1 - p.rl[1] / p.reload) * RELOAD_STEPS));
+        put('port', Math.round(reloadProgress(p, 0) * RELOAD_STEPS));
+        put('starboard', Math.round(reloadProgress(p, 1) * RELOAD_STEPS));
         put('side', PL.side);
         const level = infamyOf(prog.renown);
         put('infamy', level);
@@ -187,7 +154,13 @@ export const hud = {
         put('cls', prog.cls);
         put('escorts', prog.escorts);
         put('won', prog.won);
+        put('drydock', S.drydock);
         if (prog.levels.some((l, i) => l !== cur.levels[i])) put('levels', [...prog.levels]);
+        if (prog.hulls.some((o, i) => o !== cur.hulls[i])) put('hulls', [...prog.hulls]);
+        if (SLOTS.some((slot) => prog.fit[slot] !== cur.fit[slot])) put('fit', { ...prog.fit });
+        if (prog.owned.length !== cur.owned.length || prog.owned.some((id, i) => id !== cur.owned[i])) put('owned', [...prog.owned]);
+        if (!sameSailors(prog.crew, cur.crew)) put('crew', copies(prog.crew));
+        if (!sameSailors(prog.tavern, cur.tavern)) put('tavern', copies(prog.tavern));
 
         // the chart, and health bars over the ships near enough to matter
         const sig = hudSignals,
@@ -227,10 +200,6 @@ export const hud = {
         sig.home[2] = front ? 1 : 0;
         sig.home[3] = Math.hypot(W.port.x - p.x, W.port.z - p.z);
 
-        if (next) {
-            hudStore.setState(next);
-            next = null;
-        }
-        for (let i = 0; i < frameListeners.length; i++) frameListeners[i](dt);
+        core.commit(dt);
     },
 };

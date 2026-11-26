@@ -1,13 +1,17 @@
+import { keys, mouse, opts } from '@ryqndev/kiln-core';
+import { clamp, damp, m4, m4aim, m4mul, m4trs, PI, rnd, rnds, vnoise } from '@ryqndev/kiln-math';
 import { setListener, sfx } from '@ryqndev/rimefire-audio';
-import { clamp, damp, m4, m4aim, m4mul, m4trs, PI, rnd, rnds, vnoise } from '@ryqndev/rimefire-math';
 import { addInstance, cam, setCamera } from '@ryqndev/rimefire-renderer';
 
 import { aimDist, fireGel, fireSpark, GEL_AIM_RANGE, lobVelocity } from './combat';
 import { flash, fxPuff, light, shake, spawn } from './fx';
-import { keys, mouse, opts } from './input';
 import { M } from './models';
 import { PL, S } from './state';
 import { ARENA, groundAt, height, pushOut, STEP } from './world';
+
+/** The wheel swaps weapons at most this often, milliseconds. */
+const WHEEL_SWAP_MS = 180;
+let wheelT = 0;
 
 // scratch: viewmodel matrix, local temporaries, the muzzle position and a gel launch velocity
 const VM = m4(),
@@ -150,7 +154,12 @@ export function updatePlayer(dt: number) {
 
     // ---- weapons ----
     if (mouse.wheel) {
-        swapWeapon();
+        // one swap per flick of the wheel, however many notches it reports
+        const now = performance.now();
+        if (now - wheelT > WHEEL_SWAP_MS) {
+            wheelT = now;
+            swapWeapon();
+        }
         mouse.wheel = 0;
     }
     if (p.sw < 1) {

@@ -1,178 +1,51 @@
 // Everything you hear is synthesised at runtime with WebAudio. No samples.
-import { clamp } from '@ryqndev/rimefire-math';
+import { ac, AU, bed, distanceTo, drive, limit, music, noise, out, rp, startAudio, tone } from '@ryqndev/kiln-audio';
 
-let ac: AudioContext | null = null;
-// non-null alias for the helpers that only ever run after initAudio()
-let ctx!: AudioContext;
-let master!: GainNode, rev!: ConvolverNode, nbuf!: AudioBuffer, seaG!: GainNode, seaF!: BiquadFilterNode, windG!: GainNode, windF!: BiquadFilterNode, fireG!: GainNode, musG!: GainNode;
-const L = { x: 0, y: 0, z: 0, rx: 1, rz: 0 };
-const last: Record<string, number> = {};
-export const AU = { vol: 0.8, intensity: 0, ready: false };
+export { AU, setListener, setVolume, suspendAudio } from '@ryqndev/kiln-audio';
 
+let seaG!: GainNode, seaF!: BiquadFilterNode, windG!: GainNode, windF!: BiquadFilterNode, fireG!: GainNode;
+
+/** Starts the audio, or resumes it. Call from a user gesture. */
 export function initAudio() {
-    if (ac) {
-        ac.resume();
-        return;
-    }
-    const AC = window.AudioContext || (window as unknown as { webkitAudioContext?: typeof AudioContext }).webkitAudioContext;
-    if (!AC) return;
-    ac = ctx = new AC();
-    const comp = ctx.createDynamicsCompressor();
-    comp.threshold.value = -16;
-    comp.ratio.value = 5;
-    comp.attack.value = 0.004;
-    comp.release.value = 0.2;
-    master = ctx.createGain();
-    master.gain.value = AU.vol;
-    master.connect(comp);
-    comp.connect(ctx.destination);
     // open-air tail: a short, bright decay
-    const sr = ctx.sampleRate,
-        len = (sr * 1.8) | 0,
-        ir = ctx.createBuffer(2, len, sr);
-    for (let c = 0; c < 2; c++) {
-        const d = ir.getChannelData(c);
-        for (let i = 0; i < len; i++) d[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / len, 3.4) * (i < 300 ? i / 300 : 1);
-    }
-    rev = ctx.createConvolver();
-    rev.buffer = ir;
-    const rg = ctx.createGain();
-    rg.gain.value = 0.4;
-    rev.connect(rg);
-    rg.connect(master);
-    nbuf = ctx.createBuffer(1, sr * 2, sr);
-    const nd = nbuf.getChannelData(0);
-    for (let i = 0; i < nd.length; i++) nd[i] = Math.random() * 2 - 1;
-
-    // looping noise beds: the sea, the wind in the rigging, burning timber
-    const loop = (type: BiquadFilterType, f: number, q: number, g: number): [GainNode, BiquadFilterNode] => {
-        const s = ctx.createBufferSource();
-        s.buffer = nbuf;
-        s.loop = true;
-        const fl = ctx.createBiquadFilter();
-        fl.type = type;
-        fl.frequency.value = f;
-        fl.Q.value = q;
-        const gn = ctx.createGain();
-        gn.gain.value = g;
-        s.connect(fl);
-        fl.connect(gn);
-        gn.connect(master);
-        s.start(0, Math.random());
-        return [gn, fl];
-    };
-    [seaG, seaF] = loop('lowpass', 500, 0.3, 0.06);
-    [windG, windF] = loop('bandpass', 700, 0.8, 0.02);
-    fireG = loop('bandpass', 1400, 0.7, 0)[0];
-    musG = ctx.createGain();
-    musG.gain.value = 0.5;
-    musG.connect(master);
-    const mw = ctx.createGain();
-    mw.gain.value = 0.25;
-    musG.connect(mw);
-    mw.connect(rev);
-    AU.ready = true;
-}
-/** Where sounds are heard from: a position and the listener's right-hand direction. */
-export function setListener(x: number, y: number, z: number, rx: number, rz: number) {
-    L.x = x;
-    L.y = y;
-    L.z = z;
-    L.rx = rx;
-    L.rz = rz;
-}
-export function setVolume(v: number) {
-    AU.vol = v;
-    if (master) master.gain.value = v;
-}
-export function suspendAudio(s: boolean) {
-    if (!ac) return;
-    if (s) ac.suspend();
-    else ac.resume();
+    startAudio({ release: 0.2, reverb: { seconds: 1.8, decay: 3.4, fadeIn: 300, level: 0.4 }, musicWet: 0.25, range: 60, panFrom: 2 }, () => {
+        // looping noise beds: the sea, the wind in the rigging, burning timber
+        [seaG, seaF] = bed('lowpass', 500, 0.3, 0.06);
+        [windG, windF] = bed('bandpass', 700, 0.8, 0.02);
+        fireG = bed('bandpass', 1400, 0.7, 0)[0];
+    });
 }
 
-// rate limiter so a burst of identical events does not stack into one loud click
-function limit(key: string, ms: number) {
-    const n = performance.now();
-    if (n - (last[key] || 0) < ms) return true;
-    last[key] = n;
-    return false;
-}
-// output chain for a sound: positioned when x is given, otherwise centred. Null if it would be inaudible.
-function out(x: null, y: number, z: number, gain: number, wet?: number, range?: number): GainNode;
-function out(x: number, y: number, z: number, gain: number, wet?: number, range?: number): GainNode | null;
-function out(x: number | null, y: number, z: number, gain: number, wet = 0.3, range = 60): GainNode | null {
-    let pan = 0,
-        g = gain;
-    if (x !== null) {
-        const dx = x - L.x,
-            dy = y - L.y,
-            dz = z - L.z,
-            d = Math.hypot(dx, dy, dz);
-        g = gain / (1 + (d / range) * (d / range));
-        if (g < 0.004) return null;
-        pan = d > 2 ? clamp(((dx * L.rx + dz * L.rz) / d) * 0.85, -1, 1) : 0;
-    }
-    const gn = ctx.createGain();
-    gn.gain.value = g;
-    const p = ctx.createStereoPanner();
-    p.pan.value = pan;
-    gn.connect(p);
-    p.connect(master);
-    if (wet) {
-        const w = ctx.createGain();
-        w.gain.value = wet;
-        p.connect(w);
-        w.connect(rev);
-    }
-    return gn;
-}
-function noise(dst: AudioNode, t0: number, dur: number, type: BiquadFilterType, f0: number, f1: number, q: number, g0: number, att = 0.003) {
-    const s = ctx.createBufferSource();
-    s.buffer = nbuf;
-    s.loop = true;
-    const f = ctx.createBiquadFilter();
-    f.type = type;
-    f.Q.value = q;
-    f.frequency.setValueAtTime(f0, t0);
-    f.frequency.exponentialRampToValueAtTime(Math.max(20, f1), t0 + dur);
-    const g = ctx.createGain();
-    g.gain.setValueAtTime(0.0001, t0);
-    g.gain.linearRampToValueAtTime(g0, t0 + att);
-    g.gain.exponentialRampToValueAtTime(0.0001, t0 + dur);
-    s.connect(f);
-    f.connect(g);
-    g.connect(dst);
-    s.start(t0, Math.random() * 1.6);
-    s.stop(t0 + dur + 0.05);
-}
-function tone(dst: AudioNode, t0: number, dur: number, type: OscillatorType, f0: number, f1: number, g0: number, att = 0.003) {
-    const o = ctx.createOscillator();
-    o.type = type;
-    o.frequency.setValueAtTime(f0, t0);
-    o.frequency.exponentialRampToValueAtTime(Math.max(10, f1), t0 + dur);
-    const g = ctx.createGain();
-    g.gain.setValueAtTime(0.0001, t0);
-    g.gain.linearRampToValueAtTime(g0, t0 + att);
-    g.gain.exponentialRampToValueAtTime(0.0001, t0 + dur);
-    o.connect(g);
-    g.connect(dst);
-    o.start(t0);
-    o.stop(t0 + dur + 0.05);
-}
-const rp = (a = 0.08) => 1 + (Math.random() * 2 - 1) * a;
+/** Guns nearer than this are heard the moment they flash, metres: the player's own broadside. */
+const INSTANT = 50;
+const SOUND_SPEED = 340;
 
 export const sfx = {
-    /** A gun going off at a point in the world. */
-    cannon(x: number, y: number, z: number) {
+    /**
+     * A gun going off at a point in the world. Black powder burns instead of detonating, so the
+     * report is a heavy low boom and a long roll over the water, with no crack to it. Distance
+     * dulls it further and makes it arrive after the flash.
+     */
+    cannon(x: number, y: number, z: number, heft = 1) {
         if (!ac || limit('cannon', 28)) return;
-        const d = out(x, y, z, 0.9, 0.45, 110);
+        const d = out(x, y, z, 0.75 * Math.min(1.25, Math.sqrt(heft)), 0.55, 110);
         if (!d) return;
-        const t = ac.currentTime,
-            p = rp(0.14);
-        tone(d, t, 0.34, 'sine', 150 * p, 34, 0.95);
-        noise(d, t, 0.42, 'lowpass', 2600 * p, 160, 0.6, 0.8);
-        noise(d, t + 0.03, 0.9, 'lowpass', 500, 90, 0.4, 0.3, 0.05);
+        const far = distanceTo(x, y, z),
+            t = ac.currentTime + Math.min(1, Math.max(0, far - INSTANT) / SOUND_SPEED),
+            // a heavier gun speaks lower
+            p = rp(0.12) / Math.sqrt(heft);
+        // nothing bright gets out, and air soaks up what top there is with distance
+        const air = ac.createBiquadFilter();
+        air.type = 'lowpass';
+        air.frequency.value = Math.max(250, 2200 / (1 + (far / 70) ** 2));
+        air.connect(d);
+        // All three layers are noise, on purpose: a pitched tone gliding down reads as a kick drum.
+        // the thump: the muzzle blast, already dull
+        noise(drive(air, 0.5), t, 0.35, 'lowpass', 700 * p, 90, 0.6, 6, 0.004);
+        // the boom: the lowest band of the noise, driven flat so every shot lands with the same weight
+        noise(drive(air, 0.7), t, 1.6, 'lowpass', 110 * p, 45, 1, 25, 0.008);
+        // the roll: the report rumbling away across the water
+        noise(air, t + 0.03, 4.5, 'lowpass', 350 * p, 50, 0.5, 3, 0.05);
     },
     /** A ball landing in the sea. */
     splash(x: number, y: number, z: number) {
@@ -310,12 +183,12 @@ export function audioTick(dt: number, speed: number, fire: number, intensity: nu
             fl.Q.value = 4;
             fl.frequency.setValueAtTime(160 + 1100 * I * I, nextT);
             fl.frequency.exponentialRampToValueAtTime(100, nextT + step * 0.9);
-            fl.connect(musG);
+            fl.connect(music);
             tone(fl, nextT, step * 0.95, 'sawtooth', f, f, 0.16 * Math.min(1, I), 0.004);
             // drums: a low tom on the beat, a higher one answering, a rattle once things are desperate
-            if (beat % 4 === 0) tone(musG, nextT, 0.22, 'sine', 105, 42, 0.34 * Math.min(1, I), 0.002);
-            if (I > 0.4 && beat % 8 === 6) tone(musG, nextT, 0.16, 'sine', 170, 80, 0.2 * I, 0.002);
-            if (I > 0.7 && beat % 2 === 1) noise(musG, nextT, 0.05, 'bandpass', 2400, 1600, 1.4, 0.06 * I, 0.001);
+            if (beat % 4 === 0) tone(music, nextT, 0.22, 'sine', 105, 42, 0.34 * Math.min(1, I), 0.002);
+            if (I > 0.4 && beat % 8 === 6) tone(music, nextT, 0.16, 'sine', 170, 80, 0.2 * I, 0.002);
+            if (I > 0.7 && beat % 2 === 1) noise(music, nextT, 0.05, 'bandpass', 2400, 1600, 1.4, 0.06 * I, 0.001);
         }
         beat++;
         nextT += step;

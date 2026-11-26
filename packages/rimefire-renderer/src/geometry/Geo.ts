@@ -1,6 +1,6 @@
-import { m4, m4mul, m4trs, type Mat4, TAU } from '@ryqndev/rimefire-math';
+import { gl } from '@ryqndev/kiln-gl';
+import { m4, m4mul, m4trs, type Mat4, TAU } from '@ryqndev/kiln-math';
 
-import { gl } from '../gl/context';
 import type { Mesh } from './mesh';
 
 // ---------------------------------------------------------------------------

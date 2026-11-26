@@ -9,7 +9,8 @@ import { updateLoot } from './loot';
 import { collideShips, sailShip, SINK_TIME } from './physics';
 import { balls, loot, ships } from './state';
 
-export { bearing, fireBroadside, maxRange } from './cannons';
+export { fireBroadside, gunsReady } from './battery';
+export { bearing, maxRange } from './cannons';
 export { hurtShip } from './damage';
 export { CLASS_COST, CLASSES, ESCORT, ESCORT_COST, FOES, HOLDS, INFAMY, infamyOf, MAX_ESCORTS, MAX_LEVEL, UP, type Upgrade, upgradeCost, UPGRADES } from './defs';
 export { resetDirector } from './director';

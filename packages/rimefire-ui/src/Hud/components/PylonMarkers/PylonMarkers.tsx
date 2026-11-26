@@ -1,8 +1,8 @@
+import { type PinMargins, pinToScreen, useHudFrame } from '@ryqndev/kiln-ui';
 import { hudSignals, MARKER_STRIDE } from '@ryqndev/rimefire-game';
 import { memo, useRef } from 'react';
 
 import { useHud } from '../../../hooks/useHud';
-import { useHudFrame } from '../../../hooks/useHudFrame';
 import cn from './PylonMarkers.module.scss';
 
 interface PylonMarkersProps {
@@ -11,9 +11,7 @@ interface PylonMarkersProps {
 }
 
 // keep markers clear of the screen edges and the HUD panels
-const MARGIN_X = 40;
-const MARGIN_TOP = 70;
-const MARGIN_BOTTOM = 120;
+const MARGINS: PinMargins = { x: 40, top: 70, bottom: 120 };
 
 /** Waypoints pinned to the frozen pylons, with distance and thaw progress. */
 export const PylonMarkers = memo(function PylonMarkers({ zoom }: PylonMarkersProps) {
@@ -22,23 +20,12 @@ export const PylonMarkers = memo(function PylonMarkers({ zoom }: PylonMarkersPro
 
     // world-anchored, so they move every frame: positioned straight on the DOM instead of through state
     useHudFrame(() => {
-        const w = window.innerWidth,
-            h = window.innerHeight,
-            screen = hudSignals.markers;
+        const screen = hudSignals.markers;
         for (let i = 0; i < markers.current.length; i++) {
             const el = markers.current[i];
             if (!el) continue;
             const o = i * MARKER_STRIDE;
-            let x = screen[o] * w,
-                y = screen[o + 1] * h;
-            if (!screen[o + 2]) {
-                // behind the camera: mirror it and pin it low, pointing the way to turn
-                x = w - x;
-                y = h - 60;
-            }
-            x = Math.max(MARGIN_X, Math.min(w - MARGIN_X, x));
-            y = Math.max(MARGIN_TOP, Math.min(h - MARGIN_BOTTOM, y));
-            el.style.transform = `translate(${(x / zoom) | 0}px,${(y / zoom) | 0}px)`;
+            pinToScreen(el, screen[o], screen[o + 1], !!screen[o + 2], zoom, MARGINS);
         }
     });
 

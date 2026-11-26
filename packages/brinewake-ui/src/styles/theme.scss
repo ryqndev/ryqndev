@@ -1,0 +1,35 @@
+@use 'tokens' as *;
+
+// Brinewake's look for kiln-ui's shared components: parchment text, gold leaf and a bookish serif.
+:root {
+    --kiln-text: #{$text};
+    --kiln-accent: #{$gold};
+    --kiln-label-opacity: 0.66;
+    --kiln-font-display: #{$font-display};
+
+    // menu screens
+    --kiln-backdrop: radial-gradient(ellipse at 50% 45%, rgb(6 14 24 / 20%), rgb(3 8 16 / 80%));
+    --kiln-title-size: clamp(44px, 8.4vw, 120px);
+    --kiln-title-weight: 400;
+    --kiln-title-tracking: 0.26em;
+    --kiln-title-fill: linear-gradient(180deg, #fff6df 18%, #{$gold} 58%, #c8552e 100%);
+    --kiln-title-shadow: drop-shadow(0 4px 26px rgb(0 0 0 / 55%));
+    --kiln-heading-size: clamp(26px, 4.2vw, 54px);
+    --kiln-heading-tracking: 0.26em;
+    --kiln-overlay-text-opacity: 0.85;
+    --kiln-footnote-opacity: 0.45;
+
+    // banner
+    --kiln-banner-top: 19%;
+    --kiln-banner-size: 32px;
+    --kiln-banner-weight: 400;
+    --kiln-banner-tracking: 0.34em;
+    --kiln-banner-color: #{$gold};
+    --kiln-banner-glow: rgb(240 170 60 / 45%);
+    --kiln-banner-sub-opacity: 0.8;
+    --kiln-banner-sub-shadow: 0 1px 6px rgb(0 0 0 / 80%);
+
+    // tip
+    --kiln-tip-bottom: 19%;
+    --kiln-tip-bg: rgb(8 16 26 / 60%);
+}

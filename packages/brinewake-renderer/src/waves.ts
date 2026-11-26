@@ -1,4 +1,4 @@
-import { smooth, TAU } from '@ryqndev/rimefire-math';
+import { smooth, TAU } from '@ryqndev/kiln-math';
 
 // The swell: four Gerstner waves as [direction x, direction z, wavelength, amplitude], in metres.
 // The water shader and the simulation both read them from here, so hulls ride the surface that is drawn.

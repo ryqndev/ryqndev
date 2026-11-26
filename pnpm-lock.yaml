@@ -251,9 +251,9 @@ importers:
 
   packages/brinewake-audio:
     dependencies:
-      '@ryqndev/rimefire-math':
+      '@ryqndev/kiln-audio':
         specifier: workspace:*
-        version: link:../rimefire-math
+        version: link:../kiln-audio
 
   packages/brinewake-game:
     dependencies:
@@ -263,24 +263,30 @@ importers:
       '@ryqndev/brinewake-renderer':
         specifier: workspace:*
         version: link:../brinewake-renderer
-      '@ryqndev/rimefire-math':
+      '@ryqndev/kiln-core':
         specifier: workspace:*
-        version: link:../rimefire-math
-      zustand:
-        specifier: 'catalog:'
-        version: 5.0.15(@types/react@19.3.0)(react@19.3.1)(use-sync-external-store@1.7.0(react@19.3.1))
+        version: link:../kiln-core
+      '@ryqndev/kiln-math':
+        specifier: workspace:*
+        version: link:../kiln-math
 
   packages/brinewake-renderer:
     dependencies:
-      '@ryqndev/rimefire-math':
+      '@ryqndev/kiln-gl':
         specifier: workspace:*
-        version: link:../rimefire-math
+        version: link:../kiln-gl
+      '@ryqndev/kiln-math':
+        specifier: workspace:*
+        version: link:../kiln-math
 
   packages/brinewake-ui:
     dependencies:
       '@ryqndev/brinewake-game':
         specifier: workspace:*
         version: link:../brinewake-game
+      '@ryqndev/kiln-ui':
+        specifier: workspace:*
+        version: link:../kiln-ui
       clsx:
         specifier: 'catalog:'
         version: 2.1.1
@@ -361,6 +367,41 @@ importers:
         specifier: 'catalog:'
         version: 17.0.18(i18next@26.4.6(typescript@6.0.3))(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(typescript@6.0.3)
 
+  packages/kiln-audio:
+    dependencies:
+      '@ryqndev/kiln-math':
+        specifier: workspace:*
+        version: link:../kiln-math
+
+  packages/kiln-core:
+    dependencies:
+      zustand:
+        specifier: 'catalog:'
+        version: 5.0.15(@types/react@19.3.0)(react@19.3.1)(use-sync-external-store@1.7.0(react@19.3.1))
+
+  packages/kiln-gl:
+    dependencies:
+      '@ryqndev/kiln-math':
+        specifier: workspace:*
+        version: link:../kiln-math
+
+  packages/kiln-math: {}
+
+  packages/kiln-ui:
+    dependencies:
+      '@ryqndev/kiln-core':
+        specifier: workspace:*
+        version: link:../kiln-core
+      clsx:
+        specifier: 'catalog:'
+        version: 2.1.1
+      react:
+        specifier: 'catalog:'
+        version: 19.3.1
+      zustand:
+        specifier: 'catalog:'
+        version: 5.0.15(@types/react@19.3.0)(react@19.3.1)(use-sync-external-store@1.7.0(react@19.3.1))
+
   packages/loading:
     dependencies:
       clsx:
@@ -378,35 +419,39 @@ importers:
 
   packages/rimefire-audio:
     dependencies:
-      '@ryqndev/rimefire-math':
+      '@ryqndev/kiln-audio':
         specifier: workspace:*
-        version: link:../rimefire-math
+        version: link:../kiln-audio
 
   packages/rimefire-game:
     dependencies:
+      '@ryqndev/kiln-core':
+        specifier: workspace:*
+        version: link:../kiln-core
+      '@ryqndev/kiln-math':
+        specifier: workspace:*
+        version: link:../kiln-math
       '@ryqndev/rimefire-audio':
         specifier: workspace:*
         version: link:../rimefire-audio
-      '@ryqndev/rimefire-math':
-        specifier: workspace:*
-        version: link:../rimefire-math
       '@ryqndev/rimefire-renderer':
         specifier: workspace:*
         version: link:../rimefire-renderer
-      zustand:
-        specifier: 'catalog:'
-        version: 5.0.15(@types/react@19.3.0)(react@19.3.1)(use-sync-external-store@1.7.0(react@19.3.1))
-
-  packages/rimefire-math: {}
 
   packages/rimefire-renderer:
     dependencies:
-      '@ryqndev/rimefire-math':
+      '@ryqndev/kiln-gl':
         specifier: workspace:*
-        version: link:../rimefire-math
+        version: link:../kiln-gl
+      '@ryqndev/kiln-math':
+        specifier: workspace:*
+        version: link:../kiln-math
 
   packages/rimefire-ui:
     dependencies:
+      '@ryqndev/kiln-ui':
+        specifier: workspace:*
+        version: link:../kiln-ui
       '@ryqndev/rimefire-game':
         specifier: workspace:*
         version: link:../rimefire-game

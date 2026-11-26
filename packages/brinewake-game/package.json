@@ -12,7 +12,7 @@
     "dependencies": {
         "@ryqndev/brinewake-audio": "workspace:*",
         "@ryqndev/brinewake-renderer": "workspace:*",
-        "@ryqndev/rimefire-math": "workspace:*",
-        "zustand": "catalog:"
+        "@ryqndev/kiln-core": "workspace:*",
+        "@ryqndev/kiln-math": "workspace:*"
     }
 }

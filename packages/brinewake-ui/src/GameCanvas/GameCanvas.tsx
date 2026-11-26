@@ -1,18 +1,17 @@
 import { mountGame } from '@ryqndev/brinewake-game';
-import { memo, useEffect, useRef } from 'react';
-
-import cn from './GameCanvas.module.scss';
+import { GameCanvas as Canvas } from '@ryqndev/kiln-ui';
+import { memo } from 'react';
 
 interface GameCanvasProps {
     /** expose the scripting handle and skip pointer lock (automated playtests) */
     debug?: boolean;
+    /** open straight into the drydock instead of the title screen */
+    drydock?: boolean;
 }
 
-/** The WebGL surface. Owns the engine's lifetime: mounts it on the canvas and tears it down on unmount. */
-export const GameCanvas = memo(function GameCanvas({ debug = false }: GameCanvasProps) {
-    const canvas = useRef<HTMLCanvasElement>(null);
+const mountInDrydock: typeof mountGame = (canvas, options) => mountGame(canvas, { ...options, drydock: true });
 
-    useEffect(() => mountGame(canvas.current!, { debug }), [debug]);
-
-    return <canvas className={cn.canvas} ref={canvas} />;
+/** The WebGL surface, running Brinewake's engine. */
+export const GameCanvas = memo(function GameCanvas({ debug = false, drydock = false }: GameCanvasProps) {
+    return <Canvas debug={debug} mount={drydock ? mountInDrydock : mountGame} />;
 });

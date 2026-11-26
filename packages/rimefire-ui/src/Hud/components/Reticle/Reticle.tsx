@@ -1,9 +1,9 @@
+import { useHudFrame } from '@ryqndev/kiln-ui';
 import { hudSignals } from '@ryqndev/rimefire-game';
 import clsx from 'clsx';
 import { memo, useRef } from 'react';
 
 import { useHud } from '../../../hooks/useHud';
-import { useHudFrame } from '../../../hooks/useHudFrame';
 import cn from './Reticle.module.scss';
 
 /** Centre-screen feedback: the crosshair, hit marker, "no effect" notice and damage-direction arc. */

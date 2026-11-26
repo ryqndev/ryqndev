@@ -1,29 +1,57 @@
 import { addInstance, env } from '@ryqndev/brinewake-renderer';
-import { m4mul, m4trs } from '@ryqndev/rimefire-math';
+import { m4mul, m4trs } from '@ryqndev/kiln-math';
 
 import { fxBurn, light, sprite } from '../fx';
 import { M } from '../models';
-import { S } from '../state';
+import { PL, S } from '../state';
 import { B, Lm, Tm } from './state';
 import type { Ship } from './types';
 
 /** Queues a ship for drawing: hull, each sail (as much of it as is set), her colours, and her lantern after dark. */
 export function drawShip(s: Ship) {
     const h = s.hull,
-        t = s.type,
-        set = 0.1 + 0.9 * s.canvas;
+        paint = s.paint,
+        cloth = s.cloth,
+        // in the yard the player's ship hangs her sails out, whatever canvas she has ordered
+        set = 0.1 + 0.9 * Math.max(s.canvas, s === PL.ship ? PL.dress : 0);
     m4trs(B, s.x, s.y, s.z, s.yaw, s.pitch, s.roll, s.scale);
-    addInstance(h.mesh, B, t.paint[0], t.paint[1], t.paint[2], s.flash);
+    addInstance(h.mesh, B, paint[0], paint[1], paint[2], s.flash);
     for (let i = 0; i < h.sails.length; i++) {
         const sl = h.sails[i];
         // furling draws the sail up to its yard
         m4trs(Lm, 0, sl.y, sl.z, 0, 0, 0, sl.w, sl.h * set, sl.w);
         m4mul(Tm, B, Lm);
-        addInstance(M.sail, Tm, t.canvas[0], t.canvas[1], t.canvas[2], s.flash * 0.4);
+        addInstance(M.sail, Tm, cloth[0], cloth[1], cloth[2], s.flash * 0.4);
+        if (s.sigil) addInstance(s.sigil, Tm, s.ink[0], s.ink[1], s.ink[2], s.flash * 0.4);
+    }
+    // fore-and-aft sails: the unit jib's axes laid along each one, its foot shortened as it is furled to the luff
+    for (let i = 0; i < h.jibs.length; i++) {
+        const { tack, head, clew } = h.jibs[i],
+            fz = clew[2] - tack[2],
+            fy = clew[1] - tack[1];
+        Lm.fill(0);
+        Lm[0] = 0.11 * Math.hypot(fy, fz) * set;
+        Lm[5] = head[1] - tack[1];
+        Lm[6] = head[2] - tack[2];
+        Lm[9] = fy * set;
+        Lm[10] = fz * set;
+        Lm[12] = tack[0];
+        Lm[13] = tack[1];
+        Lm[14] = tack[2];
+        Lm[15] = 1;
+        m4mul(Tm, B, Lm);
+        addInstance(M.jib, Tm, cloth[0], cloth[1], cloth[2], s.flash * 0.4);
     }
     m4trs(Lm, 0, h.flag[1], h.flag[2], 0, 0, 0, 2.4);
     m4mul(Tm, B, Lm);
-    addInstance(M.flag, Tm, t.paint[0], t.paint[1], t.paint[2]);
+    addInstance(M.flag, Tm, paint[0], paint[1], paint[2]);
+    // streamers from her other mastheads: the same bunting, drawn out long and narrow
+    for (let i = 0; i < h.pennants.length; i++) {
+        const p = h.pennants[i];
+        m4trs(Lm, 0, p[1] + 0.2, p[2], 0, 0, 0, 1, 1.1, 5.5);
+        m4mul(Tm, B, Lm);
+        addInstance(M.flag, Tm, paint[0], paint[1], paint[2]);
+    }
     if (env.lamp > 0.05 && !s.dead) {
         const [lx, ly, lz] = h.lantern,
             x = B[0] * lx + B[4] * ly + B[8] * lz + B[12],

@@ -1,10 +1,10 @@
 export { cam, project, type ScreenPoint, setCamera } from './camera';
-export { FOAM_CAPACITY, FOAM_STRIDE, MAX_LIGHTS, PARTICLE_CAPACITY, PARTICLE_STRIDE, post, R, WORLD } from './config';
+export { FOAM_CAPACITY, FOAM_STRIDE, MAX_LIGHTS, PARTICLE_CAPACITY, post, R, WORLD } from './config';
 export { env, setDayPhase } from './environment';
 export type { FoamStamps, Frame, LightUniforms } from './frame';
-export { Geo, gridNormals, MATERIAL, type Point } from './geometry/Geo';
+export { Geo, gridNormals, MATERIAL, type Point, ROUND_SCALE } from './geometry/Geo';
 export type { Mesh } from './geometry/mesh';
-export { initGL } from './gl/context';
 export { addInstance, registerMesh } from './instances';
 export { clearFoam, initRenderer, render, resize, setScene, setTerrainMap } from './renderer';
 export { seaHeight, shoreCalm } from './waves';
+export { initGL, PARTICLE_STRIDE } from '@ryqndev/kiln-gl';

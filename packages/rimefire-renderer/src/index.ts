@@ -1,10 +1,10 @@
 export { cam, project, setCamera } from './camera';
-export { GOO_CAPACITY, GOO_STRIDE, PARTICLE_CAPACITY, PARTICLE_STRIDE, post, R } from './config';
+export { GOO_CAPACITY, GOO_STRIDE, PARTICLE_CAPACITY, post, R } from './config';
 export type { Frame, LightUniforms, Shockwave } from './frame';
 export { Geo } from './geometry/Geo';
 export type { Mesh } from './geometry/mesh';
-export { initGL } from './gl/context';
 export { addInstance, registerMesh } from './instances';
 export { setStaticLights, SHADOW_DYNAMIC, SHADOW_NONE } from './light-shadows';
 export { MATERIAL } from './materials';
 export { clearScorch, initRenderer, render, resize, setScene } from './renderer';
+export { initGL, PARTICLE_STRIDE } from '@ryqndev/kiln-gl';

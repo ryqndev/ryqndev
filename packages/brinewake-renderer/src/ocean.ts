@@ -1,6 +1,6 @@
-import { TAU } from '@ryqndev/rimefire-math';
+import { gl } from '@ryqndev/kiln-gl';
+import { TAU } from '@ryqndev/kiln-math';
 
-import { gl } from './gl/context';
 
 export interface OceanGrid {
     vao: WebGLVertexArrayObject;

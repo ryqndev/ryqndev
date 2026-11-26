@@ -1,7 +1,7 @@
 import { BLIP, BLIP_STRIDE, CHART_SPAN, chartImage, hudSignals, portPosition } from '@ryqndev/brinewake-game';
+import { useHudFrame } from '@ryqndev/kiln-ui';
 import { memo, useRef } from 'react';
 
-import { useHudFrame } from '../../../hooks/useHudFrame';
 import cn from './Chart.module.scss';
 
 /** Side of the chart in CSS pixels, and the backing-store scale it is drawn at. */

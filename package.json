@@ -11,7 +11,7 @@
         "dev:web": "pnpm --filter web dev",
         "dev:rimefire": "pnpm --filter rimefire dev",
         "dev:brinewake": "pnpm --filter brinewake dev",
-        "build": "pnpm --filter rimefire build && pnpm --filter web build && node scripts/compose-site.mjs",
+        "build": "pnpm --filter rimefire build && pnpm --filter brinewake build && pnpm --filter web build && node scripts/compose-site.mjs",
         "build:rimefire": "pnpm --filter rimefire build",
         "build:brinewake": "pnpm --filter brinewake build",
         "preview": "pnpm --filter web preview",

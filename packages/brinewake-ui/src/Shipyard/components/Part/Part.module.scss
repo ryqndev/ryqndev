@@ -1,0 +1,152 @@
+@use '../../../styles/tokens' as *;
+
+.part {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 16px;
+    margin-top: 8px;
+    padding: 11px 12px 11px 14px;
+    background: rgb(255 255 255 / 4%);
+    border: 1px solid rgb(255 255 255 / 8%);
+    border-left: 2px solid transparent;
+    transition:
+        background 0.12s,
+        border-color 0.12s;
+
+    &:hover {
+        background: rgb(255 255 255 / 8%);
+        border-color: rgb(201 162 90 / 45%);
+        border-left-color: transparent;
+    }
+
+    // the one in use wears the brass
+    &.fitted,
+    &.fitted:hover {
+        background: rgb(201 162 90 / 10%);
+        border-color: rgb(201 162 90 / 30%);
+        border-left-color: $brass;
+    }
+}
+
+.what {
+    min-width: 0;
+}
+
+.name {
+    font-size: 14px;
+    letter-spacing: 0.06em;
+}
+
+// what sort of thing it is: the role a build plays
+.tag {
+    @include label;
+
+    margin-left: 10px;
+    color: $brass;
+    opacity: 1;
+}
+
+.blurb {
+    margin-top: 3px;
+    font-size: 11px;
+    line-height: 1.45;
+    opacity: 0.62;
+}
+
+.effects {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px 12px;
+    margin-top: 7px;
+
+    span {
+        @include mono;
+
+        font-size: 10.5px;
+        letter-spacing: 0.02em;
+        opacity: 0.5;
+    }
+
+    .good {
+        color: $sea;
+        opacity: 1;
+    }
+
+    .bad {
+        color: $danger;
+        opacity: 1;
+    }
+}
+
+%action {
+    @include mono;
+
+    flex: none;
+    min-width: 82px;
+    padding: 7px 10px;
+    font-size: 13px;
+    text-align: center;
+}
+
+.buy {
+    @extend %action;
+
+    color: #1b1408;
+    background: $gold;
+    border: 0;
+    cursor: pointer;
+    transition:
+        filter 0.12s,
+        opacity 0.12s;
+
+    &:hover {
+        filter: brightness(1.15);
+    }
+
+    // not enough gold banked yet
+    &:disabled {
+        color: $text;
+        background: rgb(255 255 255 / 12%);
+        opacity: 0.55;
+        cursor: default;
+        filter: none;
+    }
+}
+
+// owned already: it only has to be swapped in
+.take {
+    @extend %action;
+
+    font-family: $font-ui;
+    font-size: 11px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: $text;
+    background: transparent;
+    border: 1px solid $brass;
+    cursor: pointer;
+    transition: background 0.12s;
+
+    &:hover {
+        background: rgb(201 162 90 / 28%);
+    }
+}
+
+.taken {
+    @include label;
+
+    flex: none;
+    min-width: 82px;
+    text-align: center;
+    color: $brass;
+    opacity: 1;
+}
+
+.blocked {
+    @include label;
+
+    flex: none;
+    min-width: 82px;
+    text-align: center;
+}

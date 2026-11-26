@@ -1,7 +1,7 @@
 import { hudSignals, MAX_TARGETS, TARGET_STRIDE } from '@ryqndev/brinewake-game';
+import { useHudFrame } from '@ryqndev/kiln-ui';
 import { memo, useRef } from 'react';
 
-import { useHudFrame } from '../../../hooks/useHudFrame';
 import cn from './Targets.module.scss';
 
 interface TargetsProps {

@@ -1,4 +1,5 @@
+export { HB, PLAN, toLocal, toWorld } from './harbour';
 export { buildWorld } from './level';
 export { CELL, height, hmap, HN, type Island, ISLANDS, openWater, SEA } from './terrain';
-export type { Port, World, WorldLight } from './types';
+export type { Mooring, Port, Town, World, WorldLight } from './types';
 export { W } from './world';

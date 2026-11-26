@@ -1,4 +1,4 @@
-import { rnd, rnds, TAU } from '@ryqndev/rimefire-math';
+import { rnd, rnds, TAU } from '@ryqndev/kiln-math';
 
 import { stampFoam } from './foam';
 import { flash } from './lights';

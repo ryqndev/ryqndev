@@ -1,38 +1,6 @@
-@use '../../../styles/tokens' as *;
-
 .vitals {
     position: absolute;
     left: 28px;
     bottom: 26px;
     width: 250px;
-}
-
-.label {
-    @include label;
-}
-
-.value {
-    @include mono;
-
-    font-size: 30px;
-    font-weight: 300;
-    line-height: 1;
-}
-
-.bar {
-    @include bar;
-}
-
-.fill {
-    @include bar-fill;
-}
-
-.low {
-    .value {
-        color: $danger;
-    }
-
-    .fill {
-        background: $danger;
-    }
 }

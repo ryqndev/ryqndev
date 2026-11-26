@@ -1,7 +1,8 @@
-import { angDiff, clamp, PI } from '@ryqndev/rimefire-math';
+import { angDiff, clamp, PI } from '@ryqndev/kiln-math';
 
 import { height, SEA, W } from '../world';
-import { bearing, fireBroadside, maxRange } from './cannons';
+import { fireBroadside } from './battery';
+import { bearing, maxRange } from './cannons';
 import { ships } from './state';
 import { AI, type Ship, TEAM } from './types';
 
@@ -52,7 +53,7 @@ function cruise(s: Ship, canvas: number) {
 function engage(s: Ship, t: Ship) {
     const d = Math.hypot(t.x - s.x, t.z - s.z),
         to = yawTo(s, t.x, t.z),
-        reach = maxRange(s.shot) * 0.82,
+        reach = maxRange(s.bat[0].gun.shot) * 0.82,
         ideal = Math.min(reach * 0.62, 125);
     s.st = AI.ENGAGE;
     if (d > reach * 0.95) {
@@ -67,8 +68,10 @@ function engage(s: Ship, t: Ship) {
 
 // fire whichever battery bears, laid ahead of the target by the ball's time of flight
 function shoot(s: Ship, t: Ship, d: number) {
-    if (d > maxRange(s.shot) * 0.9) return;
-    const flight = d / (s.shot * 0.8),
+    // every captain but the player mounts the same gun on both sides
+    const shot = s.bat[0].gun.shot;
+    if (d > maxRange(shot) * 0.9) return;
+    const flight = d / (shot * 0.8),
         ax = t.x - Math.sin(t.yaw) * t.v * flight,
         az = t.z - Math.cos(t.yaw) * t.v * flight,
         side = bearing(s, ax, az);

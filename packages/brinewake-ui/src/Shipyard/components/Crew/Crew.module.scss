@@ -1,0 +1,105 @@
+@use '../../../styles/tokens' as *;
+
+// the jobs aboard, and who holds each: the one being filled is lit
+.stations {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+    margin-top: 10px;
+
+    button {
+        padding: 9px 12px 10px;
+        font-family: $font-ui;
+        font-size: 13px;
+        letter-spacing: 0.04em;
+        text-align: left;
+        color: $text;
+        background: rgb(255 255 255 / 4%);
+        border: 1px solid rgb(255 255 255 / 12%);
+        opacity: 0.75;
+        cursor: pointer;
+        transition:
+            opacity 0.12s,
+            border-color 0.12s,
+            background 0.12s;
+
+        > span:first-child {
+            @include label;
+
+            display: block;
+            margin-bottom: 3px;
+            color: $brass;
+            opacity: 1;
+        }
+
+        .pips {
+            margin-left: 8px;
+        }
+
+        &:hover {
+            opacity: 1;
+        }
+
+        &.on {
+            background: rgb(201 162 90 / 14%);
+            border-color: $brass;
+            opacity: 1;
+        }
+    }
+
+    // nobody in the job: the name is a gap, not a name
+    .vacant {
+        color: rgb(243 234 216 / 45%);
+    }
+}
+
+.does {
+    margin: 10px 0 0;
+    font-size: 11px;
+    line-height: 1.45;
+    opacity: 0.7;
+
+    b {
+        font-weight: 400;
+        text-transform: capitalize;
+        color: $gold;
+    }
+}
+
+.aside {
+    margin: 12px 0 0;
+    font-size: 11px;
+    line-height: 1.45;
+    opacity: 0.55;
+}
+
+// what a sailor is good at
+.skills {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 2px 14px;
+    margin-bottom: 3px;
+    text-transform: capitalize;
+
+    // the skill the station being filled calls for
+    .wanted {
+        color: $gold;
+    }
+}
+
+.pips {
+    display: inline-flex;
+    gap: 2px;
+    margin-left: 4px;
+    vertical-align: 1px;
+
+    i {
+        width: 6px;
+        height: 4px;
+        background: rgb(255 255 255 / 22%);
+
+        &.on {
+            background: $gold;
+        }
+    }
+}

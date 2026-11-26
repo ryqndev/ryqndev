@@ -1,4 +1,4 @@
-import { m4, m4trs, rnd, rnds, TAU } from '@ryqndev/rimefire-math';
+import { m4, m4trs, rnd, rnds, TAU } from '@ryqndev/kiln-math';
 import { addInstance, type Mesh } from '@ryqndev/rimefire-renderer';
 
 import { height } from '../world';

@@ -1,5 +1,5 @@
+import { rnd, rnds } from '@ryqndev/kiln-math';
 import { sfx } from '@ryqndev/rimefire-audio';
-import { rnd, rnds } from '@ryqndev/rimefire-math';
 
 import { addDebris, flash, fxIce, shake } from '../fx';
 import { hud } from '../hud';

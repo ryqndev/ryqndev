@@ -1,4 +1,4 @@
-import clsx from 'clsx';
+import { Gauge } from '@ryqndev/kiln-ui';
 import { memo } from 'react';
 
 import { useHud } from '../../../hooks/useHud';
@@ -12,16 +12,5 @@ export const Hull = memo(function Hull() {
     const hp = useHud((s) => s.hp);
     const max = useHud((s) => s.maxHp);
 
-    return (
-        <div className={clsx(cn.hull, hp <= max * HOLED && cn.low)}>
-            <div className={cn.label}>Hull</div>
-            <div className={cn.value}>
-                {hp}
-                <span>/ {max}</span>
-            </div>
-            <div className={cn.bar}>
-                <div className={cn.fill} style={{ transform: `scaleX(${hp / max})` }} />
-            </div>
-        </div>
-    );
+    return <Gauge className={cn.hull} fraction={hp / max} label="Hull" low={hp <= max * HOLED} suffix={`/ ${max}`} value={hp} />;
 });

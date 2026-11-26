@@ -1,5 +1,5 @@
 import { WORLD } from '@ryqndev/brinewake-renderer';
-import { clamp } from '@ryqndev/rimefire-math';
+import { clamp } from '@ryqndev/kiln-math';
 
 import { height } from './terrain';
 import { W } from './world';

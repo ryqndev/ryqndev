@@ -4,13 +4,15 @@
     "version": "0.0.0",
     "main": "src/index.ts",
     "sideEffects": [
-        "**/*.scss"
+        "**/*.scss",
+        "src/index.ts"
     ],
     "scripts": {
         "compile": "tsc -b"
     },
     "dependencies": {
         "@ryqndev/brinewake-game": "workspace:*",
+        "@ryqndev/kiln-ui": "workspace:*",
         "clsx": "catalog:",
         "react": "catalog:",
         "zustand": "catalog:"

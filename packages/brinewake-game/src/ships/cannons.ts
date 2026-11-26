@@ -1,19 +1,18 @@
 import { sfx } from '@ryqndev/brinewake-audio';
 import { addInstance, seaHeight, shoreCalm } from '@ryqndev/brinewake-renderer';
-import { m4trs, rnds } from '@ryqndev/rimefire-math';
+import { m4trs, rnds } from '@ryqndev/kiln-math';
 
 import { fxDust, fxMuzzle, fxSplash, sprite } from '../fx';
 import { M } from '../models';
 import { S } from '../state';
 import { height } from '../world';
+import { gunFires, tickBattery } from './battery';
 import { hitShip } from './damage';
 import { B, BALL_CAPACITY, BALL_STRIDE, balls, ships } from './state';
 import { type Ship, TEAM } from './types';
 
 /** Gravity on shot, m/s². Heavier than life: it keeps flight times short and arcs readable. */
 const GRAV = 22;
-/** Seconds between successive guns of a broadside. */
-const RIPPLE = 0.075;
 /** Tangent of how far either side of the beam a battery can train. */
 const TRAVERSE = Math.tan(0.84);
 
@@ -39,20 +38,10 @@ export function bearing(s: Ship, x: number, z: number): number {
     return abeam > 0 ? 1 : 0;
 }
 
-/** Orders a broadside from one battery onto a point on the sea. False if that side is still reloading. */
-export function fireBroadside(s: Ship, side: number, tx: number, tz: number): boolean {
-    const vol = s.vol[side];
-    if (s.dead || s.rl[side] > 0 || vol.t >= 0) return false;
-    vol.t = 0;
-    vol.n = 0;
-    vol.tx = tx;
-    vol.tz = tz;
-    s.rl[side] = s.reload;
-    return true;
-}
-
+// Lays gun `i` of a battery on the point its broadside was ordered onto, and fires it.
 function fireGun(s: Ship, side: number, i: number) {
-    const vol = s.vol[side],
+    const aim = s.bat[side],
+        gun = aim.gun,
         m = s.hull.muzzles[i],
         sg = side ? 1 : -1,
         c = Math.cos(s.yaw),
@@ -63,47 +52,48 @@ function fireGun(s: Ship, side: number, i: number) {
         z = s.z - sn * lx + c * lz,
         y = s.y + m[1] * s.scale;
     // each gun lays a little along the line from its neighbours, so a broadside straddles its mark
-    let tx = vol.tx + sn * lz * 0.5,
-        tz = vol.tz + c * lz * 0.5;
-    const err = Math.hypot(tx - x, tz - z) * s.type.spread;
+    let tx = aim.tx + sn * lz * 0.5,
+        tz = aim.tz + c * lz * 0.5;
+    const err = Math.hypot(tx - x, tz - z) * gun.spread;
     tx += rnds(err);
     tz += rnds(err);
     const dx = tx - x,
         dz = tz - z,
         d = Math.hypot(dx, dz) || 1;
-    let el = elevation(d, -y, s.shot);
+    let el = elevation(d, -y, gun.shot);
     if (el !== el) el = 0.72;
-    const h = (Math.cos(el) * s.shot) / d;
-    if (balls.n < BALL_CAPACITY) {
-        const o = balls.n++ * BALL_STRIDE,
-            b = balls.d;
-        b[o] = x;
-        b[o + 1] = y;
-        b[o + 2] = z;
-        b[o + 3] = dx * h;
-        b[o + 4] = Math.sin(el) * s.shot;
-        b[o + 5] = dz * h;
-        b[o + 6] = s.dmg;
-        b[o + 7] = s.team;
-        b[o + 8] = 0;
-        b[o + 9] = s.role === 'player' ? 1 : 0;
-    }
+    const h = (Math.cos(el) * gun.shot) / d;
+    launchBall(x, y, z, dx * h, Math.sin(el) * gun.shot, dz * h, gun.dmg, s.team, s.role === 'player');
     fxMuzzle(x, y, z, dx / d, dz / d);
-    sfx.cannon(x, y, z);
+    sfx.cannon(x, y, z, gun.heft);
     // recoil rocks her away from the guns
     s.roll += sg * 0.012;
 }
 
-/** Runs a ship's reloads and any broadside in progress. */
+/** Runs a ship's reloads, and fires the guns of any broadside as their moments come. */
 export function updateGuns(s: Ship, dt: number) {
     for (let side = 0; side < 2; side++) {
-        if (s.rl[side] > 0) s.rl[side] = Math.max(0, s.rl[side] - dt);
-        const vol = s.vol[side];
-        if (vol.t < 0) continue;
-        vol.t += dt;
-        while (vol.n < s.hull.guns && vol.t >= vol.n * RIPPLE) fireGun(s, side, vol.n++);
-        if (vol.n >= s.hull.guns) vol.t = -1;
+        const b = s.bat[side];
+        tickBattery(b, dt);
+        for (let i = 0; i < s.hull.guns; i++) if (gunFires(b, i)) fireGun(s, side, i);
     }
+}
+
+// Puts a ball in flight. The pool is fixed: when it is full the shot is simply not seen.
+function launchBall(x: number, y: number, z: number, vx: number, vy: number, vz: number, dmg: number, team: number, mine: boolean) {
+    if (balls.n >= BALL_CAPACITY) return;
+    const o = balls.n++ * BALL_STRIDE,
+        b = balls.d;
+    b[o] = x;
+    b[o + 1] = y;
+    b[o + 2] = z;
+    b[o + 3] = vx;
+    b[o + 4] = vy;
+    b[o + 5] = vz;
+    b[o + 6] = dmg;
+    b[o + 7] = team;
+    b[o + 8] = 0;
+    b[o + 9] = mine ? 1 : 0;
 }
 
 /** Flies every ball: gravity, hits on hulls, land and sea. Also queues them for drawing. */

@@ -1,10 +1,10 @@
 import { setListener, sfx } from '@ryqndev/brinewake-audio';
 import { cam, seaHeight, setCamera } from '@ryqndev/brinewake-renderer';
-import { clamp, damp, vnoise } from '@ryqndev/rimefire-math';
+import { keys, mouse, opts } from '@ryqndev/kiln-core';
+import { clamp, damp, vnoise } from '@ryqndev/kiln-math';
 
 import { shake, sprite } from './fx';
-import { keys, mouse, opts } from './input';
-import { bearing, CLASSES, fireBroadside, makeShip, maxRange, TEAM } from './ships';
+import { bearing, CLASSES, fireBroadside, gunsReady, makeShip, maxRange, TEAM } from './ships';
 import { refit } from './shipyard';
 import { PL, S } from './state';
 import { height, W } from './world';
@@ -18,6 +18,26 @@ export function spawnPlayer() {
     refit(s);
     Object.assign(PL, { ship: s, camYaw: s.yaw + 0.5, camPitch: -0.2, dist: 1, zoom: 0, side: -1, canDock: false });
     return s;
+}
+
+/** Clear water between a berthed ship's side and the wharf's piles, metres. */
+const FENDER = 0.9;
+
+/**
+ * Lays the player's ship alongside the wharf, where she lies while she is in port. Called with no
+ * time step it puts her there at once; called every frame with one it holds her there, and eases
+ * her off or in when the yard changes her beam under her.
+ */
+export function moor(dt?: number) {
+    const s = PL.ship,
+        b = W.port.berth,
+        off = s.hb + FENDER,
+        x = b.x + b.nx * off,
+        z = b.z + b.nz * off;
+    s.x = dt === undefined ? x : damp(s.x, x, 8, dt);
+    s.z = dt === undefined ? z : damp(s.z, z, 8, dt);
+    s.yaw = b.yaw;
+    s.v = s.w = s.rudder = 0;
 }
 
 /** A key press that gives the ship an order. */
@@ -46,24 +66,25 @@ export function updatePlayer(dt: number) {
     placeCamera(dt);
 
     // ---- guns: laid where the line of sight meets the sea, held inside their reach ----
-    const reach = maxRange(s.shot);
-    let ax = s.x + cam.fx * reach,
-        az = s.z + cam.fz * reach;
+    let ax = s.x + cam.fx * 1e4,
+        az = s.z + cam.fz * 1e4;
     if (cam.fy < -0.01) {
         const t = cam.y / -cam.fy;
         ax = cam.x + cam.fx * t;
         az = cam.z + cam.fz * t;
     }
-    const dx = ax - s.x,
+    // which battery bears depends only on the direction; how far it can be laid, on the guns in it
+    PL.side = bearing(s, ax, az);
+    const reach = maxRange(s.bat[Math.max(0, PL.side)].gun.shot),
+        dx = ax - s.x,
         dz = az - s.z,
         d = Math.hypot(dx, dz) || 1,
-        r = clamp(d, 28, reach);
+        r = clamp(d, Math.min(28, reach), reach);
     PL.aimX = ax = s.x + (dx / d) * r;
     PL.aimZ = az = s.z + (dz / d) * r;
-    PL.side = bearing(s, ax, az);
     if (PL.side >= 0) {
         // the fall of shot, marked on the water: bright when that battery is ready, dull while it reloads
-        const ready = s.rl[PL.side] <= 0,
+        const ready = gunsReady(s, PL.side),
             y = seaHeight(ax, az, S.t) + 0.35,
             size = 4.5 + r * 0.035;
         if (ready) sprite(4, ax, y, az, size, 1.6, 1.3, 0.8, 0.9);
@@ -98,10 +119,13 @@ export function placeCamera(dt: number) {
     setListener(cam.x, cam.y, cam.z, cam.rx, cam.rz);
 }
 
-/** Slow circle around a point of interest: the title, the port and the end screens. */
-export function orbitCamera(x: number, y: number, z: number, radius: number, heightAbove: number, angle: number) {
-    const cx = x + Math.sin(angle) * radius,
-        cz = z + Math.cos(angle) * radius,
+/**
+ * Slow circle around a point of interest: the title, the port and the end screens. `aside` slides
+ * the whole view that many metres to the right, which leaves the subject left of centre.
+ */
+export function orbitCamera(x: number, y: number, z: number, radius: number, heightAbove: number, angle: number, aside = 0) {
+    const cx = x + Math.sin(angle) * radius + Math.cos(angle) * aside,
+        cz = z + Math.cos(angle) * radius - Math.sin(angle) * aside,
         cy = Math.max(y + heightAbove, height(cx, cz) + 3);
     setCamera(cx, cy, cz, angle, -Math.atan2(cy - y, radius), 0, FOV);
     setListener(cam.x, cam.y, cam.z, cam.rx, cam.rz);

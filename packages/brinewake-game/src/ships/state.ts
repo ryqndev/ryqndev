@@ -1,4 +1,4 @@
-import { m4 } from '@ryqndev/rimefire-math';
+import { m4 } from '@ryqndev/kiln-math';
 
 import type { Ship } from './types';
 

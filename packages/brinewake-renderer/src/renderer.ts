@@ -1,25 +1,15 @@
-import { m4, m4mul, m4ortho } from '@ryqndev/rimefire-math';
+import { allocBloom, bloom, caps, createFramebuffer, createNoiseTexture, createProgram, createTexture, drawParticles, fsPass, fxaa, gl, initParticles, initPost, type Program, uploadParticles } from '@ryqndev/kiln-gl';
+import { m4, m4mul, m4ortho } from '@ryqndev/kiln-math';
 
 import { cam } from './camera';
-import { FAR, FOAM_CAPACITY, FOAM_STRIDE, INSTANCE_STRIDE, NEAR, PARTICLE_CAPACITY, PARTICLE_STRIDE, post, R, SHADOW_RANGE, WORLD } from './config';
+import { FAR, FOAM_CAPACITY, FOAM_STRIDE, INSTANCE_STRIDE, NEAR, PARTICLE_CAPACITY, post, R, SHADOW_RANGE, WORLD } from './config';
 import { env } from './environment';
 import type { Frame } from './frame';
 import type { Mesh } from './geometry/mesh';
-import { caps, gl } from './gl/context';
-import { createProgram, type Program } from './gl/program';
-import { createFramebuffer, createTexture } from './gl/texture';
 import { meshes } from './instances';
-import { createNoiseTexture } from './noise';
 import { createOceanGrid, type OceanGrid } from './ocean';
 import * as SH from './shaders';
 import { waveA, waveB } from './waves';
-
-interface BloomLevel {
-    t: WebGLTexture;
-    f: WebGLFramebuffer;
-    w: number;
-    h: number;
-}
 
 const P: Record<string, Program> = {};
 const FOAM_SIZE = 1024;
@@ -39,11 +29,10 @@ let shadowTex: WebGLTexture | null = null,
     shadowSize = 0;
 // size-dependent targets, (re)allocated by alloc()
 let hdrTex!: WebGLTexture, depthTex!: WebGLTexture, hdrFbo!: WebGLFramebuffer, hdrFboND!: WebGLFramebuffer, ldrTex!: WebGLTexture, ldrFbo!: WebGLFramebuffer;
-let bloom: BloomLevel[] = [];
 let instBuf!: WebGLBuffer,
     instCap = 0,
     instData = new Float32Array(INSTANCE_STRIDE * 256);
-let partVao!: WebGLVertexArrayObject, partBuf!: WebGLBuffer, foamVao!: WebGLVertexArrayObject, foamBuf!: WebGLBuffer;
+let foamVao!: WebGLVertexArrayObject, foamBuf!: WebGLBuffer;
 const shadowM = m4(),
     lightVP = m4(),
     tmp = m4(),
@@ -76,14 +65,12 @@ export function initRenderer(canvas: HTMLCanvasElement) {
     P.sky = createProgram(SH.SKY_VS, SH.SKY_FS);
     P.sh = createProgram(SH.SHADOW_VS, SH.SHADOW_FS);
     P.shI = createProgram(SH.SHADOW_VS, SH.SHADOW_FS, '#define INST');
-    P.part = createProgram(SH.PART_VS, SH.PART_FS);
     P.foam = createProgram(SH.FOAM_VS, SH.FOAM_FS);
     P.flat = createProgram(SH.FS_VS, SH.FLAT_FS);
-    P.downK = createProgram(SH.FS_VS, SH.DOWN_FS, '#define KARIS');
-    P.down = createProgram(SH.FS_VS, SH.DOWN_FS);
-    P.up = createProgram(SH.FS_VS, SH.UP_FS);
     P.comp = createProgram(SH.FS_VS, SH.COMP_FS);
-    P.fxaa = createProgram(SH.FS_VS, SH.FXAA_FS);
+    // the shared passes: bloom and anti-aliasing (which also make the full-screen triangle), particles
+    tri = initPost(5, UNIT_A);
+    initParticles(PARTICLE_CAPACITY);
 
     // a vertex array holding one 2D shape in attribute 0
     const shape = (data: number[]) => {
@@ -107,11 +94,7 @@ export function initRenderer(canvas: HTMLCanvasElement) {
         }
         return b;
     };
-    const QUAD = [-1, -1, 1, -1, -1, 1, 1, 1];
-    tri = shape([-1, -1, 3, -1, -1, 3]);
-    partVao = shape(QUAD);
-    partBuf = instanced(1, PARTICLE_STRIDE / 4, PARTICLE_CAPACITY * PARTICLE_STRIDE);
-    foamVao = shape(QUAD);
+    foamVao = shape([-1, -1, 1, -1, -1, 1, 1, 1]);
     foamBuf = instanced(1, FOAM_STRIDE / 4, FOAM_CAPACITY * FOAM_STRIDE);
     gl.bindVertexArray(null);
 
@@ -132,8 +115,8 @@ export function clearFoam() {
 }
 
 function alloc(w: number, h: number) {
-    for (const t of [hdrTex, depthTex, ldrTex, ...bloom.map((b) => b.t)]) if (t) gl.deleteTexture(t);
-    for (const f of [hdrFbo, hdrFboND, ldrFbo, ...bloom.map((b) => b.f)]) if (f) gl.deleteFramebuffer(f);
+    for (const t of [hdrTex, depthTex, ldrTex]) if (t) gl.deleteTexture(t);
+    for (const f of [hdrFbo, hdrFboND, ldrFbo]) if (f) gl.deleteFramebuffer(f);
     const I = caps.hdr ? gl.RGBA16F : gl.RGBA8,
         Ty = caps.hdr ? gl.HALF_FLOAT : gl.UNSIGNED_BYTE;
     hdrTex = createTexture(w, h, I, gl.RGBA, Ty);
@@ -142,15 +125,7 @@ function alloc(w: number, h: number) {
     hdrFboND = createFramebuffer(hdrTex, null);
     ldrTex = createTexture(w, h, gl.RGBA8, gl.RGBA, gl.UNSIGNED_BYTE);
     ldrFbo = createFramebuffer(ldrTex, null);
-    bloom = [];
-    let bw = w >> 1,
-        bh = h >> 1;
-    for (let i = 0; i < 5 && bw > 8 && bh > 8; i++) {
-        const t = createTexture(bw, bh, I, gl.RGBA, Ty);
-        bloom.push({ t, f: createFramebuffer(t, null), w: bw, h: bh });
-        bw >>= 1;
-        bh >>= 1;
-    }
+    allocBloom(w, h);
     R.w = w;
     R.h = h;
 }
@@ -225,12 +200,6 @@ function bindTex(unit: number, t: WebGLTexture | null) {
     gl.activeTexture(gl.TEXTURE0 + unit);
     gl.bindTexture(gl.TEXTURE_2D, t);
 }
-function fsPass(p: Program, fbo: WebGLFramebuffer | null, w: number, h: number) {
-    gl.bindFramebuffer(gl.FRAMEBUFFER, fbo);
-    gl.viewport(0, 0, w, h);
-    gl.useProgram(p.p);
-    gl.bindVertexArray(tri);
-}
 
 // The sun's view of the area around the focus point, snapped to whole texels so that shadow edges
 // do not crawl as the focus moves.
@@ -284,10 +253,7 @@ export function render(frame: Frame) {
     if (o) gl.bufferSubData(gl.ARRAY_BUFFER, 0, instData, 0, o);
     const particles = Math.min(F.particleCount, PARTICLE_CAPACITY),
         stamps = Math.min(F.foam.n, FOAM_CAPACITY);
-    if (particles) {
-        gl.bindBuffer(gl.ARRAY_BUFFER, partBuf);
-        gl.bufferSubData(gl.ARRAY_BUFFER, 0, F.particles, 0, particles * PARTICLE_STRIDE);
-    }
+    uploadParticles(F.particles, particles);
     if (stamps) {
         gl.bindBuffer(gl.ARRAY_BUFFER, foamBuf);
         gl.bufferSubData(gl.ARRAY_BUFFER, 0, F.foam.data, 0, stamps * FOAM_STRIDE);
@@ -397,52 +363,17 @@ export function render(frame: Frame) {
     if (particles) {
         gl.bindFramebuffer(gl.FRAMEBUFFER, hdrFboND);
         gl.blendFunc(gl.ONE, gl.ONE_MINUS_SRC_ALPHA);
-        gl.useProgram(P.part.p);
-        gl.uniformMatrix4fv(P.part.u.uVP, false, cam.vp);
-        gl.uniform3f(P.part.u.uCR, cam.rx, cam.ry, cam.rz);
-        gl.uniform3f(P.part.u.uCU, cam.ux, cam.uy, cam.uz);
-        gl.uniform3f(P.part.u.uCam, cam.x, cam.y, cam.z);
-        gl.uniform1i(P.part.u.uDepth, UNIT_A);
-        gl.uniform1i(P.part.u.uNoise, UNIT_NOISE);
-        gl.uniform2f(P.part.u.uNF, NEAR, FAR);
-        gl.bindVertexArray(partVao);
-        gl.drawArraysInstanced(gl.TRIANGLE_STRIP, 0, 4, particles);
+        drawParticles(particles, cam, UNIT_A, UNIT_NOISE, NEAR, FAR);
     }
     gl.disable(gl.BLEND);
 
     // ---- bloom ----
-    let src = hdrTex,
-        sw = w,
-        sh = h;
-    for (let i = 0; i < bloom.length; i++) {
-        const b = bloom[i],
-            p = i ? P.down : P.downK;
-        fsPass(p, b.f, b.w, b.h);
-        bindTex(UNIT_A, src);
-        gl.uniform1i(p.u.uT, UNIT_A);
-        gl.uniform2f(p.u.uPx, 1 / sw, 1 / sh);
-        gl.drawArrays(gl.TRIANGLES, 0, 3);
-        src = b.t;
-        sw = b.w;
-        sh = b.h;
-    }
-    gl.enable(gl.BLEND);
-    gl.blendFunc(gl.ONE, gl.ONE);
-    for (let i = bloom.length - 1; i > 0; i--) {
-        const b = bloom[i],
-            d = bloom[i - 1];
-        fsPass(P.up, d.f, d.w, d.h);
-        bindTex(UNIT_A, b.t);
-        gl.uniform1i(P.up.u.uT, UNIT_A);
-        gl.uniform2f(P.up.u.uPx, 0.5 / b.w, 0.5 / b.h);
-        gl.drawArrays(gl.TRIANGLES, 0, 3);
-    }
-    gl.disable(gl.BLEND);
+    const glow = bloom(hdrTex, w, h);
 
     // ---- composite: tone map, grade, screen effects ----
     fsPass(P.comp, ldrFbo, w, h);
     bindTex(UNIT_A, hdrTex);
-    bindTex(UNIT_B, bloom[0].t);
+    bindTex(UNIT_B, glow);
     gl.uniform1i(P.comp.u.uT, UNIT_A);
     gl.uniform1i(P.comp.u.uBloom, UNIT_B);
     gl.uniform4f(P.comp.u.uP, post.exposure * env.exposure, post.bloom, post.vig, (F.time * 61.7) % 97);
@@ -450,11 +381,7 @@ export function render(frame: Frame) {
     gl.drawArrays(gl.TRIANGLES, 0, 3);
 
     // ---- FXAA to screen ----
-    fsPass(P.fxaa, null, R.cw, R.ch);
-    bindTex(UNIT_A, ldrTex);
-    gl.uniform1i(P.fxaa.u.uT, UNIT_A);
-    gl.uniform2f(P.fxaa.u.uPx, 1 / w, 1 / h);
-    gl.drawArrays(gl.TRIANGLES, 0, 3);
+    fxaa(ldrTex, w, h, R.cw, R.ch);
     bindTex(UNIT_A, null);
     bindTex(UNIT_B, null);
 }

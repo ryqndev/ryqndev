@@ -1,5 +1,5 @@
+import { damp, m4trs, rnd, rnds } from '@ryqndev/kiln-math';
 import { sfx } from '@ryqndev/rimefire-audio';
-import { damp, m4trs, rnd, rnds } from '@ryqndev/rimefire-math';
 import { addInstance } from '@ryqndev/rimefire-renderer';
 
 import { addDebris, flash, fxIce, light, shake, spawn, sprite } from '../fx';

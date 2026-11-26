@@ -1,0 +1,83 @@
+@use '../../../styles/tokens' as *;
+
+.ladder {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 16px;
+    padding: 9px 12px 9px 14px;
+    border-bottom: 1px solid rgb(255 255 255 / 7%);
+    transition: background 0.12s;
+
+    &:hover {
+        background: rgb(255 255 255 / 5%);
+    }
+}
+
+.name {
+    font-size: 14px;
+    letter-spacing: 0.06em;
+}
+
+.detail {
+    margin-top: 4px;
+    font-size: 11px;
+    line-height: 1.45;
+    opacity: 0.62;
+}
+
+.pips {
+    display: inline-flex;
+    gap: 3px;
+    margin-right: 9px;
+    vertical-align: 1px;
+
+    i {
+        width: 9px;
+        height: 4px;
+        background: rgb(255 255 255 / 20%);
+
+        &.on {
+            background: $gold;
+        }
+    }
+}
+
+.buy {
+    @include mono;
+
+    flex: none;
+    min-width: 82px;
+    padding: 7px 10px;
+    font-size: 13px;
+    color: #1b1408;
+    background: $gold;
+    border: 0;
+    cursor: pointer;
+    transition:
+        filter 0.12s,
+        opacity 0.12s;
+
+    &:hover {
+        filter: brightness(1.15);
+    }
+
+    // not enough gold banked yet
+    &:disabled {
+        color: $text;
+        background: rgb(255 255 255 / 12%);
+        opacity: 0.55;
+        cursor: default;
+        filter: none;
+    }
+}
+
+.done {
+    @include label;
+
+    flex: none;
+    min-width: 82px;
+    text-align: center;
+    color: $sea;
+    opacity: 1;
+}

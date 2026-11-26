@@ -10,9 +10,9 @@
         "compile": "tsc -b"
     },
     "dependencies": {
+        "@ryqndev/kiln-core": "workspace:*",
+        "@ryqndev/kiln-math": "workspace:*",
         "@ryqndev/rimefire-audio": "workspace:*",
-        "@ryqndev/rimefire-math": "workspace:*",
-        "@ryqndev/rimefire-renderer": "workspace:*",
-        "zustand": "catalog:"
+        "@ryqndev/rimefire-renderer": "workspace:*"
     }
 }

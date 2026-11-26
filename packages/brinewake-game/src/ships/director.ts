@@ -1,5 +1,5 @@
 import { sfx } from '@ryqndev/brinewake-audio';
-import { rnd, TAU } from '@ryqndev/rimefire-math';
+import { rnd, TAU } from '@ryqndev/kiln-math';
 
 import { hud } from '../hud';
 import { S } from '../state';

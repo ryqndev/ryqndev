@@ -1,26 +1,16 @@
-import { m4, m4mul, m4ortho } from '@ryqndev/rimefire-math';
+import { allocBloom, bloom, caps, createFramebuffer, createNoiseTexture, createProgram, createTexture, drawParticles, fsPass, fxaa, gl, initParticles, initPost, type Program, uploadParticles } from '@ryqndev/kiln-gl';
+import { m4, m4mul, m4ortho } from '@ryqndev/kiln-math';
 
 import { cam, project, type ScreenPoint } from './camera';
-import { FAR, FOG, GOO_CAPACITY, GOO_STRIDE, INSTANCE_STRIDE, NEAR, PARTICLE_CAPACITY, PARTICLE_STRIDE, post, R, SHR, SM, SUN, SUNCOL } from './config';
+import { FAR, FOG, GOO_CAPACITY, GOO_STRIDE, INSTANCE_STRIDE, NEAR, PARTICLE_CAPACITY, post, R, SHR, SM, SUN, SUNCOL } from './config';
 import { initEnvironment, updateEnvironment } from './environment';
 import type { Frame } from './frame';
 import { icoSphere } from './geometry/icosphere';
 import type { Mesh } from './geometry/mesh';
-import { caps, gl } from './gl/context';
-import { createProgram, type Program } from './gl/program';
-import { createFramebuffer, createTexture } from './gl/texture';
 import { meshes } from './instances';
 import { shadowTextures, shadowUniforms, updateLightShadows } from './light-shadows';
 import { createMaterialTextures, type MaterialTextures } from './materials';
-import { createNoiseTexture } from './noise';
 import * as SH from './shaders';
-
-interface BloomLevel {
-    t: WebGLTexture;
-    f: WebGLFramebuffer;
-    w: number;
-    h: number;
-}
 
 const P: Record<string, Program> = {};
 
@@ -70,13 +60,12 @@ let tri!: WebGLVertexArrayObject, quad!: WebGLVertexArrayObject;
 let noiseTex!: WebGLTexture, shadowTex!: WebGLTexture, shadowFbo!: WebGLFramebuffer, scorchTex!: WebGLTexture, scorchFbo!: WebGLFramebuffer;
 // size-dependent targets, (re)allocated by alloc()
 let hdrTex!: WebGLTexture, depthTex!: WebGLTexture, hdrFbo!: WebGLFramebuffer, hdrFboND!: WebGLFramebuffer, ldrTex!: WebGLTexture, ldrFbo!: WebGLFramebuffer;
-let bloom: BloomLevel[] = [],
-    aoT: WebGLTexture[] = [],
+let aoT: WebGLTexture[] = [],
     aoF: WebGLFramebuffer[] = [];
 let instBuf!: WebGLBuffer,
     instCap = 0,
     instData = new Float32Array(INSTANCE_STRIDE * 256);
-let gooVao!: WebGLVertexArrayObject, gooBuf!: WebGLBuffer, gooIdx = 0, partVao!: WebGLVertexArrayObject, partBuf!: WebGLBuffer, snowVao!: WebGLVertexArrayObject;
+let gooVao!: WebGLVertexArrayObject, gooBuf!: WebGLBuffer, gooIdx = 0, snowVao!: WebGLVertexArrayObject;
 const SNOWN = 1500;
 const shadowM = m4(),
     lightVP = m4(),
@@ -97,19 +86,17 @@ export function initRenderer(canvas: HTMLCanvasElement) {
     R.canvas = canvas;
     P.shS = createProgram(SH.SHADOW_VS, SH.SHADOW_FS);
     P.shI = createProgram(SH.SHADOW_VS, SH.SHADOW_FS, '#define INST');
-    P.part = createProgram(SH.PART_VS, SH.PART_FS);
     P.snow = createProgram(SH.SNOW_VS, SH.SNOW_FS);
     P.sky = createProgram(SH.SKY_VS, SH.SKY_FS);
-    P.downK = createProgram(SH.FS_VS, SH.DOWN_FS, '#define KARIS');
-    P.down = createProgram(SH.FS_VS, SH.DOWN_FS);
-    P.up = createProgram(SH.FS_VS, SH.UP_FS);
     P.comp = createProgram(SH.FS_VS, SH.COMP_FS);
-    P.fxaa = createProgram(SH.FS_VS, SH.FXAA_FS);
     P.ao = createProgram(SH.FS_VS, SH.AO_FS);
     P.aoBlur = createProgram(SH.FS_VS, SH.AOBLUR_FS);
     P.aoApply = createProgram(SH.FS_VS, SH.AOAPPLY_FS);
     P.stamp = createProgram(SH.STAMP_VS, SH.STAMP_FS);
     P.flat = createProgram(SH.FS_VS, SH.FLAT_FS);
+    // the shared passes: bloom and anti-aliasing (which also make the full-screen triangle), particles
+    tri = initPost(6, 3);
+    initParticles(PARTICLE_CAPACITY);
 
     const mkQ = (data: number[]): [WebGLVertexArrayObject, WebGLBuffer] => {
         const v = gl.createVertexArray();
@@ -121,7 +108,6 @@ export function initRenderer(canvas: HTMLCanvasElement) {
         gl.vertexAttribPointer(0, 2, gl.FLOAT, false, 0, 0);
         return [v, b];
     };
-    tri = mkQ([-1, -1, 3, -1, -1, 3])[0];
     quad = mkQ([-1, -1, 1, -1, -1, 1, 1, 1])[0];
 
     noiseTex = createNoiseTexture();
@@ -157,17 +143,6 @@ export function initRenderer(canvas: HTMLCanvasElement) {
         gl.vertexAttribDivisor(4 + k, 1);
     }
 
-    // particles
-    const pq = mkQ([-1, -1, 1, -1, -1, 1, 1, 1]);
-    partVao = pq[0];
-    partBuf = gl.createBuffer();
-    gl.bindBuffer(gl.ARRAY_BUFFER, partBuf);
-    gl.bufferData(gl.ARRAY_BUFFER, PARTICLE_CAPACITY * PARTICLE_STRIDE * 4, gl.DYNAMIC_DRAW);
-    for (let k = 0; k < 4; k++) {
-        gl.enableVertexAttribArray(1 + k);
-        gl.vertexAttribPointer(1 + k, 4, gl.FLOAT, false, 64, k * 16);
-        gl.vertexAttribDivisor(1 + k, 1);
-    }
     // snow
     const sq = mkQ([-1, -1, 1, -1, -1, 1, 1, 1]);
     snowVao = sq[0];
@@ -190,8 +165,8 @@ export function clearScorch() {
 }
 
 function alloc(w: number, h: number) {
-    for (const t of [hdrTex, depthTex, ldrTex, volTex, ...bloom.map((b) => b.t), ...aoT]) if (t) gl.deleteTexture(t);
-    for (const f of [hdrFbo, hdrFboND, ldrFbo, volFbo, ...bloom.map((b) => b.f), ...aoF]) if (f) gl.deleteFramebuffer(f);
+    for (const t of [hdrTex, depthTex, ldrTex, volTex, ...aoT]) if (t) gl.deleteTexture(t);
+    for (const f of [hdrFbo, hdrFboND, ldrFbo, volFbo, ...aoF]) if (f) gl.deleteFramebuffer(f);
     volTex = volFbo = null;
     const I = caps.hdr ? gl.RGBA16F : gl.RGBA8,
         Ty = caps.hdr ? gl.HALF_FLOAT : gl.UNSIGNED_BYTE;
@@ -201,15 +176,7 @@ function alloc(w: number, h: number) {
     hdrFboND = createFramebuffer(hdrTex, null);
     ldrTex = createTexture(w, h, gl.RGBA8, gl.RGBA, gl.UNSIGNED_BYTE);
     ldrFbo = createFramebuffer(ldrTex, null);
-    bloom = [];
-    let bw = w >> 1,
-        bh = h >> 1;
-    for (let i = 0; i < 6 && bw > 8 && bh > 8; i++) {
-        const t = createTexture(bw, bh, I, gl.RGBA, Ty);
-        bloom.push({ t, f: createFramebuffer(t, null), w: bw, h: bh });
-        bw >>= 1;
-        bh >>= 1;
-    }
+    allocBloom(w, h);
     aoT = [];
     aoF = [];
     for (let i = 0; i < 2; i++) {
@@ -347,12 +314,6 @@ function drawVolumetrics(march: Program, w: number, h: number) {
     gl.blendFunc(gl.ONE, gl.ONE);
     gl.drawArrays(gl.TRIANGLES, 0, 3);
 }
-function fsPass(p: Program, fbo: WebGLFramebuffer | null, w: number, h: number) {
-    gl.bindFramebuffer(gl.FRAMEBUFFER, fbo);
-    gl.viewport(0, 0, w, h);
-    gl.useProgram(p.p);
-    gl.bindVertexArray(tri);
-}
 
 
 const pj: ScreenPoint = { x: 0, y: 0, w: 0 },
@@ -383,8 +344,7 @@ export function render(frame: Frame) {
     if (o) gl.bufferSubData(gl.ARRAY_BUFFER, 0, instData, 0, o);
     gl.bindBuffer(gl.ARRAY_BUFFER, gooBuf);
     if (F.gooCount) gl.bufferSubData(gl.ARRAY_BUFFER, 0, F.goo, 0, F.gooCount * GOO_STRIDE);
-    gl.bindBuffer(gl.ARRAY_BUFFER, partBuf);
-    if (F.particleCount) gl.bufferSubData(gl.ARRAY_BUFFER, 0, F.particles, 0, F.particleCount * PARTICLE_STRIDE);
+    uploadParticles(F.particles, F.particleCount);
 
     // ---- shadow matrix (stabilised, follows the camera) ----
     {
@@ -568,18 +528,7 @@ export function render(frame: Frame) {
     gl.uniform3f(P.snow.u.uCol, 0.5, 0.62, 0.8);
     gl.bindVertexArray(snowVao);
     gl.drawArraysInstanced(gl.TRIANGLE_STRIP, 0, 4, SNOWN);
-    if (F.particleCount) {
-        gl.useProgram(P.part.p);
-        gl.uniformMatrix4fv(P.part.u.uVP, false, cam.vp);
-        gl.uniform3f(P.part.u.uCR, cam.rx, cam.ry, cam.rz);
-        gl.uniform3f(P.part.u.uCU, cam.ux, cam.uy, cam.uz);
-        gl.uniform3f(P.part.u.uCam, cam.x, cam.y, cam.z);
-        gl.uniform1i(P.part.u.uDepth, 3);
-        gl.uniform1i(P.part.u.uNoise, 0);
-        gl.uniform2f(P.part.u.uNF, NEAR, FAR);
-        gl.bindVertexArray(partVao);
-        gl.drawArraysInstanced(gl.TRIANGLE_STRIP, 0, 4, F.particleCount);
-    }
+    if (F.particleCount) drawParticles(F.particleCount, cam, 3, 0, NEAR, FAR);
     gl.disable(gl.BLEND);
 
     // ---- first-person viewmodel (own projection, compressed depth range) ----
@@ -598,38 +547,12 @@ export function render(frame: Frame) {
     for (const m of meshes) m.cnt[0] = m.cnt[1] = 0;
 
     // ---- bloom ----
-    let src = hdrTex,
-        sw = w,
-        sh = h;
-    for (let i = 0; i < bloom.length; i++) {
-        const b = bloom[i],
-            p = i ? P.down : P.downK;
-        fsPass(p, b.f, b.w, b.h);
-        bindTex(3, src);
-        gl.uniform1i(p.u.uT, 3);
-        gl.uniform2f(p.u.uPx, 1 / sw, 1 / sh);
-        gl.drawArrays(gl.TRIANGLES, 0, 3);
-        src = b.t;
-        sw = b.w;
-        sh = b.h;
-    }
-    gl.enable(gl.BLEND);
-    gl.blendFunc(gl.ONE, gl.ONE);
-    for (let i = bloom.length - 1; i > 0; i--) {
-        const b = bloom[i],
-            d = bloom[i - 1];
-        fsPass(P.up, d.f, d.w, d.h);
-        bindTex(3, b.t);
-        gl.uniform1i(P.up.u.uT, 3);
-        gl.uniform2f(P.up.u.uPx, 0.5 / b.w, 0.5 / b.h);
-        gl.drawArrays(gl.TRIANGLES, 0, 3);
-    }
-    gl.disable(gl.BLEND);
+    const glow = bloom(hdrTex, w, h);
 
     // ---- composite ----
     fsPass(P.comp, ldrFbo, w, h);
     bindTex(3, hdrTex);
-    bindTex(4, bloom[0].t);
+    bindTex(4, glow);
     gl.uniform1i(P.comp.u.uT, 3);
     gl.uniform1i(P.comp.u.uBloom, 4);
     gl.uniform4f(P.comp.u.uP, post.exposure, post.bloom, post.vig, (F.time * 61.7) % 97);
@@ -649,11 +572,7 @@ export function render(frame: Frame) {
     gl.drawArrays(gl.TRIANGLES, 0, 3);
 
     // ---- FXAA to screen ----
-    fsPass(P.fxaa, null, R.cw, R.ch);
-    bindTex(3, ldrTex);
-    gl.uniform1i(P.fxaa.u.uT, 3);
-    gl.uniform2f(P.fxaa.u.uPx, 1 / w, 1 / h);
-    gl.drawArrays(gl.TRIANGLES, 0, 3);
+    fxaa(ldrTex, w, h, R.cw, R.ch);
     bindTex(3, null);
     bindTex(4, null);
 }

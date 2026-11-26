@@ -1,4 +1,4 @@
-import { clamp } from '@ryqndev/rimefire-math';
+import { clamp } from '@ryqndev/kiln-math';
 
 import { height, STEP } from './terrain';
 import type { BoxCollider, CylCollider, Hit } from './types';
