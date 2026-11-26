@@ -1,13 +1,12 @@
+import { attachInput, createFpsMeter, createResolutionGovernor, type Input, keys, listen, mouse, opts } from '@ryqndev/kiln-core';
+import { clamp } from '@ryqndev/kiln-math';
 import { audioTick, initAudio, sfx, suspendAudio } from '@ryqndev/rimefire-audio';
-import { clamp } from '@ryqndev/rimefire-math';
 import { cam, clearScorch, type Frame, initGL, initRenderer, post, R, render, resize, setCamera, setScene, setStaticLights, SHADOW_NONE } from '@ryqndev/rimefire-renderer';
 
 import { blobs, D, fireGel, fireSpark, foes, idleCombat, resetCombat, spawnFoe, updateCombat } from './combat';
 import { gels, goo } from './combat/state';
-import { listen } from './dom';
 import { clearParticles, debris, gpu, lightU, pcount, sprite, updateDebris, updateLights, updateParticles, updateShockwaves } from './fx';
 import { hud } from './hud';
-import { attachInput, type Input, keys, mouse, opts } from './input';
 import { buildModels } from './models';
 import { resetPlayer, swapWeapon, updatePlayer } from './player';
 import { type Mode, PL, S } from './state';
@@ -28,14 +27,13 @@ let input: Input | null = null;
 let rafId = 0;
 
 let last = 0,
-    avg = 16.7,
-    cool = 3,
     showFps = false,
-    fpsN = 0,
-    fpsT = 0,
     tipStage = 0,
     tipT = 0,
     winFlash = false;
+
+const governor = createResolutionGovernor(R, resize);
+const fpsMeter = createFpsMeter();
 
 // the renderer's view of the simulation; every buffer is reused across frames
 const frameInput: Frame = {
@@ -124,6 +122,7 @@ function onKey(code: string) {
         R.quality = (R.quality + 1) % QUALITY_NAMES.length;
         R.dyn = 1;
         R.ao = R.quality > 0;
+        governor.reset();
         resize();
         hud.toast('GRAPHICS · ' + QUALITY_NAMES[R.quality]);
     } else if (code === 'KeyF') showFps = !showFps;
@@ -150,7 +149,7 @@ function resetGame() {
 function setMode(m: Mode) {
     S.mode = m;
     hud.mode(m);
-    if (m !== 'play') mouse.l = false;
+    if (m !== 'play') mouse.l = mouse.r = false;
 }
 
 // slow orbit around the hub for the title and victory screens
@@ -185,25 +184,10 @@ function frame(now: number) {
     const rdt = Math.min(0.05, Math.max(0.001, (now - last) / 1000));
     last = now;
 
-    // dynamic resolution: shed pixels when frames run long, creep back when there is headroom
-    avg += (rdt * 1000 - avg) * 0.06;
-    cool -= rdt;
-    if (avg > 21.5 && cool <= 0 && R.dyn > 0.56) {
-        R.dyn = Math.max(0.55, R.dyn - 0.1);
-        resize();
-        cool = 1.5;
-        avg = 17;
-    } else if (avg < 17.3 && cool < -12 && R.dyn < 1) {
-        R.dyn = Math.min(1, R.dyn + 0.05);
-        resize();
-        cool = 2;
-    }
+    governor.tick(rdt);
     if (showFps) {
-        fpsN++;
-        if ((fpsT += rdt) > 0.5) {
-            hud.fps(Math.round(fpsN / fpsT) + ' fps · ' + R.w + '×' + R.h);
-            fpsN = fpsT = 0;
-        }
+        const fps = fpsMeter(rdt);
+        if (fps !== null) hud.fps(fps + ' fps · ' + R.w + '×' + R.h);
     } else hud.fps('');
 
     let dt = rdt;

@@ -1,4 +1,4 @@
-import { m4, m4aim, PI, rng, TAU } from '@ryqndev/rimefire-math';
+import { m4, m4aim, PI, rng, TAU } from '@ryqndev/kiln-math';
 import { Geo, MATERIAL, type Mesh, registerMesh } from '@ryqndev/rimefire-renderer';
 
 export type ModelName =

@@ -1,4 +1,4 @@
-import { rnds, TAU } from '@ryqndev/rimefire-math';
+import { rnds, TAU } from '@ryqndev/kiln-math';
 import { PARTICLE_CAPACITY, PARTICLE_STRIDE } from '@ryqndev/rimefire-renderer';
 
 import { height } from '../world';

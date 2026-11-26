@@ -1,5 +1,5 @@
+import { PI, rnd, rnds } from '@ryqndev/kiln-math';
 import { sfx } from '@ryqndev/rimefire-audio';
-import { PI, rnd, rnds } from '@ryqndev/rimefire-math';
 
 import { addDebris, flash, fxExplosion, shake } from '../fx';
 import { M } from '../models';

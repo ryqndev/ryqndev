@@ -1,4 +1,4 @@
-import { clamp, m4, m4aim, PI, rng, TAU } from '@ryqndev/rimefire-math';
+import { clamp, m4, m4aim, PI, rng, TAU } from '@ryqndev/kiln-math';
 import { Geo, MATERIAL, SHADOW_NONE } from '@ryqndev/rimefire-renderer';
 
 import { addBox, addCyl } from './colliders';

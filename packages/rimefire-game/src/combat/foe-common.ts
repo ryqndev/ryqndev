@@ -1,5 +1,5 @@
+import { clamp, rnd, rnds, TAU } from '@ryqndev/kiln-math';
 import { sfx } from '@ryqndev/rimefire-audio';
-import { clamp, rnd, rnds, TAU } from '@ryqndev/rimefire-math';
 
 import { flash, fxIce, fxPuff, shake, spawn } from '../fx';
 import { S } from '../state';

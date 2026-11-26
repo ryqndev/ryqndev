@@ -1,5 +1,5 @@
+import { angDiff, clamp, damp, rnd, rnds } from '@ryqndev/kiln-math';
 import { sfx } from '@ryqndev/rimefire-audio';
-import { angDiff, clamp, damp, rnd, rnds } from '@ryqndev/rimefire-math';
 
 import { fxFlame, light } from '../fx';
 import { S } from '../state';

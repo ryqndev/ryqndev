@@ -1,5 +1,5 @@
+import { rnd } from '@ryqndev/kiln-math';
 import { sfx } from '@ryqndev/rimefire-audio';
-import { rnd } from '@ryqndev/rimefire-math';
 
 import { flash, fxGooSplat, fxSparks, light, sprite } from '../fx';
 import { hud } from '../hud';

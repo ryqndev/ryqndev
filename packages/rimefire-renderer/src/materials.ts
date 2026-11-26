@@ -1,5 +1,5 @@
-import { caps, gl } from './gl/context';
-import { createProgram } from './gl/program';
+import { caps, createProgram, gl } from '@ryqndev/kiln-gl';
+
 import * as SH from './shaders';
 
 /**

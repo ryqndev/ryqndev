@@ -1,4 +1,4 @@
-import { fbm, PI, smooth, TAU } from '@ryqndev/rimefire-math';
+import { fbm, PI, smooth, TAU } from '@ryqndev/kiln-math';
 
 /** Height above its base of the light a reignited pylon gives off. */
 export const PYLON_LIGHT_HEIGHT = 5.2;

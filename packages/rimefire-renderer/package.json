@@ -10,6 +10,7 @@
         "compile": "tsc -b"
     },
     "dependencies": {
-        "@ryqndev/rimefire-math": "workspace:*"
+        "@ryqndev/kiln-gl": "workspace:*",
+        "@ryqndev/kiln-math": "workspace:*"
     }
 }

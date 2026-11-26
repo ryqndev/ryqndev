@@ -1,4 +1,4 @@
-import type { Mat4 } from '@ryqndev/rimefire-math';
+import type { Mat4 } from '@ryqndev/kiln-math';
 
 import { INSTANCE_STRIDE } from './config';
 import type { Geo } from './geometry/Geo';

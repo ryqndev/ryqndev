@@ -1,5 +1,5 @@
+import { angDiff, damp, rnd, rnds, TAU } from '@ryqndev/kiln-math';
 import { sfx } from '@ryqndev/rimefire-audio';
-import { angDiff, damp, rnd, rnds, TAU } from '@ryqndev/rimefire-math';
 
 import { fxFlame, fxIce, light, shake, spawn } from '../fx';
 import { hud } from '../hud';

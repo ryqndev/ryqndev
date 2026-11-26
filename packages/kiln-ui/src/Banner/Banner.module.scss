@@ -1,0 +1,37 @@
+@use '../styles/tokens' as *;
+
+.banner {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: var(--kiln-banner-top, 20%);
+    text-align: center;
+    opacity: 0;
+    transition: opacity 0.5s;
+
+    &.on {
+        opacity: 1;
+    }
+}
+
+.title {
+    font-family: $font-display;
+    font-size: var(--kiln-banner-size, 30px);
+    font-weight: var(--kiln-banner-weight, 400);
+    letter-spacing: var(--kiln-banner-tracking, 0.34em);
+    // letter-spacing trails the last glyph; pull it back so the text stays centred
+    margin-right: calc(-1 * var(--kiln-banner-tracking, 0.34em));
+    color: var(--kiln-banner-color, inherit);
+    text-shadow:
+        0 0 24px var(--kiln-banner-glow, transparent),
+        0 2px 10px rgb(0 0 0 / 80%);
+}
+
+.sub {
+    margin-top: 10px;
+    font-size: 12px;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    opacity: var(--kiln-banner-sub-opacity, 0.75);
+    text-shadow: var(--kiln-banner-sub-shadow, none);
+}

@@ -1,6 +1,6 @@
-import { m4, m4inv, m4mul, m4persp, type Mat4 } from '@ryqndev/rimefire-math';
+import { caps, gl } from '@ryqndev/kiln-gl';
+import { m4, m4inv, m4mul, m4persp, type Mat4 } from '@ryqndev/kiln-math';
 
-import { caps, gl } from './gl/context';
 
 const SIZE = 128;
 

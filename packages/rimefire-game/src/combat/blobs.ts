@@ -1,5 +1,5 @@
+import { clamp, rnd } from '@ryqndev/kiln-math';
 import { sfx } from '@ryqndev/rimefire-audio';
-import { clamp, rnd } from '@ryqndev/rimefire-math';
 import { GOO_CAPACITY, GOO_STRIDE } from '@ryqndev/rimefire-renderer';
 
 import { fxExplosion, fxFlame, fxGooSplat, fxIce, light, shake } from '../fx';

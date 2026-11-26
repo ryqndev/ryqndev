@@ -1,4 +1,4 @@
-import { rnd, rnds } from '@ryqndev/rimefire-math';
+import { rnd, rnds } from '@ryqndev/kiln-math';
 import { SHADOW_DYNAMIC } from '@ryqndev/rimefire-renderer';
 
 import { fxFlame, light } from '../fx';

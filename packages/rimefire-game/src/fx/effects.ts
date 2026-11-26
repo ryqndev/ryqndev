@@ -1,4 +1,4 @@
-import { rnd, rnds, TAU } from '@ryqndev/rimefire-math';
+import { rnd, rnds, TAU } from '@ryqndev/kiln-math';
 
 import { S } from '../state';
 import { height } from '../world';

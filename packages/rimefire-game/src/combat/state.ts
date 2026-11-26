@@ -1,4 +1,4 @@
-import { m4 } from '@ryqndev/rimefire-math';
+import { m4 } from '@ryqndev/kiln-math';
 import { GOO_CAPACITY, GOO_STRIDE } from '@ryqndev/rimefire-renderer';
 
 import type { Hit } from '../world';

@@ -1,4 +1,4 @@
-import { clamp, lerp, m4aim, m4mul, m4trs, PI, TAU } from '@ryqndev/rimefire-math';
+import { clamp, lerp, m4aim, m4mul, m4trs, PI, TAU } from '@ryqndev/kiln-math';
 import { addInstance, type Mesh } from '@ryqndev/rimefire-renderer';
 
 import { light } from '../fx';

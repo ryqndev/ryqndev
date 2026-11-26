@@ -4,12 +4,14 @@
     "version": "0.0.0",
     "main": "src/index.ts",
     "sideEffects": [
-        "**/*.scss"
+        "**/*.scss",
+        "src/index.ts"
     ],
     "scripts": {
         "compile": "tsc -b"
     },
     "dependencies": {
+        "@ryqndev/kiln-ui": "workspace:*",
         "@ryqndev/rimefire-game": "workspace:*",
         "clsx": "catalog:",
         "react": "catalog:",

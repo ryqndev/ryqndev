@@ -1,0 +1,56 @@
+// Theme tokens. Each one reads a custom property that a game sets once on :root (see a game's own
+// styles/theme.scss), so the same compiled stylesheet serves every game. The fallbacks are a plain
+// white-on-dark look; the component stylesheets hold the fallbacks for their own properties.
+
+$font-ui: ui-sans-serif, system-ui, -apple-system, 'Segoe UI', 'Helvetica Neue', Arial, sans-serif;
+$font-mono: ui-monospace, 'SF Mono', Menlo, Consolas, monospace;
+// lettering for titles and banners
+$font-display: var(--kiln-font-display, #{$font-ui});
+
+$text: var(--kiln-text, #fff);
+$danger: var(--kiln-danger, #ff5a48);
+// key caps and notices
+$accent: var(--kiln-accent, #fff);
+// the rule and key caps of an onboarding hint
+$hint: var(--kiln-hint, #{$accent});
+// the call to action on a menu screen
+$prompt: var(--kiln-prompt, #{$accent});
+
+// full-viewport layer that never intercepts input unless a child opts in
+@mixin layer {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    font-family: $font-ui;
+    color: $text;
+    user-select: none;
+}
+
+@mixin mono {
+    font-family: $font-mono;
+    font-variant-numeric: tabular-nums;
+}
+
+@mixin label {
+    font-size: 10px;
+    letter-spacing: 0.24em;
+    text-transform: uppercase;
+    opacity: var(--kiln-label-opacity, 0.62);
+}
+
+// thin gauge: the track, and a fill scaled with transform: scaleX()
+@mixin bar($height: 5px) {
+    height: $height;
+    background: rgb(255 255 255 / 14%);
+    margin-top: 8px;
+    position: relative;
+    overflow: hidden;
+}
+
+@mixin bar-fill($color: $text) {
+    position: absolute;
+    inset: 0;
+    transform-origin: 0 50%;
+    background: $color;
+    transition: transform 0.12s;
+}
