@@ -1,5 +1,5 @@
 import { clamp, m4, m4aim, PI, rng, TAU } from '@ryqndev/rimefire-math';
-import { Geo } from '@ryqndev/rimefire-renderer';
+import { Geo, MATERIAL, SHADOW_NONE } from '@ryqndev/rimefire-renderer';
 
 import { addBox, addCyl } from './colliders';
 import { bakeHeightmap, height, PYL } from './terrain';
@@ -47,7 +47,7 @@ export function buildWorld() {
     taken.push([0, -50, 7]);
 
     // hub pad + ring lamps
-    G.mat(0.75, 0.1, 0, 0).col(0.2, 0.21, 0.23);
+    G.mat(0.75, 0.1, 0, MATERIAL.CONCRETE).col(0.2, 0.21, 0.23);
     G.push(0, -0.3, 0).lathe([[0, 0.55, 0, 1], [8.3, 0.55, 0, 1], [8.6, 0.5, 0.5, 1], [9.4, 0, 1, 0.6]], 40).pop();
     for (let i = 0; i < 16; i++) {
         const a = (i / 16) * TAU;
@@ -130,7 +130,7 @@ export function buildWorld() {
             fz = Math.cos(yaw),
             rx = Math.cos(yaw),
             rz = -Math.sin(yaw);
-        W.lights.push({ x: x + rx * 1.1 + fx * 3.1, y: y + 2.9, z: z + rz * 1.1 + fz * 3.1, r: 9, g: 5.6, b: 2.8, rad: 13 });
+        W.lights.push({ x: x + rx * 1.1 + fx * 3.1, y: y + 2.9, z: z + rz * 1.1 + fz * 3.1, r: 9, g: 5.6, b: 2.8, rad: 13, shadow: SHADOW_NONE });
         W.glows.push({ x: x + rx * 1.1 + fx * 2.16, y: y + 3.1, z: z + rz * 1.1 + fz * 2.16, s: 0.8, r: 2.2, g: 1.4, b: 0.6 });
         addBox(x, y + 2, z, 4.65, 2, 2.05, yaw);
         taken.push([x, z, 6]);
@@ -160,7 +160,7 @@ export function buildWorld() {
     // crates + barrels
     function crate(x: number, z: number, s: number, yaw: number, y0?: number) {
         const y = y0 === undefined ? height(x, z) - 0.03 : y0;
-        G.push(x, y + s, z, yaw).mat(0.75, 0, 0, 0).col(0.34, 0.3, 0.22).box(s, s, s, 0.03);
+        G.push(x, y + s, z, yaw).mat(0.75, 0, 0, MATERIAL.TIMBER).col(0.34, 0.3, 0.22).box(s, s, s, 0.03);
         G.mat(0.5, 0.6, 0, 0).col(0.16, 0.17, 0.19);
         G.push(0, s * 0.6, 0).box(s * 1.03, 0.05, s * 1.03, 0.012).pop().push(0, -s * 0.6, 0).box(s * 1.03, 0.05, s * 1.03, 0.012).pop();
         G.pop();
@@ -212,7 +212,7 @@ export function buildWorld() {
         G.pop();
         const fx = -Math.sin(yaw),
             fz = -Math.cos(yaw);
-        W.lights.push({ x: x + fx * 2.2, y: y + 7.4, z: z + fz * 2.2, r: 21, g: 15.5, b: 9, rad: 27 });
+        W.lights.push({ x: x + fx * 2.2, y: y + 7.4, z: z + fz * 2.2, r: 21, g: 15.5, b: 9, rad: 27, shadow: SHADOW_NONE });
         W.glows.push({ x: x + fx * 0.35, y: y + 8.3, z: z + fz * 0.35, s: 2.6, r: 5, g: 3.6, b: 2 });
         addCyl(x, z, 0.16, y, y + 8.6);
         taken.push([x, z, 2]);
@@ -223,7 +223,7 @@ export function buildWorld() {
         const [x, z] = p,
             y = height(x, z);
         G.push(x, y - 0.25, z);
-        G.mat(0.8, 0.05, 0, 0).col(0.2, 0.21, 0.23).lathe([[0, 0.5, 0, 1], [3.9, 0.5, 0, 1], [4.3, 0, 1, 0.5]], 6);
+        G.mat(0.8, 0.05, 0, MATERIAL.CONCRETE).col(0.2, 0.21, 0.23).lathe([[0, 0.5, 0, 1], [3.9, 0.5, 0, 1], [4.3, 0, 1, 0.5]], 6);
         G.mat(0.5, 0.6, 0, 0).col(0.17, 0.18, 0.2).push(0, 0.5, 0).cyl(1.25, 1.1, 8, 0.08, 1.0).pop();
         G.mat(0.4, 0.8, 0, 0).col(0.26, 0.27, 0.29).push(0, 1.6, 0).cyl(0.55, 6.2, 14, 0.05, 0.42).pop();
         for (let i = 0; i < 4; i++) {
@@ -233,7 +233,7 @@ export function buildWorld() {
         G.pop();
         addCyl(x, z, 4.0, y - 2, y + 0.25);
         const col = addCyl(x, z, 2.2, y - 1, y + 8);
-        W.pylons.push({ x, z, y, lit: false, hp: W.PYHP, thaw: 0, glow: 0, hitT: 0, col, k });
+        W.pylons.push({ x, z, y, lit: false, hp: W.PYHP, thaw: 0, glow: 0, hitT: 0, col, k, shadow: SHADOW_NONE });
         // pipe rack
         const l = Math.hypot(x, z),
             ux = x / l,

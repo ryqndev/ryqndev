@@ -15,6 +15,8 @@ const cof = (m: Mat4) => {
 };
 
 const NO_INSTANCES = new Float32Array(0);
+/** floats per vertex in the builder's scratch array */
+const VERT = 15;
 
 interface Xform {
     m: Mat4;
@@ -23,7 +25,7 @@ interface Xform {
 }
 
 export class Geo {
-    /** 14 floats per vertex: position, normal, colour, kind, roughness, metalness, emissive, ao */
+    /** VERT floats per vertex: position, normal, colour, kind, roughness, metalness, emissive, ao, texture yaw */
     v: number[] = [];
     i: number[] = [];
     n = 0;
@@ -32,17 +34,25 @@ export class Geo {
     k = 0;
     m: number[] = [0.6, 0, 0];
     ao = 1;
+    /**
+     * Heading (about Y) of the object being built. Material textures are projected in the object's
+     * own frame, so their patterns stay aligned with it however it is rotated in the world.
+     */
+    texYaw = 0;
     /** optional per-vertex ambient occlusion, evaluated on the transformed position */
     aoFn: ((x: number, y: number, z: number) => number) | null = null;
     /** transform stack */
     st: Xform[] = [{ m: m4(), n: [1, 0, 0, 0, 1, 0, 0, 0, 1] }];
     push(x = 0, y = 0, z = 0, yaw = 0, pitch = 0, roll = 0, sx = 1, sy = sx, sz = sx) {
+        // an object placed at the root with a plain heading: remember it so textures follow the object
+        if (this.st.length === 1) this.texYaw = pitch === 0 && roll === 0 ? yaw : 0;
         const m = m4trs(m4(), x, y, z, yaw, pitch, roll, sx, sy, sz);
         m4mul(m, this.st[this.st.length - 1].m, m);
         this.st.push({ m, n: cof(m) });
         return this;
     }
     pushM(mat: Mat4) {
+        if (this.st.length === 1) this.texYaw = 0;
         const m = m4();
         m4mul(m, this.st[this.st.length - 1].m, mat);
         this.st.push({ m, n: cof(m) });
@@ -50,6 +60,7 @@ export class Geo {
     }
     pop() {
         this.st.pop();
+        if (this.st.length === 1) this.texYaw = 0;
         return this;
     }
     col(r: number, g: number, b: number) {
@@ -76,14 +87,14 @@ export class Geo {
         qy /= l;
         qz /= l;
         const ao = this.aoFn ? this.aoFn(px, py, pz) * this.ao : this.ao;
-        this.v.push(px, py, pz, qx, qy, qz, this.c[0], this.c[1], this.c[2], this.k, this.m[0], this.m[1], this.m[2], ao);
+        this.v.push(px, py, pz, qx, qy, qz, this.c[0], this.c[1], this.c[2], this.k, this.m[0], this.m[1], this.m[2], ao, this.texYaw);
         return this.n++;
     }
     tri(a: number, b: number, c: number) {
         const v = this.v,
-            A = a * 14,
-            B = b * 14,
-            C = c * 14;
+            A = a * VERT,
+            B = b * VERT,
+            C = c * VERT;
         const ux = v[B] - v[A], uy = v[B + 1] - v[A + 1], uz = v[B + 2] - v[A + 2];
         const wx = v[C] - v[A], wy = v[C + 1] - v[A + 1], wz = v[C + 2] - v[A + 2];
         const nx = uy * wz - uz * wy, ny = uz * wx - ux * wz, nz = ux * wy - uy * wx;
@@ -232,7 +243,7 @@ export class Geo {
             u = new Uint8Array(buf),
             v = this.v;
         for (let i = 0; i < n; i++) {
-            const o = i * 14,
+            const o = i * VERT,
                 q = i * 24,
                 w = i * 6;
             f[w] = v[o];
@@ -241,6 +252,8 @@ export class Geo {
             b[q + 12] = v[o + 3] * 127;
             b[q + 13] = v[o + 4] * 127;
             b[q + 14] = v[o + 5] * 127;
+            // heading of the object this vertex belongs to, as a fraction of a half turn
+            b[q + 15] = Math.round((Math.atan2(Math.sin(v[o + 14]), Math.cos(v[o + 14])) / Math.PI) * 127);
             u[q + 16] = Math.min(255, v[o + 6] * 255);
             u[q + 17] = Math.min(255, v[o + 7] * 255);
             u[q + 18] = Math.min(255, v[o + 8] * 255);

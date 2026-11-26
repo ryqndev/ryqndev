@@ -59,16 +59,11 @@ export default defineConfig({
         preloadRouteChunks(['/packages/home/src/index.ts', '/InteractiveIsland/InteractiveIsland.tsx']),
     ],
     server: {
-        // The game is its own app (apps/rimefire). In dev it runs on its own server and is reached
-        // through this one at /rimefire; in production the root build copies it into this app's output.
-        proxy: {
-            '/rimefire': {
-                target: 'http://localhost:5174',
-                ws: true,
-                // static hosts redirect /rimefire to /rimefire/; do the equivalent here
-                rewrite: (path) => (path === '/rimefire' ? '/rimefire/' : path),
-            },
-        },
+        // In dev every app runs its own server, and scripts/dev-gateway.mjs puts them all behind
+        // http://localhost:3000; in production the root build copies the others into this
+        // app's output.
+        port: 5173,
+        strictPort: true,
     },
     build: {
         outDir: './build',

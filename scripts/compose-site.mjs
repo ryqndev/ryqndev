@@ -1,5 +1,7 @@
 // Assembles the deployable site: the web app's build plus every other app mounted under its path.
-// Runs at the end of `pnpm build`; `pnpm deploy` then publishes apps/web/build.
+// Runs at the end of `pnpm build`; `pnpm run deploy` then publishes apps/web/build to the gh-pages
+// branch. It has to be `pnpm run deploy`: bare `pnpm deploy` is a pnpm built-in that never reaches
+// the script (it exits with ERR_PNPM_NOTHING_TO_DEPLOY and publishes nothing).
 import { cpSync, existsSync, rmSync } from 'node:fs';
 import { join } from 'node:path';
 

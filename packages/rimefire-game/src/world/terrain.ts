@@ -1,5 +1,7 @@
 import { fbm, PI, smooth, TAU } from '@ryqndev/rimefire-math';
 
+/** Height above its base of the light a reignited pylon gives off. */
+export const PYLON_LIGHT_HEIGHT = 5.2;
 export const ARENA = 56;
 export const STEP = 0.5;
 export const PYL = [0, 1, 2].map((k) => {

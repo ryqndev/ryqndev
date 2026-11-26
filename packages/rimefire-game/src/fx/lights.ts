@@ -1,4 +1,4 @@
-import type { LightUniforms } from '@ryqndev/rimefire-renderer';
+import { type LightUniforms, SHADOW_DYNAMIC, SHADOW_NONE } from '@ryqndev/rimefire-renderer';
 
 import { W } from '../world';
 
@@ -10,10 +10,13 @@ interface PooledLight {
     g: number;
     b: number;
     rad: number;
+    /** shadow code: SHADOW_NONE, SHADOW_DYNAMIC or a static light's index */
+    sh: number;
     /** importance score for this frame */
     s: number;
 }
-interface Flash extends Omit<PooledLight, 's'> {
+interface Flash extends Omit<PooledLight, 's' | 'sh'> {
+    shadow: boolean;
     life: number;
     max: number;
 }
@@ -22,10 +25,11 @@ interface Flash extends Omit<PooledLight, 's'> {
 const LP: PooledLight[] = [];
 let ln = 0;
 const flashes: Flash[] = [];
-export const lightU: LightUniforms = { pos: new Float32Array(64), col: new Float32Array(48), n: 0 };
+export const lightU: LightUniforms = { pos: new Float32Array(64), col: new Float32Array(48), shadow: new Float32Array(16).fill(SHADOW_NONE), n: 0 };
 /** Pushes a point light for this frame only. */
-export function light(x: number, y: number, z: number, r: number, g: number, b: number, rad: number) {
-    const o = LP[ln] || (LP[ln] = { x: 0, y: 0, z: 0, r: 0, g: 0, b: 0, rad: 0, s: 0 });
+export function light(x: number, y: number, z: number, r: number, g: number, b: number, rad: number, shadow: number = SHADOW_NONE) {
+    const o = LP[ln] || (LP[ln] = { x: 0, y: 0, z: 0, r: 0, g: 0, b: 0, rad: 0, sh: SHADOW_NONE, s: 0 });
+    o.sh = shadow;
     ln++;
     o.x = x;
     o.y = y;
@@ -36,12 +40,12 @@ export function light(x: number, y: number, z: number, r: number, g: number, b: 
     o.rad = rad;
 }
 /** A light that fades out over `life` seconds. */
-export function flash(x: number, y: number, z: number, r: number, g: number, b: number, rad: number, life: number) {
+export function flash(x: number, y: number, z: number, r: number, g: number, b: number, rad: number, life: number, shadow = false) {
     if (flashes.length > 40) flashes.shift();
-    flashes.push({ x, y, z, r, g, b, rad, life, max: life });
+    flashes.push({ x, y, z, r, g, b, rad, life, max: life, shadow });
 }
 export function updateLights(dt: number, cx: number, cy: number, cz: number) {
-    for (const l of W.lights) light(l.x, l.y, l.z, l.r, l.g, l.b, l.rad);
+    for (const l of W.lights) light(l.x, l.y, l.z, l.r, l.g, l.b, l.rad, l.shadow);
     for (let i = flashes.length - 1; i >= 0; i--) {
         const f = flashes[i];
         if ((f.life -= dt) <= 0) {
@@ -49,7 +53,7 @@ export function updateLights(dt: number, cx: number, cy: number, cz: number) {
             continue;
         }
         const k = (f.life / f.max) ** 2;
-        light(f.x, f.y, f.z, f.r * k, f.g * k, f.b * k, f.rad);
+        light(f.x, f.y, f.z, f.r * k, f.g * k, f.b * k, f.rad, f.shadow ? SHADOW_DYNAMIC : SHADOW_NONE);
     }
     const n = ln;
     for (let i = 0; i < n; i++) {
@@ -68,6 +72,7 @@ export function updateLights(dt: number, cx: number, cy: number, cz: number) {
         lightU.col[i * 3] = o.r;
         lightU.col[i * 3 + 1] = o.g;
         lightU.col[i * 3 + 2] = o.b;
+        lightU.shadow[i] = o.sh;
     }
     lightU.n = m;
     ln = 0;

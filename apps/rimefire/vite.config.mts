@@ -36,7 +36,7 @@ const minifyGlsl = (): Plugin => ({
 });
 
 export default defineConfig({
-    // served by the main site under /rimefire (see the root build script and apps/web's dev proxy)
+    // served by the main site under /rimefire: scripts/dev-gateway.mjs in dev, the root build script in production
     base: '/rimefire/',
     plugins: [react(), minifyGlsl()],
     server: {
