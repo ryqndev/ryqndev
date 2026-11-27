@@ -60,11 +60,26 @@ export interface Town {
     beam: number[];
 }
 
+/** A fort that can be sacked: where it stands, how big it is, and where its treasure ends up when it falls. */
+export interface Stronghold {
+    name: string;
+    x: number;
+    z: number;
+    yaw: number;
+    /** radius of its walls, and the height of their tops above the sea */
+    r: number;
+    top: number;
+    /** a point on open water in front of it, as [x, z] */
+    spill: number[];
+}
+
 export interface World {
     mesh: { props: Mesh; terrain: Mesh };
     lights: WorldLight[];
     port: Port;
     town: Town;
+    /** the king's forts on the outer islands */
+    strongholds: Stronghold[];
     /** things afloat or standing in the sea that a hull cannot pass through, as [x, z, radius] */
     solids: number[][];
     /** open-water waypoints ringing the archipelago, as [x, z]: trade routes and patrol beats */

@@ -2,6 +2,7 @@ import { type Build, CLASSES, fitted, type GunStats, maxRange, shipStats, type S
 import clsx from 'clsx';
 import { memo, useMemo } from 'react';
 
+import { SHOT_NAMES } from '../../yard';
 import cn from './StatSheet.module.scss';
 
 interface StatSheetProps {
@@ -76,7 +77,7 @@ export const StatSheet = memo(function StatSheet({ build, candidate }: StatSheet
         <tr>
             <th>{label}</th>
             {SIDES.map((slot, i) => (
-                <Figure format={format} key={slot} moreIsBetter={moreIsBetter} next={of(next.bat[i], next.guns)} now={of(now.bat[i], now.guns)} />
+                <Figure format={format} key={slot} moreIsBetter={moreIsBetter} next={of(next.bat[i], next.guns[i])} now={of(now.bat[i], now.guns[i])} />
             ))}
         </tr>
     );
@@ -87,7 +88,7 @@ export const StatSheet = memo(function StatSheet({ build, candidate }: StatSheet
                 <b>{CLASSES[shown.cls].name}</b>
                 <span>
                     {lines.form ? lines.name + ' · ' : ''}
-                    {next.guns} guns a side
+                    {next.guns[0] === next.guns[1] ? next.guns[0] + ' guns a side' : next.guns[0] + ' and ' + next.guns[1] + ' guns'}
                 </span>
             </div>
 
@@ -109,7 +110,16 @@ export const StatSheet = memo(function StatSheet({ build, candidate }: StatSheet
                     </tr>
                 </thead>
                 <tbody>
-                    {row('Broadside', (g, guns) => g.dmg * guns, (v) => String(Math.round(v)))}
+                    <tr>
+                        <th>Shot</th>
+                        {SIDES.map((slot, i) => (
+                            <td className={next.bat[i].kind !== now.bat[i].kind ? cn.changed : undefined} key={slot}>
+                                {SHOT_NAMES[next.bat[i].kind]}
+                            </td>
+                        ))}
+                    </tr>
+                    {row('Guns', (_, guns) => guns, (v) => String(v))}
+                    {row('Broadside', (g, guns) => g.dmg * g.pellets * guns, (v) => String(Math.round(v)))}
                     {row('Reload', (g) => g.reload, (v) => v.toFixed(1) + ' s', false)}
                     {row('Range', (g) => maxRange(g.shot), (v) => Math.round(v) + ' m')}
                     {row('Scatter', (g) => g.spread, (v) => '±' + (v * 100).toFixed(1) + '%', false)}

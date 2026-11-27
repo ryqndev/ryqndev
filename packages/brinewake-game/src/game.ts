@@ -8,7 +8,7 @@ import { hud } from './hud';
 import { buildModels } from './models';
 import { moor, orbitCamera, placeCamera, playerKey, spawnPlayer, updatePlayer } from './player';
 import { clearProgress, loadProgress, saveProgress } from './save';
-import { balls, D, fireBroadside, FOES, hurtShip, INFAMY, infamyOf, loot, makeShip, resetDirector, resetShips, ships, TEAM, updateShips } from './ships';
+import { balls, D, fireBroadside, FOES, forts,hurtShip, INFAMY, infamyOf, loot, makeShip, resetDirector, resetShips, ships, TEAM, updateShips } from './ships';
 import { shipStats } from './ships/fittings';
 import { launchEscort, previewBuild, restock } from './shipyard';
 import { type Mode, newProgress, PL, S } from './state';
@@ -178,7 +178,7 @@ export function mountGame(canvas: HTMLCanvasElement, { debug = false, drydock = 
     });
     const off = [listen(window, 'resize', resize), listen(document, 'visibilitychange', () => suspendAudio(document.hidden)), ...attachLook(canvas)];
     if (debug) {
-        (window as unknown as Record<string, unknown>).BW = { S, PL, W, R, D, cam, post, env, ships, loot, balls, keys, mouse, opts, FOES, TEAM, makeShip, hurtShip, fireBroadside, setMode, dock, resetVoyage, height, spy };
+        (window as unknown as Record<string, unknown>).BW = { S, PL, W, R, D, cam, post, env, ships, loot, balls, keys, mouse, opts, FOES, TEAM, makeShip, hurtShip, fireBroadside, setMode, dock, resetVoyage, height, spy, forts };
     }
     last = performance.now();
     rafId = requestAnimationFrame(frame);

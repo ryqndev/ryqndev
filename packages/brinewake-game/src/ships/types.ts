@@ -35,10 +35,31 @@ export interface ShipType {
     canvas: number[];
 }
 
+/**
+ * What a gun throws, which decides what its shot does where it lands: round shot holes a hull;
+ * grape is a hail of small balls that clears a deck; chain tears down sail; a harpoon is a barbed
+ * iron on a line, and holds what it strikes; a shell is lobbed high and bursts, and breaks stone.
+ */
+export const SHOT = { ROUND: 0, GRAPE: 1, CHAIN: 2, HARPOON: 3, SHELL: 4 } as const;
+
+/**
+ * How a battery is mounted, which decides how many guns it has, how they stand, and what is done to
+ * the hull's side for them: long guns on carriages at ports, swivels on the rail, harpoon guns,
+ * mortars bedded inboard, or one great gun on a platform where three ports were. The mounts
+ * themselves, by these numbers, are in hull/mounts.ts.
+ */
+export const MOUNT = { CARRIAGE: 0, SWIVEL: 1, HARPOON: 2, MORTAR: 3, GREAT: 4 } as const;
+
 /** What the guns of one battery do. */
 export interface GunStats {
-    /** damage per ball */
+    /** which of SHOT it throws, and how many to a gun */
+    kind: number;
+    pellets: number;
+    /** hull damage per ball */
     dmg: number;
+    /** what each ball does to the hands on a deck and to the sails over it, in the same measure as hull damage */
+    crew: number;
+    rig: number;
     /** seconds between broadsides */
     reload: number;
     /** muzzle speed, m/s: it sets the range */
@@ -47,6 +68,10 @@ export interface GunStats {
     spread: number;
     /** how big the gun sounds: 1 is a six-pounder */
     heft: number;
+    /** how much of its hull damage stone takes: what it does to a fort */
+    stone: number;
+    /** which of MOUNT it is mounted as */
+    mount: number;
 }
 
 /**
@@ -89,6 +114,15 @@ export interface Ship {
     rudder: number;
     hp: number;
     max: number;
+    /** hands fit to fight, 1 a full company .. 0 none: fewer serve the guns slower, and with none left she strikes */
+    crew: number;
+    /** how much of her sail still draws, 1 whole .. 0 in ribbons; it is knotted and spliced back in time */
+    rig: number;
+    /** she has hauled down her colours: she lies to, and is a prize for whoever comes alongside */
+    struck: boolean;
+    /** seconds a harpoon line still holds her, and the ship at the other end of it */
+    snare: number;
+    holder: Ship | null;
     speed: number;
     turn: number;
     /** hull her carpenter mends each second while she is afloat; 0 without one */

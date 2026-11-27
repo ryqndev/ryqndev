@@ -5,7 +5,7 @@ export { maxRange } from './ships/cannons';
 export { aboard, MAX_SKILL, postEffects, type Sailor, type Skill, SKILLS, type Station, type StationDef, STATIONS, withPost } from './ships/crew';
 export { BERTHS, CLASS_COST, CLASSES, ESCORT_COST, HOLDS, INFAMY, MAX_ESCORTS, MAX_LEVEL, maxLevel, UP, type Upgrade, upgradeCost, UPGRADES } from './ships/defs';
 export { berthsOf, type Build, fitted, type Fitting, fitting, FITTINGS, fittingsOf, holdOf, KIND, type Kind, levelOf, type ShipStats, shipStats, type Slot, SLOTS, STOCK } from './ships/fittings';
-export type { GunStats, ShipType } from './ships/types';
+export { type GunStats, MOUNT, type ShipType, SHOT } from './ships/types';
 export { buyUpgrade, commission, fitOut, hire, hireEscort, post, previewBuild } from './shipyard';
 export type { Stats } from './state';
 export { CHART_SPAN, chartImage, portPosition } from './world/chart';

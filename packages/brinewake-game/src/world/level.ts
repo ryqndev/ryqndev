@@ -2,6 +2,8 @@ import { Geo, MATERIAL, type Mesh } from '@ryqndev/brinewake-renderer';
 import { rng, TAU } from '@ryqndev/kiln-math';
 
 import { HB, PLAN, toLocal, toWorld, trodden } from './harbour';
+import { KEEP } from './keep';
+import { fort } from './landmarks';
 import { Mason } from './mason';
 import { bakeHeightmap, CELL, height, hmap, HN, ISLANDS, openWater, sampleAt, SEA } from './terrain';
 import { buildTown,builtOver } from './town';
@@ -48,6 +50,24 @@ export function buildWorld() {
             M.paint([rr(0.3, 0.4), rr(0.3, 0.38), 0.33], 0.88);
             G.push(x, height(x, z) - 0.35 * s, z, rr(0, TAU), rr(-0.3, 0.3), rr(-0.3, 0.3), s * rr(0.8, 1.5), s * rr(0.5, 1), s * rr(0.8, 1.4)).sphere(1, 7, 5).pop();
         }
+    }
+    // ---- the king's fort on its outer island, flying navy colours ----
+    {
+        const K = KEEP,
+            lit = M.lights.length;
+        G.push(K.x, 0, K.z, K.yaw);
+        fort({ M, G, T: { ...W.town, smokes: [] }, at: () => [0, 0, 0], solid: () => {}, walk: () => {}, idler: () => {} }, { x: 0, z: 0, y: K.y }, [[0.12, 0.24, 0.6], [0.92, 0.9, 0.84]], true);
+        G.pop();
+        M.floor = null;
+        W.lights.push(...M.lights.slice(lit));
+        // its treasure lands on the nearest open water in front of it
+        let spill = [K.x + K.dx * 60, K.z + K.dz * 60];
+        for (let d = K.r + 14; d < 160; d += 6)
+            if (openWater(K.x + K.dx * d, K.z + K.dz * d, 10, 3)) {
+                spill = [K.x + K.dx * (d + 8), K.z + K.dz * (d + 8)];
+                break;
+            }
+        W.strongholds = [{ name: K.name, x: K.x, z: K.z, yaw: K.yaw, r: 18, top: 12.2, spill }];
     }
     W.mesh = { terrain, props: G.build() };
 

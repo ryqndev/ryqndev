@@ -1,9 +1,10 @@
 // The shipyard's catalogue: everything that can be fitted to the player's ship, and the sums that
 // turn a build (a hull, its improvements and what is fitted to it) into the ship that sails.
 import { gunsASide } from '../models';
+import { STONE } from './battery';
 import { aboard, manning, POST, type Sailor, sharesOf, type Station } from './crew';
 import { BERTHS, CLASSES, HOLDS, maxLevel, UP } from './defs';
-import type { GunStats } from './types';
+import { type GunStats, MOUNT, SHOT } from './types';
 
 /** What sort of thing a fitting is. Guns go in two slots, one per battery; every other kind has one. */
 export type Kind = 'lines' | 'guns' | 'rig' | 'timbers' | 'finish' | 'paint' | 'cloth' | 'sigil';
@@ -46,6 +47,16 @@ export interface Fitting {
     spread?: number;
     /** how big the gun sounds: 1 is the standard six-pounder */
     heft?: number;
+    /** what it throws (one of SHOT; round shot when left out), and how many of them to a gun */
+    throws?: number;
+    pellets?: number;
+    /** what each ball does to a crew and to sails, as multiples of a plain gun's hull damage */
+    crew?: number;
+    rig?: number;
+    /** how much of its hull damage a fort's stone takes: a plain ball's fifth when left out */
+    stone?: number;
+    /** how the battery is mounted (one of MOUNT; long guns on carriages when left out): it sets how many guns there are and how her side is built for them */
+    mount?: number;
     /** paint and cloth: the tint, in linear light */
     tint?: number[];
     // ---- finishes: skins, which change how she looks and nothing about how she sails ----
@@ -92,6 +103,27 @@ export const FITTINGS: Fitting[] = [
     { id: 'long', kind: 'guns', name: 'Long nines', blurb: 'Long barrels that reach a third further and land where they are laid.', cost: 900, dmg: 0.95, reload: 1.12, shot: 1.16, spread: 0.55, heft: 1.05 },
     { id: 'carronade', kind: 'guns', name: 'Carronades', blurb: 'Short, fat smashers. Ruinous alongside, useless at a distance.', cost: 1300, dmg: 1.75, reload: 1.2, shot: 0.76, spread: 1.5, heft: 1.3 },
     { id: 'demicannon', kind: 'guns', name: 'Demi-cannon', blurb: 'The heaviest iron a deck will bear. Slow to serve, and it slows her.', cost: 2200, dmg: 2.2, reload: 1.7, heft: 1.5, speed: 0.96 },
+    // ---- guns for a purpose: what they throw is not round shot, and does something else where it lands ----
+    {
+        id: 'chain', kind: 'guns', name: 'Chain-shot guns', blurb: 'Two half-balls on a fathom of chain, sent whirling through the rigging. They stop a runner, or a pursuer.',
+        cost: 600, throws: SHOT.CHAIN, dmg: 0.3, rig: 1.6, shot: 0.88, spread: 1.4,
+    },
+    {
+        id: 'grape', kind: 'guns', name: 'Murderers', blurb: 'Swivel guns crammed with grapeshot. They sweep a deck clean and leave the hull, and what is in it, whole: a ship with nobody left to fight her strikes, and is yours.',
+        cost: 800, throws: SHOT.GRAPE, pellets: 6, dmg: 0.06, crew: 0.36, reload: 0.8, shot: 0.72, spread: 2.6, heft: 0.6, mount: MOUNT.SWIVEL,
+    },
+    {
+        id: 'harpoon', kind: 'guns', name: 'Harpoon guns', blurb: 'Barbed irons on a hundred fathoms of line. What they strike is held, slowed, and hauled in toward you until the line parts.',
+        cost: 1100, throws: SHOT.HARPOON, dmg: 0.35, reload: 1.4, shot: 0.8, spread: 0.8, heft: 0.55, mount: MOUNT.HARPOON,
+    },
+    {
+        id: 'bombard', kind: 'guns', name: 'Bombards', blurb: 'Mortars that lob a bursting shell over a wall from beyond its guns. A ship can sail out from under one; a fort cannot, and nothing else will open it.',
+        cost: 2600, throws: SHOT.SHELL, dmg: 3.4, reload: 2.6, shot: 1.13, spread: 1.2, heft: 2, stone: 1, mount: MOUNT.MORTAR, speed: 0.95,
+    },
+    {
+        id: 'greatgun', kind: 'guns', name: 'Great guns', blurb: 'One forty-two-pounder on a traversing slide for every three guns she had. Her bulwark is cut away for each and a platform built out from her side to carry it. It reaches further, lands where it is laid, and cracks stone.',
+        cost: 3200, dmg: 4.4, reload: 1.9, shot: 1.24, spread: 0.6, heft: 2.6, stone: 0.65, mount: MOUNT.GREAT, speed: 0.95,
+    },
     // ---- rig ----
     { id: 'square', kind: 'rig', name: 'Square rig', blurb: 'Courses and topsails, as the yard hung them.', cost: 0 },
     { id: 'foreaft', kind: 'rig', name: 'Fore-and-aft cut', blurb: 'Comes about like a cutter, at the price of a knot.', cost: 400, turn: 1.2, speed: 0.95 },
@@ -108,6 +140,11 @@ export const FITTINGS: Fitting[] = [
         id: 'blackgold', kind: 'finish', name: 'Black and gold',
         blurb: 'Ebony from rail to waterline and copper below it, every edge gilded, black canvas, and her sigil worked in gold: an anchor, unless you choose another.',
         cost: 1800, skin: 1, paint: [0.014, 0.014, 0.016], cloth: [0.035, 0.035, 0.04], gilds: true, sigil: 1,
+    },
+    {
+        id: 'whitegold', kind: 'finish', name: 'White and gold',
+        blurb: 'Limewashed white from rail to keel under snow-white canvas, pale spars and holystoned decks, every edge gilded, and her sigil worked in gold: a crown, unless you choose another.',
+        cost: 1800, skin: 2, paint: [0.93, 0.92, 0.88], cloth: [1, 0.99, 0.95], gilds: true, sigil: 5,
     },
     // ---- paint: the wale and the flag ----
     { id: 'crimson', kind: 'paint', name: 'Crimson', blurb: '', cost: 0, tint: [0.72, 0.1, 0.08] },
@@ -168,8 +205,8 @@ export interface ShipStats {
     turn: number;
     /** the most plunder she carries, in gold */
     hold: number;
-    /** guns in each battery */
-    guns: number;
+    /** guns in each battery, port then starboard */
+    guns: [number, number];
     /** each battery's gun, port then starboard */
     bat: [GunStats, GunStats];
     paint: number[];
@@ -177,6 +214,8 @@ export interface ShipStats {
     /** the finish her hull wears, and the lines she is built to: indices into the hull models' skins and lines */
     skin: number;
     form: number;
+    /** how each battery is mounted, port then starboard: see MOUNT */
+    arms: [number, number];
     /** the device on her sails (0: none), whether it is worked in gold, and the colour it is painted when it is not */
     sigil: number;
     gilt: boolean;
@@ -240,8 +279,15 @@ export function shipStats(b: Build): ShipStats {
         turn *= f.turn ?? 1;
     }
     // a battery is the gun in it, the ship it is mounted in, the tackle it is worked with, and the captain who drills its crew
+    const weight = c.dmg * (1 + 0.14 * L[UP.CANNONS]) * (lines.dmg ?? 1);
     const gun = (f: Fitting, captain: Station): GunStats => ({
-        dmg: c.dmg * (1 + 0.14 * L[UP.CANNONS]) * (f.dmg ?? 1) * (lines.dmg ?? 1),
+        kind: f.throws ?? SHOT.ROUND,
+        pellets: f.pellets ?? 1,
+        dmg: weight * (f.dmg ?? 1),
+        crew: weight * (f.crew ?? 0),
+        rig: weight * (f.rig ?? 0),
+        stone: f.stone ?? STONE,
+        mount: f.mount ?? MOUNT.CARRIAGE,
         reload: c.reload * Math.pow(0.91, L[UP.TACKLE]) * (f.reload ?? 1) * (lines.reload ?? 1) * (1 - POST.reload * manning(company, captain)),
         shot: c.shot * (f.shot ?? 1) * (lines.shot ?? 1),
         spread: c.spread * (f.spread ?? 1) * (lines.spread ?? 1) * (1 - POST.spread * manning(company, captain)),
@@ -255,13 +301,14 @@ export function shipStats(b: Build): ShipStats {
         speed,
         turn,
         hold: holdOf(b),
-        guns: gunsASide(c.hull, decks, lines.form),
+        guns: [gunsASide(c.hull, decks, lines.form, port.mount), gunsASide(c.hull, decks, lines.form, starboard.mount)],
         bat: [gun(port, 'port'), gun(starboard, 'starboard')],
         // a finish with colours of its own wears them over whatever paint and cloth were chosen
         paint,
         cloth,
         skin: finish.skin ?? 0,
         form: lines.form ?? 0,
+        arms: [port.mount ?? MOUNT.CARRIAGE, starboard.mount ?? MOUNT.CARRIAGE],
         // her own sigil if she has chosen one, or else the one her finish comes with
         sigil: fitted(b, 'sigil').sigil || finish.sigil || 0,
         gilt: !!finish.gilds,

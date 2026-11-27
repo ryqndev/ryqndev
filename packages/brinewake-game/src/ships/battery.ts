@@ -2,7 +2,7 @@
 // instant each gun goes off within a broadside. Where the shot goes is cannons.ts.
 import { rnd } from '@ryqndev/kiln-math';
 
-import type { Battery, GunStats, Ship, ShipType } from './types';
+import { type Battery, type GunStats, MOUNT, type Ship, type ShipType, SHOT } from './types';
 
 /**
  * Seconds a broadside is spread over: no two gun crews pull their lanyards at quite the same instant.
@@ -10,8 +10,11 @@ import type { Battery, GunStats, Ship, ShipType } from './types';
  */
 const SCATTER = 0.12;
 
+/** How much of a plain ball's damage stone takes. */
+export const STONE = 0.2;
+
 /** The gun a type of ship is built with. */
-export const gunOf = (t: ShipType): GunStats => ({ dmg: t.dmg, reload: t.reload, shot: t.shot, spread: t.spread, heft: 1 });
+export const gunOf = (t: ShipType): GunStats => ({ kind: SHOT.ROUND, pellets: 1, dmg: t.dmg, crew: 0, rig: 0, reload: t.reload, shot: t.shot, spread: t.spread, heft: 1, stone: STONE, mount: MOUNT.CARRIAGE });
 
 /** A battery of one sort of gun, loaded and with nothing under way. */
 export const newBattery = (gun: GunStats): Battery => ({ gun, left: 0, t: -1, at: [], tx: 0, tz: 0 });
@@ -19,12 +22,13 @@ export const newBattery = (gun: GunStats): Battery => ({ gun, left: 0, t: -1, at
 /** Orders a broadside from one battery onto a point on the sea. False if that side is still reloading. */
 export function fireBroadside(s: Ship, side: number, tx: number, tz: number): boolean {
     const b = s.bat[side];
-    if (s.dead || b.left > 0 || b.t >= 0) return false;
+    if (s.dead || s.struck || b.left > 0 || b.t >= 0) return false;
     b.t = 0;
-    for (let i = 0; i < s.hull.guns; i++) b.at[i] = rnd(SCATTER);
+    for (let i = 0; i < s.hull.guns[side]; i++) b.at[i] = rnd(SCATTER);
     b.tx = tx;
     b.tz = tz;
-    b.left = b.gun.reload;
+    // a short-handed ship is slow to serve her guns
+    b.left = b.gun.reload * (2 - s.crew);
     return true;
 }
 

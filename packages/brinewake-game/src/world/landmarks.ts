@@ -309,9 +309,12 @@ export function mansion(S: Site, x: number, y: number, z: number) {
 }
 
 /** The fort on its rock: battered walls, guns in the embrasures, sentry boxes on the corners, the flag over the keep. */
-export function fort(S: Site) {
+/**
+ * `f` is where it stands in the site's frame; `colours` are its flag's. An `outpost` is the same
+ * fort away from the home town: it has no causeway and nobody walks out to it.
+ */
+export function fort(S: Site, f: { x: number; z: number; y: number } = P.fort, colours: [Rgb, Rgb] = [RED, GOLD], outpost = false) {
     const { M, G } = S,
-        f = P.fort,
         WY = 10.5,
         B = [[0, -19], [16, -8], [14, 13], [-14, 13], [-16, -8]],
         scale = (k: number) => B.map((p) => [p[0] * k, p[1] * k]),
@@ -381,7 +384,7 @@ export function fort(S: Site) {
     M.wood(C.PALE, 0.6).post(0, 9.5, 0, 0.12, 9, 6, 0.05);
     M.iron(BRASS);
     G.push(0, 18.6, 0).sphere(0.17, 6, 4).pop();
-    M.flag(0.1, 16.6, 0, 5.4, 3.2, RED, GOLD);
+    M.flag(0.1, 16.6, 0, 5.4, 3.2, colours[0], colours[1]);
     G.pop();
     // the gatehouse on the landward wall, and the causeway to the town
     M.floor = f.y;
@@ -391,8 +394,9 @@ export function fort(S: Site) {
     M.wood(C.DARK).slab(2.6, 5.4, f.y - 0.2, f.y + 3.5, 15.6, 15.74).beam([4, f.y + 3.5, 15.6], [4, f.y + 3.5, 15.74], 1.4, 1.4, 14);
     M.iron().slab(3.97, 4.03, f.y, f.y + 4.9, 15.74, 15.77);
     M.lantern(1.9, f.y + 3.4, 15.95).lantern(6.1, f.y + 3.4, 15.95);
-    M.stone(C.DARKSTONE).prism([[2.2, 15.6], [5.8, 15.6], [26, 21], [23, 26]], [[2.5, 15.6], [5.5, 15.6], [25, 21.6], [23.2, 25]], -3, f.y - 0.25);
+    if (!outpost) M.stone(C.DARKSTONE).prism([[2.2, 15.6], [5.8, 15.6], [26, 21], [23, 26]], [[2.5, 15.6], [5.5, 15.6], [25, 21.6], [23.2, 25]], -3, f.y - 0.25);
     G.pop();
+    if (outpost) return;
     // sentries pacing the wall walk, and a watch on the causeway
     S.walk(3, scale(0.62).map((p) => [f.x + p[0], WY, f.z + p[1] * 0.9 - 2.4]), true);
     S.walk(2, [[f.x + 3.4, f.y - 0.25, f.z + 17], [f.x + 23.6, f.y - 0.25, f.z + 22.6], [P.left + 6, P.quayY - 0.1, 17.5], [f.x + 24.2, f.y - 0.25, f.z + 24.2], [f.x + 4.6, f.y - 0.25, f.z + 17]], true);

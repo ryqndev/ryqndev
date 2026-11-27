@@ -12,10 +12,14 @@ interface TargetsProps {
 // bar colour by team: 1 navy, 2 merchant
 const TEAM_CLASS = ['', cn.navy, cn.trade];
 
-/** Hull bars floating over the ships near enough to fight. A fixed pool of elements, moved every frame. */
+/**
+ * Hull bars floating over the ships and forts near enough to fight, with a thinner bar under one for
+ * the hands left on her deck once grapeshot has begun to thin them. A fixed pool of elements, moved every frame.
+ */
 export const Targets = memo(function Targets({ zoom }: TargetsProps) {
     const bars = useRef<(HTMLDivElement | null)[]>([]);
     const fills = useRef<(HTMLDivElement | null)[]>([]);
+    const crews = useRef<(HTMLDivElement | null)[]>([]);
 
     useHudFrame(() => {
         const w = window.innerWidth,
@@ -35,6 +39,13 @@ export const Targets = memo(function Targets({ zoom }: TargetsProps) {
             fill.style.transform = `scaleX(${Math.max(0, targets[o + 2]).toFixed(3)})`;
             const team = TEAM_CLASS[targets[o + 3]];
             if (fill.className !== `${cn.fill} ${team}`) fill.className = `${cn.fill} ${team}`;
+            // the hands left on her deck show only once she has begun to lose them
+            const crew = crews.current[i],
+                hands = targets[o + 4];
+            if (crew) {
+                crew.style.opacity = hands < 0.999 ? '1' : '0';
+                crew.firstElementChild!.setAttribute('style', `transform:scaleX(${Math.max(0, hands).toFixed(3)})`);
+            }
         }
     });
 
@@ -55,6 +66,14 @@ export const Targets = memo(function Targets({ zoom }: TargetsProps) {
                                 fills.current[i] = el;
                             }}
                         />
+                    </div>
+                    <div
+                        className={cn.crew}
+                        ref={(el) => {
+                            crews.current[i] = el;
+                        }}
+                    >
+                        <div />
                     </div>
                 </div>
             ))}

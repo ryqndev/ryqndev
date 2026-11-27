@@ -5,7 +5,7 @@ import { reloadProgress } from './ships/battery';
 import type { Sailor } from './ships/crew';
 import { INFAMY, infamyOf, UPGRADES } from './ships/defs';
 import { type Slot, SLOTS, STOCK } from './ships/fittings';
-import { loot, ships } from './ships/state';
+import { forts, loot, ships } from './ships/state';
 import { TEAM } from './ships/types';
 import { holdCap } from './shipyard';
 import { type Mode, PL, S, type Stats } from './state';
@@ -54,13 +54,13 @@ export interface HudState extends HudCore<HudMode, Stats, Hint> {
     drydock: boolean;
 }
 
-/** Floats per ship marker in `hudSignals.targets`: x, y in normalised screen space, hull 0..1, team. */
-export const TARGET_STRIDE = 4;
+/** Floats per marker in `hudSignals.targets` (a ship, or a fort): x, y in normalised screen space, hull 0..1, team, crew 0..1. */
+export const TARGET_STRIDE = 5;
 export const MAX_TARGETS = 8;
 /** Floats per chart blip in `hudSignals.blips`: world x, world z, kind (see BLIP). */
 export const BLIP_STRIDE = 3;
 export const MAX_BLIPS = 64;
-export const BLIP = { NAVY: 0, TRADE: 1, FRIEND: 2, LOOT: 3, FLAGSHIP: 4 } as const;
+export const BLIP = { NAVY: 0, TRADE: 1, FRIEND: 2, LOOT: 3, FLAGSHIP: 4, FORT: 5 } as const;
 
 const core = createHud<HudState, { targets: Float32Array; targetCount: number; blips: Float32Array; blipCount: number; self: Float32Array; home: Float32Array }>(
     {
@@ -182,6 +182,23 @@ export const hud = {
             targets[t + 1] = pj.y;
             targets[t + 2] = s.hp / s.max;
             targets[t + 3] = s.team;
+            targets[t + 4] = s.crew;
+        }
+        // the king's forts: always on the chart while they stand, and a bar over one near enough to shell
+        for (const f of forts) {
+            if (f.down > 0 || nb >= MAX_BLIPS) continue;
+            const o = nb++ * BLIP_STRIDE;
+            blips[o] = f.x;
+            blips[o + 1] = f.z;
+            blips[o + 2] = BLIP.FORT;
+            if (nt >= MAX_TARGETS || (f.x - p.x) ** 2 + (f.z - p.z) ** 2 > TARGET_RANGE * TARGET_RANGE) continue;
+            if (!project(f.x, f.top + 12, f.z, pj) || pj.x < 0 || pj.x > 1 || pj.y < 0 || pj.y > 1) continue;
+            const t = nt++ * TARGET_STRIDE;
+            targets[t] = pj.x;
+            targets[t + 1] = pj.y;
+            targets[t + 2] = f.hp / f.max;
+            targets[t + 3] = TEAM.NAVY;
+            targets[t + 4] = 1;
         }
         for (let i = 0; i < loot.length && nb < MAX_BLIPS; i++) {
             const o = nb++ * BLIP_STRIDE;

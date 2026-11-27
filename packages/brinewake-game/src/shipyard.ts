@@ -22,7 +22,7 @@ export function refit(s: Ship, build: Build = S.prog) {
     const c = CLASSES[build.cls],
         st = shipStats(build);
     s.type = c;
-    s.hull = hullModel(c.hull, levelOf(build, UP.GUNDECK), levelOf(build, UP.QUARTERS), st.skin, st.form);
+    s.hull = hullModel(c.hull, levelOf(build, UP.GUNDECK), levelOf(build, UP.QUARTERS), st.skin, st.form, st.arms);
     s.scale = c.scale;
     measure(s);
     s.max = s.hp = st.hp;

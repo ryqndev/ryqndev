@@ -32,7 +32,7 @@ function nearest(x: number, z: number, range: number, ok: (o: Ship) => boolean):
 }
 const isPirate = (o: Ship) => o.team === TEAM.PIRATE;
 // what a consort will fight: the navy, and any merchantman its captain has already fired on
-const isPrey = (o: Ship) => o.team === TEAM.NAVY || (o.team === TEAM.TRADE && o.aggro > 0);
+const isPrey = (o: Ship) => !o.struck && (o.team === TEAM.NAVY || (o.team === TEAM.TRADE && o.aggro > 0));
 // the harbour's guns keep the navy off a pirate lying in the anchorage, unless he has just fired on them
 const sheltered = (o: Ship, by: Ship) => by.aggro <= 0 && Math.hypot(o.x - W.port.x, o.z - W.port.z) < W.port.r + 40;
 
@@ -117,6 +117,11 @@ function avoid(s: Ship) {
  * hunts pirates then.
  */
 export function thinkShip(s: Ship, dt: number, lead: Ship, war: boolean) {
+    // a ship that has struck lies to with her canvas off, and waits to be taken
+    if (s.struck) {
+        s.rudder = s.sail = s.want = 0;
+        return;
+    }
     s.rudder = clamp(angDiff(s.yaw, s.goal) * 2.2, -1, 1);
     s.sail = s.want;
     if ((s.think -= dt) > 0) return;

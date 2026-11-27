@@ -8,6 +8,7 @@ import {
     ESCORT_COST,
     fitOut,
     fitted,
+    type Fitting,
     fittingsOf,
     gunsASide,
     hireEscort,
@@ -41,10 +42,13 @@ const HULL_BLURBS = ['Small, quick, and cheap to lose.', 'Two masts and a proper
 // everything of one kind, on offer for one slot
 const Fittings = memo(function Fittings({ slot, kind }: { slot: Slot; kind: Kind }) {
     const { build, owned } = useYard();
-    // her guns a side as she is drawn: what the lines she could be built to are measured against
+    // What an offer would do to the number of guns she mounts: a build changes the ports she is drawn
+    // with, and a battery's mount how many guns stand at them. Each is measured against the plain case.
     const hull = CLASSES[build.cls].hull,
         decks = build.levels[UP.GUNDECK],
-        drawn = gunsASide(hull, decks);
+        form = fitted(build, 'lines').form,
+        gunsWith = (f: Fitting) => (kind === 'lines' ? gunsASide(hull, decks, f.form) : kind === 'guns' ? gunsASide(hull, decks, form, f.mount) : 0),
+        mounted = kind === 'lines' ? gunsASide(hull, decks) : kind === 'guns' ? gunsASide(hull, decks, form) : 0;
 
     return (
         <>
@@ -55,7 +59,7 @@ const Fittings = memo(function Fittings({ slot, kind }: { slot: Slot; kind: Kind
                         blurb={f.blurb}
                         build={{ ...build, fit: { ...build.fit, [slot]: f.id } }}
                         cost={f.cost}
-                        effects={kind === 'finish' ? undefined : effectsOf(f, f.form === undefined ? 0 : gunsASide(hull, decks, f.form) - drawn)}
+                        effects={kind === 'finish' ? undefined : effectsOf(f, gunsWith(f) - mounted)}
                         key={f.id}
                         name={f.name}
                         standing={standing}
@@ -82,7 +86,7 @@ const HullTab = memo(function HullTab() {
                         <>
                             {HULL_BLURBS[i]}
                             <br />
-                            {gunsASide(c.hull, build.levels[UP.GUNDECK], fitted(build, 'lines').form)} guns a side · hold of {holdOf({ ...build, cls: i })} · {berthsOf({ ...build, cls: i })} berths
+                            {gunsASide(c.hull, build.levels[UP.GUNDECK], fitted(build, 'lines').form)} gun ports a side · hold of {holdOf({ ...build, cls: i })} · {berthsOf({ ...build, cls: i })} berths
                         </>
                       )}
                     build={{ ...build, cls: i }}

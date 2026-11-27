@@ -2,6 +2,7 @@ import { WORLD } from '@ryqndev/brinewake-renderer';
 import { fbm, rng, smooth, TAU } from '@ryqndev/kiln-math';
 
 import { sculpt, siteHarbour } from './harbour';
+import { keepRock, siteKeep } from './keep';
 
 export interface Island {
     x: number;
@@ -32,6 +33,7 @@ export const ISLANDS: Island[] = [{ x: 0, z: 0, r: 118, peak: 30, seed: 3.1 }];
         if (d + r < SEA - 40 && ISLANDS.every((o) => Math.hypot(x - o.x, z - o.z) > r + o.r + 120)) ISLANDS.push({ x, z, r, peak: 12 + R() * 28, seed: R() * 50 });
     }
     siteHarbour(ISLANDS);
+    siteKeep(ISLANDS, SEA);
 }
 
 function rawHeight(x: number, z: number) {
@@ -47,7 +49,7 @@ function rawHeight(x: number, z: number) {
         const hi = e > 0 ? e * 10 + smooth(0.05, 0.75, e) * o.peak * (0.15 + 2.1 * lump * lump) : e * 30;
         if (hi > h) h = hi;
     }
-    return sculpt(x, z, h);
+    return keepRock(x, z, sculpt(x, z, h));
 }
 
 /** Samples per side of the cached heightfield, which is also the texture the renderer shoals the sea with. */

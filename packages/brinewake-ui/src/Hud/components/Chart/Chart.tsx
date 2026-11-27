@@ -15,6 +15,7 @@ const COLOURS: Record<number, string> = {
     [BLIP.FRIEND]: '#8dff9a',
     [BLIP.LOOT]: '#ffe9a8',
     [BLIP.FLAGSHIP]: '#ff2d6a',
+    [BLIP.FORT]: '#ff8a3c',
 };
 
 // the islands never move: paint them once into their own canvas and stamp that every frame
@@ -53,9 +54,11 @@ export const Chart = memo(function Chart() {
         for (let i = 0; i < blipCount; i++) {
             const o = i * BLIP_STRIDE,
                 kind = blips[o + 2],
-                r = (kind === BLIP.LOOT ? 1.2 : kind === BLIP.FLAGSHIP ? 3.4 : 2.4) * SCALE;
+                r = (kind === BLIP.LOOT ? 1.2 : kind === BLIP.FLAGSHIP ? 3.4 : kind === BLIP.FORT ? 4.2 : 2.4) * SCALE;
             ctx.fillStyle = COLOURS[kind];
             ctx.fillRect(at(blips[o]) - r / 2, at(blips[o + 1]) - r / 2, r, r);
+            // a fort is a hollow square: a wall with something inside it
+            if (kind === BLIP.FORT) ctx.clearRect(at(blips[o]) - r / 4, at(blips[o + 1]) - r / 4, r / 2, r / 2);
         }
         // the player: an arrowhead pointing along the ship's heading
         ctx.save();

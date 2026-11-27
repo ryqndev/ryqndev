@@ -16,6 +16,42 @@ const HARBOUR = 260;
 // spray is only worth simulating this close to the camera, metres squared
 const SPRAY_RANGE2 = 260 * 260;
 
+/** How much of her sail a ship's hands put back each second. */
+const RIG_MEND = 0.014;
+/** Slack in a harpoon's line beyond the two hulls, and how much further apart they must be dragged to part it, metres. */
+const SLACK = 26,
+    PARTS = 70;
+
+/**
+ * A harpooned ship and the one that holds her: once the line is taut each is drawn toward the
+ * other, the lighter the more, and it parts if she still gets away or time chafes it through.
+ */
+export function haul(s: Ship, dt: number) {
+    const h = s.holder;
+    if (!h || s.snare <= 0) return;
+    s.snare -= dt;
+    const dx = h.x - s.x,
+        dz = h.z - s.z,
+        d = Math.hypot(dx, dz) || 1,
+        slack = s.hl + h.hl + SLACK;
+    if (s.dead || h.dead || s.snare <= 0 || d > slack + PARTS) {
+        s.snare = 0;
+        s.holder = null;
+        return;
+    }
+    if (d <= slack) return;
+    const ms = s.hl * s.hb,
+        mh = h.hl * h.hb,
+        k = Math.min(d - slack, 10) * Math.min(1, dt * 1.6);
+    s.x += (dx / d) * k * (mh / (ms + mh));
+    s.z += (dz / d) * k * (mh / (ms + mh));
+    h.x -= (dx / d) * k * (ms / (ms + mh));
+    h.z -= (dz / d) * k * (ms / (ms + mh));
+    s.v *= 1 - Math.min(0.9, 0.8 * dt);
+    // and whoever tows her pays for it in speed, the more the bigger she is
+    h.v *= 1 - Math.min(0.9, 0.6 * dt * (ms / (ms + mh)));
+}
+
 /** Advances one ship: canvas and helm to speed and heading, then the swell under her, grounding and her wake. */
 export function sailShip(s: Ship, dt: number) {
     if (s.dead) {
@@ -24,8 +60,10 @@ export function sailShip(s: Ship, dt: number) {
     }
     s.canvas = damp(s.canvas, s.sail / 3, 1.2, dt);
     if (s.mend > 0 && s.hp < s.max) s.hp = Math.min(s.max, s.hp + s.mend * dt);
-    // a holed ship is a slow ship
-    const target = s.canvas * s.speed * (s.hp < s.max * 0.3 ? 0.8 : 1);
+    // torn sails are knotted and spliced in time
+    if (s.rig < 1) s.rig = Math.min(1, s.rig + RIG_MEND * dt);
+    // a holed ship is a slow ship; so is one with her canvas in ribbons, or dragging another on a line
+    const target = s.canvas * s.speed * (s.hp < s.max * 0.3 ? 0.8 : 1) * (0.3 + 0.7 * s.rig) * (s.snare > 0 ? 0.55 : 1);
     s.v += (target - s.v) * (1 - Math.exp(-(target > s.v ? 0.3 : 0.5) * dt));
     // the rudder needs way on to bite, and a hard turn scrubs speed off
     const way = 0.3 + 0.7 * Math.min(1, Math.abs(s.v) / (s.speed * 0.5));

@@ -7,13 +7,15 @@ import { PL, S } from '../state';
 import { B, Lm, Tm } from './state';
 import type { Ship } from './types';
 
+const WHITE = [1, 1, 1];
+
 /** Queues a ship for drawing: hull, each sail (as much of it as is set), her colours, and her lantern after dark. */
 export function drawShip(s: Ship) {
     const h = s.hull,
         paint = s.paint,
         cloth = s.cloth,
         // in the yard the player's ship hangs her sails out, whatever canvas she has ordered
-        set = 0.1 + 0.9 * Math.max(s.canvas, s === PL.ship ? PL.dress : 0);
+        set = (0.1 + 0.9 * Math.max(s.canvas, s === PL.ship ? PL.dress : 0)) * (0.45 + 0.55 * s.rig);
     m4trs(B, s.x, s.y, s.z, s.yaw, s.pitch, s.roll, s.scale);
     addInstance(h.mesh, B, paint[0], paint[1], paint[2], s.flash);
     for (let i = 0; i < h.sails.length; i++) {
@@ -42,9 +44,11 @@ export function drawShip(s: Ship) {
         m4mul(Tm, B, Lm);
         addInstance(M.jib, Tm, cloth[0], cloth[1], cloth[2], s.flash * 0.4);
     }
+    // her colours, or a white flag once she has struck them
+    const flag = s.struck ? WHITE : paint;
     m4trs(Lm, 0, h.flag[1], h.flag[2], 0, 0, 0, 2.4);
     m4mul(Tm, B, Lm);
-    addInstance(M.flag, Tm, paint[0], paint[1], paint[2]);
+    addInstance(M.flag, Tm, flag[0], flag[1], flag[2]);
     // streamers from her other mastheads: the same bunting, drawn out long and narrow
     for (let i = 0; i < h.pennants.length; i++) {
         const p = h.pennants[i];

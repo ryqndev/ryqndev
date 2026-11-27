@@ -1,5 +1,8 @@
 import { Geo, gridNormals, MATERIAL, type Mesh, type Point, registerMesh } from '@ryqndev/brinewake-renderer';
-import { clamp, m4, m4aim, PI, smooth } from '@ryqndev/kiln-math';
+import { clamp, PI, smooth } from '@ryqndev/kiln-math';
+
+import type { GunSite, HullKit } from './hull/kit';
+import { lowerGun, MOUNTS } from './hull/mounts';
 
 /** One square sail: where its yard sits in hull space, and its size fully set. */
 export interface SailSlot {
@@ -29,15 +32,15 @@ export interface HullModel {
     jibs: JibSlot[];
     /** mastheads that fly a streamer, on the hulls grand enough for them */
     pennants: Point[];
-    /** guns per side, and each one's muzzle on the starboard side (mirror x for port) */
-    guns: number;
-    muzzles: Point[];
+    /** guns in each battery, port then starboard, and each one's muzzle as it would be on the starboard side (mirror x for port) */
+    guns: [number, number];
+    muzzles: [Point[], Point[]];
     /** masthead the flag flies from, and the height markers float at */
     flag: Point;
     lantern: Point;
 }
 
-export type ModelName = 'sail' | 'jib' | 'flag' | 'ball' | 'crate' | 'barrel' | 'plank';
+export type ModelName = 'sail' | 'jib' | 'flag' | 'ball' | 'crate' | 'barrel' | 'plank' | 'rope';
 
 /** The three hulls as launched, smallest first: sloop, brig, galleon. Filled in by buildModels(). */
 export const HULLS: HullModel[] = [];
@@ -137,11 +140,11 @@ function drawn(spec: HullSpec, form: number): HullSpec {
 const DECK_RISE = 1.25;
 
 /**
- * Guns in each battery of a hull with `decks` gun decks added, built to the lines `form`. Known
- * before any mesh is built.
+ * Guns in one battery of a hull with `decks` gun decks added, built to the lines `form`, when that
+ * battery is mounted as `mount` (see MOUNTS). Known before any mesh is built.
  */
-export function gunsASide(hull: number, decks = 0, form = 0) {
-    const guns = (LINES[form] ?? LINES[0]).guns(SPECS[hull].guns);
+export function gunsASide(hull: number, decks = 0, form = 0, mount = 0) {
+    const guns = (MOUNTS[mount] ?? MOUNTS[0]).guns((LINES[form] ?? LINES[0]).guns(SPECS[hull].guns));
     return guns + decks * Math.ceil(guns / 2);
 }
 
@@ -167,19 +170,24 @@ const SKINS: Finish[] = [
     { tar: [0.17, 0.14, 0.12], wale: [0.17, 0.14, 0.12], plank: [0.4, 0.27, 0.16], deck: [0.47, 0.39, 0.29], spar: [0.4, 0.28, 0.17], cabin: [0.35, 0.23, 0.14], trim: false },
     // black and gold: ebony above the water and copper below it, gilt wherever there is an edge
     { tar: [0.56, 0.36, 0.22], wale: [0.085, 0.08, 0.085], plank: [0.125, 0.115, 0.12], deck: [0.25, 0.2, 0.17], spar: [0.13, 0.115, 0.11], cabin: [0.105, 0.098, 0.1], trim: true },
+    // white and gold: limewashed from rail to keel, holystoned decks and pale spars, gilt wherever there is an edge
+    { tar: [0.74, 0.74, 0.72], wale: [0.8, 0.79, 0.75], plank: [0.9, 0.89, 0.85], deck: [0.78, 0.72, 0.6], spar: [0.86, 0.83, 0.74], cabin: [0.84, 0.83, 0.79], trim: true },
 ];
 
 const built = new Map<number, HullModel>();
+/** Long guns in both batteries: what every hull mounts unless the yard has fitted something else. */
+const NO_ARMS = [0, 0];
 /**
  * A hull (an index into HULLS) with works added: gun decks, each raising her by a deck with a
- * lower tier of guns, and storeys of living quarters at the stern; in one of the finishes, and
- * built to one of the LINES. Built the first time it is asked for, so only the ships players
+ * lower tier of guns, and storeys of living quarters at the stern; in one of the finishes, built
+ * to one of the LINES, and armed as `arms` says: how her port and starboard batteries are mounted
+ * (see MOUNTS), which decides how many guns each has and how her side is built for them. Built the first time it is asked for, so only the ships players
  * actually make cost anything.
  */
-export function hullModel(hull: number, decks = 0, quarters = 0, skin = 0, form = 0): HullModel {
-    const key = hull + 8 * decks + 64 * quarters + 512 * skin + 4096 * form;
+export function hullModel(hull: number, decks = 0, quarters = 0, skin = 0, form = 0, arms: number[] = NO_ARMS): HullModel {
+    const key = hull + 8 * decks + 64 * quarters + 512 * skin + 4096 * form + 32768 * (arms[0] + 8 * arms[1]);
     let model = built.get(key);
-    if (!model) built.set(key, (model = buildHull(drawn(SPECS[hull], form), decks, quarters, SKINS[skin] ?? SKINS[0])));
+    if (!model) built.set(key, (model = buildHull(drawn(SPECS[hull], form), decks, quarters, SKINS[skin] ?? SKINS[0], arms)));
     return model;
 }
 
@@ -191,34 +199,9 @@ const RIG = [0.1, 0.09, 0.08],
 const HEMP = [0.3, 0.245, 0.16],
     GUNMETAL = [0.19, 0.19, 0.205];
 
-// A profile for Geo.lathe from a line of [radius, height] points. Each stretch of it is flat along
-// its length, so the steps of a turned shape (a ring standing proud of a barrel) come out crisp.
-function turned(line: number[][]) {
-    const out: number[][] = [];
-    for (let i = 0; i + 1 < line.length; i++) {
-        const [r0, y0] = line[i],
-            [r1, y1] = line[i + 1],
-            l = Math.hypot(r1 - r0, y1 - y0) || 1,
-            nr = (y1 - y0) / l,
-            ny = (r0 - r1) / l;
-        out.push([r0, y0, nr, ny], [r1, y1, nr, ny]);
-    }
-    return out;
-}
-// A gun barrel, breech face at 0 and muzzle face at GUN_LEN: the button and neck of its cascabel,
-// the base ring, two reinforces with a ring closing each, the chase tapering to the swell of the
-// muzzle, and its lip. CHASE is as much of one as shows through a port in the hull's side.
-const GUN_LEN = 1.9;
-const MUZZLE = [[0.13, 1.06], [0.105, 1.7], [0.118, 1.72], [0.145, 1.8], [0.145, 1.86], [0.13, GUN_LEN], [0.072, GUN_LEN]];
-const BARREL = turned([[0, -0.17], [0.058, -0.15], [0.072, -0.105], [0.04, -0.05], [0.15, 0], [0.185, 0], [0.185, 0.05], [0.168, 0.05], [0.158, 0.58], [0.176, 0.58], [0.176, 0.63], [0.152, 0.63], [0.14, 1.02], [0.158, 1.02], [0.158, 1.06], ...MUZZLE]),
-    CHASE = turned([[0.158, 1.02], [0.158, 1.06], ...MUZZLE]),
-    BORE = turned([[0.072, GUN_LEN], [0.072, 1.74], [0, 1.74]]);
-/** How far inboard of her side a gun's breech face stands, run out. */
-const GUN_IN = 1.35;
-
 const lerp3 = (a: Point, b: Point, f: number): Point => [a[0] + (b[0] - a[0]) * f, a[1] + (b[1] - a[1]) * f, a[2] + (b[2] - a[2]) * f];
 
-function buildHull(spec: HullSpec, decks: number, quarters: number, finish: Finish): HullModel {
+function buildHull(spec: HullSpec, decks: number, quarters: number, finish: Finish, arms: number[]): HullModel {
     const { len: L, beam: B, draft: D, grand } = spec,
         { tar: TAR, wale: WALE, plank: PLANK, deck: DECK, spar: SPAR, cabin: CABIN } = finish,
         // gilded: because she was built grand, or because her finish gilds whatever it is put on
@@ -256,24 +239,75 @@ function buildHull(spec: HullSpec, decks: number, quarters: number, finish: Fini
     // a point of the hull: the stem rakes forward as it rises, and her quarters run aft to meet the stern
     const pt = (t: number, x: number, y: number): Point => [x, y, zAt(t) - L * 0.07 * smooth(0.72, 1, t) * clamp((y - kAt(t)) / (gAt(t) - kAt(t)), 0, 1) + aft(y) * smooth(0.14, 0, t)];
 
-    // ---- shell: keel, bilge, waterline, wale, gunwale at each station; starboard, then mirrored.
-    // A finished hull has one more strake under the gunwale, painted like the wale. ----
-    const NS = 14;
-    const star: Point[][] = [];
-    for (let i = 0; i <= NS; i++) {
-        const t = i / NS,
-            w = wAt(t),
+    const decksAft = spec.cabin + quarters,
+        gy0 = gAt(0),
+        w0 = wAt(0),
+        zs = L / 2,
+        // how far forward the sterncastle reaches: further for every deck it carries
+        T0 = decksAft ? Math.min(0.44, 0.2 + 0.04 * grand + 0.03 * (decksAft - 1)) : 0,
+        // solid bulwark standing above each raised deck, under its rail
+        WALL = 0.42,
+        // how far along her length a bulwark takes to sweep down where its deck ends
+        HANCE = 0.024,
+        // where the forecastle begins, and the height of its deck
+        TF = 0.8,
+        fcY = gAt(TF) + 0.35 + 0.3 * grand;
+
+    // ---- her armament. What each battery is mounted as decides how many guns it has, where along her
+    // they stand, and whether her bulwark is pierced for them or cut away. Everything after this that
+    // follows her rail asks railCut() before it builds. ----
+    const mounts = [MOUNTS[arms[0]] ?? MOUNTS[0], MOUNTS[arms[1]] ?? MOUNTS[0]],
+        sideOf = (s: number) => (s < 0 ? 0 : 1);
+    // her open deck: clear of the sterncastle and, on a finished hull, of the forecastle
+    const waist0 = Math.max(0.24, decksAft ? T0 + HANCE + 0.02 : 0),
+        waist1 = Math.min(0.72, grand ? TF - HANCE - 0.02 : 1);
+    // where each gun of a battery's upper tier stands: at the ports she was drawn with, or, for guns her
+    // bulwark is cut down for, shared out along the open deck
+    const stations = mounts.map((m) => {
+        const n = m.guns(spec.guns),
+            [a, b] = m.cut ? [waist0, waist1] : [0.24, 0.7];
+        return Array.from({ length: n }, (_, i) => a + ((i + 0.5) / n) * (b - a));
+    });
+    // the gaps cut in her bulwark, a side: each from one station to another, as wide as there is room for
+    const cuts = mounts.map((m, si) => {
+        if (!m.cut) return [];
+        const half = Math.min(m.cut / L, (waist1 - waist0) / stations[si].length / 2 - 0.3 / L);
+        return stations[si].map((t) => ({ t0: t - half, t1: t + half }));
+    });
+    const railCut = (t: number, s: number) => cuts[sideOf(s)].find((c) => t > c.t0 && t < c.t1);
+    // the top of her bulwark: the gunwale, or her deck where it has been cut away
+    const railY = (t: number, s: number) => (railCut(t, s) ? dAt(t) + 0.02 : gAt(t));
+    // the nearest station to `t` that is not in a gap: what would have come down to the rail there is led to its edge
+    const clearOf = (t: number, s: number) => {
+        const c = railCut(t, s);
+        return c ? (t - c.t0 < c.t1 - t ? c.t0 - 0.25 / L : c.t1 + 0.25 / L) : t;
+    };
+    // stations her shell and deck are lofted at: evenly along her, and close either side of every edge of a gap, so that it is cut square
+    const NS = 14,
+        TS = Array.from({ length: NS + 1 }, (_, i) => i / NS);
+    for (const side of cuts) for (const c of side) for (const e of [c.t0, c.t1]) TS.push(e - 0.015 / L, e + 0.015 / L);
+    TS.sort((a, b) => a - b);
+
+    // ---- shell: keel, bilge, waterline, wale, gunwale at each station, a side at a time, since her
+    // two sides may be cut differently. A finished hull has one more strake under the gunwale, painted
+    // like the wale. ----
+    const shellRow = (t: number, s: number): Point[] => {
+        const w = wAt(t),
             k = kAt(t),
             gy = gAt(t),
-            row = [pt(t, 0, k), pt(t, w * 0.55, k * 0.82), pt(t, w * 0.9, k * 0.3), pt(t, w, 0.3), pt(t, w * 1.03, gy * 0.55)];
-        if (grand) row.push(pt(t, w, gy * 0.82));
-        row.push(pt(t, w * 0.97, gy));
-        star.push(row);
-    }
+            top = railY(t, s),
+            row = [pt(t, 0, k), pt(t, s * w * 0.55, k * 0.82), pt(t, s * w * 0.9, k * 0.3), pt(t, s * w, 0.3), pt(t, s * w * 1.03, Math.min(gy * 0.55, top - 0.12))];
+        if (grand) row.push(pt(t, s * w, Math.min(gy * 0.82, top - 0.05)));
+        row.push(pt(t, s * w * 0.97, top));
+        return row;
+    };
+    const shell = [-1, 1].map((s) => TS.map((t) => shellRow(t, s))),
+        star = shell[1];
     const TOP = star[0].length - 1;
-    const starN = gridNormals(star, () => [1, -0.35, 0]);
     const mirror = (p: Point): Point => [-p[0], p[1], p[2]];
-    for (const [P, N] of [[star, starN], [star.map((r) => r.map(mirror)), starN.map((r) => r.map(mirror))]]) {
+    for (const s of [-1, 1]) {
+        const P = shell[sideOf(s)],
+            N = gridNormals(P, () => [s, -0.35, 0]);
         wood(TAR, 0.7).skin(P, N, 0, 3);
         paint().skin(P, N, 3, 4);
         wood(PLANK).skin(P, N, 4, 5);
@@ -291,11 +325,11 @@ function buildHull(spec: HullSpec, decks: number, quarters: number, finish: Fini
         gilt();
         const r = 0.04 + 0.02 * grand;
         for (const row of grand > 1 ? [4, 5, TOP] : grand ? [5, TOP] : [4, TOP]) {
-            for (let i = 0; i < NS; i++)
-                for (const s of [-1, 1]) {
-                    const a = star[i][row],
-                        b = star[i + 1][row];
-                    g.strut([s * (a[0] + 0.03), a[1], a[2]], [s * (b[0] + 0.03), b[1], b[2]], r, r, 5);
+            for (const s of [-1, 1])
+                for (let i = 0; i + 1 < TS.length; i++) {
+                    const a = shell[sideOf(s)][i][row],
+                        b = shell[sideOf(s)][i + 1][row];
+                    g.strut([a[0] + s * 0.03, a[1], a[2]], [b[0] + s * 0.03, b[1], b[2]], r, r, 5);
                 }
             // and on across the transom
             if (row !== TOP) g.strut([-star[0][row][0], star[0][row][1], L / 2 + 0.02], [star[0][row][0], star[0][row][1], L / 2 + 0.02], r, r, 5);
@@ -304,17 +338,17 @@ function buildHull(spec: HullSpec, decks: number, quarters: number, finish: Fini
 
     // ---- deck, the inside of the bulwarks and the rail capping them ----
     let prev: number[] | null = null;
-    for (let i = 0; i <= NS; i++) {
-        const t = i / NS,
-            w = inAt(t),
+    for (const t of TS) {
+        const w = inAt(t),
             o = wAt(t) * 0.97,
             d = dAt(t),
-            gy = gAt(t),
             row: number[] = [];
         wood(DECK, 0.9);
         for (const s of [-1, 1]) row.push(g.vert(...(pt(t, s * w, d) as [number, number, number]), 0, 1, 0));
         wood(PLANK);
         for (const s of [-1, 1]) {
+            // where her bulwark is cut away this comes down to the deck, and its capping becomes the sill
+            const gy = railY(t, s);
             row.push(g.vert(...(pt(t, s * w, d) as [number, number, number]), -s, 0, 0), g.vert(...(pt(t, s * w, gy) as [number, number, number]), -s, 0, 0));
             row.push(g.vert(...(pt(t, s * w, gy) as [number, number, number]), 0, 1, 0), g.vert(...(pt(t, s * o, gy) as [number, number, number]), 0, 1, 0));
         }
@@ -329,19 +363,6 @@ function buildHull(spec: HullSpec, decks: number, quarters: number, finish: Fini
     // climbs in steps the way a galleon's does. Where a deck ends the bulwark sweeps down to the next
     // in a hance. A finished hull has a forecastle raised the same way at the bow. Every deck is open
     // to the sky, railed, and reached by ladders from the one below. ----
-    const decksAft = spec.cabin + quarters,
-        gy0 = gAt(0),
-        w0 = wAt(0),
-        zs = L / 2,
-        // how far forward the sterncastle reaches: further for every deck it carries
-        T0 = decksAft ? Math.min(0.44, 0.2 + 0.04 * grand + 0.03 * (decksAft - 1)) : 0,
-        // solid bulwark standing above each raised deck, under its rail
-        WALL = 0.42,
-        // how far along her length a bulwark takes to sweep down where its deck ends
-        HANCE = 0.024,
-        // where the forecastle begins, and the height of its deck
-        TF = 0.8,
-        fcY = gAt(TF) + 0.35 + 0.3 * grand;
     const reach = (k: number) => T0 * (1 - (0.8 * k) / decksAft);
     // each deck is level: the lowest gives standing room over the waist where it ends, the rest climb from it
     const roofY: number[] = [];
@@ -363,7 +384,11 @@ function buildHull(spec: HullSpec, decks: number, quarters: number, finish: Fini
     // how far out her side stands at a height: it leans in above the rail
     const sideX = (t: number, y: number) => wAt(t) * (0.97 - 0.028 * Math.max(0, y - gAt(t)));
     const sternTop = topY(0);
-    const brink = (t: number, s: number): Point => pt(t, s * sideX(t, topY(t)), topY(t));
+    // a point on the top of her side; where her bulwark is cut away there, on the edge of the gap instead
+    const brink = (t: number, s: number): Point => {
+        const u = clearOf(t, s);
+        return pt(u, s * sideX(u, topY(u)), topY(u));
+    };
     // the deck under foot at a station
     const floorY = (t: number) => {
         const k = over(t);
@@ -519,14 +544,19 @@ function buildHull(spec: HullSpec, decks: number, quarters: number, finish: Fini
     const railEnd = grand ? 0.965 : decksAft ? T0 + HANCE : 0;
     if (railEnd)
         for (const s of [-1, 1]) {
-            const run: Point[] = [],
-                m = Math.ceil(railEnd / 0.02);
+            const m = Math.ceil(railEnd / 0.02);
+            let run: Point[] = [];
             for (let i = 0; i <= m; i++) {
                 const t = (railEnd * i) / m,
                     y = topY(t);
-                run.push(pt(t, s * (sideX(t, y) - 0.065), y));
+                if (!railCut(t, s)) {
+                    run.push(pt(t, s * (sideX(t, y) - 0.065), y));
+                    continue;
+                }
+                if (run.length > 1) fence(run);
+                run = [];
             }
-            fence(run);
+            if (run.length > 1) fence(run);
         }
 
     // ---- her sides: what stands proud of the planking, so that a hull is more than a smooth shell.
@@ -546,13 +576,14 @@ function buildHull(spec: HullSpec, decks: number, quarters: number, finish: Fini
     };
     // a point on her side, stood off it by `out`
     const on = (t: number, y: number, s: number, out = 0): Point => pt(t, s * (outX(t, y) + out), y);
-    // a line worked along both sides between two stations, at a height that may change along the way
-    const run = (ta: number, tb: number, yOf: (t: number) => number, r: number, out = 0.02, step = 0.03) => {
+    // a line worked along both sides between two stations, at a height that may change along the way.
+    // With `railed`, it is something that lives on her bulwark, and stops wherever that is cut away.
+    const run = (ta: number, tb: number, yOf: (t: number) => number, r: number, out = 0.02, step = 0.03, railed = false) => {
         const m = Math.max(1, Math.ceil((tb - ta) / step));
         for (let i = 0; i < m; i++) {
             const a = ta + ((tb - ta) * i) / m,
                 b = ta + ((tb - ta) * (i + 1)) / m;
-            for (const s of [-1, 1]) g.strut(on(a, yOf(a), s, out), on(b, yOf(b), s, out), r, r, 5);
+            for (const s of [-1, 1]) if (!railed || !(railCut(a, s) || railCut(b, s))) g.strut(on(a, yOf(a), s, out), on(b, yOf(b), s, out), r, r, 5);
         }
     };
     // wales: stout strakes at the waterline and (where it is not a gilded moulding) at the top of her paint
@@ -563,11 +594,9 @@ function buildHull(spec: HullSpec, decks: number, quarters: number, finish: Fini
     if (!fine) {
         // a plain hull: a capping on her rail, and timberheads standing up through it
         wood(SPAR, 0.7);
-        run(decksAft ? T0 + HANCE : 0, 0.985, gAt, 0.06, -0.04);
-        for (let t = (decksAft ? T0 + HANCE : 0) + 0.04; t < 0.95; t += 1.5 / L) for (const s of [-1, 1]) g.push(...(on(t, gAt(t) + 0.1, s, -0.09) as [number, number, number])).box(0.07, 0.15, 0.07, 0.02).pop();
+        run(decksAft ? T0 + HANCE : 0, 0.985, gAt, 0.06, -0.04, 0.03, true);
+        for (let t = (decksAft ? T0 + HANCE : 0) + 0.04; t < 0.95; t += 1.5 / L) for (const s of [-1, 1]) if (!railCut(t, s)) g.push(...(on(t, gAt(t) + 0.1, s, -0.09) as [number, number, number])).box(0.07, 0.15, 0.07, 0.02).pop();
     }
-    // where each gun of the upper tier stands along her length
-    const gunT = (i: number) => 0.24 + ((i + 0.5) / spec.guns) * 0.46;
     if (spec.iron) {
         // ironsides: a belt of plate over the wale at her waterline and another under her ports, strapped
         // together up her side between every pair of guns, and a shod stem to meet whatever is in the way
@@ -579,20 +608,24 @@ function buildHull(spec: HullSpec, decks: number, quarters: number, finish: Fini
         for (let k = 0; k < 4; k++) g.strut(pt(1, 0, -0.4 + (gAt(1) * 0.6 * k) / 4), pt(1, 0, -0.4 + (gAt(1) * 0.6 * (k + 1)) / 4), 0.16, 0.16, 6);
     }
     if (grand) {
-        // fenders: timbers up her side amidships, between the ports
+        // fenders: timbers up her side amidships between the ports, on a side that is pierced for guns
         wood(WALE, 0.7);
-        for (let i = 1; i < spec.guns; i++) {
-            const t = (gunT(i - 1) + gunT(i)) / 2;
-            if (t < 0.36 || t > 0.66) continue;
-            for (const s of [-1, 1]) for (let k = 0; k < 4; k++) g.strut(on(t, 0.2 + ((gAt(t) - 0.26) * k) / 4, s, 0.05), on(t, 0.2 + ((gAt(t) - 0.26) * (k + 1)) / 4, s, 0.05), 0.065, 0.065, 5);
+        for (const s of [-1, 1]) {
+            const at = stations[sideOf(s)];
+            if (!mounts[sideOf(s)].ports) continue;
+            for (let i = 1; i < at.length; i++) {
+                const t = (at[i - 1] + at[i]) / 2;
+                if (t < 0.36 || t > 0.66) continue;
+                for (let k = 0; k < 4; k++) g.strut(on(t, 0.2 + ((gAt(t) - 0.26) * k) / 4, s, 0.05), on(t, 0.2 + ((gAt(t) - 0.26) * (k + 1)) / 4, s, 0.05), 0.065, 0.065, 5);
+            }
         }
         // the frieze along her painted upper strake: gilt bosses on a finished hull, and on the grandest
         // a running scroll with a pearl in every turn
         const mid = (t: number) => gAt(t) * 0.91,
             wave = 1.5 / L;
         gilt();
-        if (grand > 1) run(0.02, 0.965, (t) => mid(t) + gAt(t) * 0.055 * Math.sin((t / wave) * 2 * PI), 0.035, 0.03, 0.0055);
-        for (let t = 0.03; t < 0.96; t += grand > 1 ? wave : 1 / L) for (const s of [-1, 1]) g.push(...(on(t, mid(t), s, 0.03) as [number, number, number])).sphere(grand > 1 ? 0.06 : 0.075, 6, 4).pop();
+        if (grand > 1) run(0.02, 0.965, (t) => mid(t) + gAt(t) * 0.055 * Math.sin((t / wave) * 2 * PI), 0.035, 0.03, 0.0055, true);
+        for (let t = 0.03; t < 0.96; t += grand > 1 ? wave : 1 / L) for (const s of [-1, 1]) if (!railCut(t, s)) g.push(...(on(t, mid(t), s, 0.03) as [number, number, number])).sphere(grand > 1 ? 0.06 : 0.075, 6, 4).pop();
         // her upper works, panelled: battens up the sterncastle's side, and on the grandest gilded
         // pilasters with an arch sprung between each pair
         const bay = (grand > 1 ? 1.15 : 1.5) / L,
@@ -763,7 +796,7 @@ function buildHull(spec: HullSpec, decks: number, quarters: number, finish: Fini
             // and on a finished hull, a backstay from each masthead
             if (grand) g.strut(head, brink(tAt(Math.min(m.z + 3.4, zs - 0.5)), s), 0.03, 0.03, 4);
             // where her shrouds come down to the open rail: a channel to spread them, and iron chainplates under it
-            if (over(t) < 0 && !(grand && t > TF - HANCE)) {
+            if (over(t) < 0 && !(grand && t > TF - HANCE) && !railCut(t, s) && !offs.some((o) => railCut(tAt(m.z + o), s))) {
                 const span = offs[offs.length - 1] - offs[0];
                 wood(WALE, 0.7).push(...(on(t, gAt(t) - 0.08, s, 0.16) as [number, number, number])).box(0.17, 0.035, span / 2 + 0.3, 0.02).pop();
                 g.mat(0.5, 0.8, 0, MATERIAL.METAL).col(IRON[0], IRON[1], IRON[2]);
@@ -836,7 +869,7 @@ function buildHull(spec: HullSpec, decks: number, quarters: number, finish: Fini
         if (grand > 1)
             for (const s of [-1, 1])
                 for (const row of [4, TOP]) {
-                    const from = star[NS - 2][row];
+                    const from = shellRow((NS - 2) / NS, 1)[row];
                     g.strut([s * (from[0] + 0.05), from[1], from[2]], lerp3(foot, chin, row === TOP ? 0.7 : 0.25), 0.07, 0.05, 5);
                 }
     }
@@ -883,81 +916,54 @@ function buildHull(spec: HullSpec, decks: number, quarters: number, finish: Fini
         gilt().push(0, dAt(cap) + 0.75, zAt(cap)).cyl(0.4, 0.09, 8, 0.02).pop();
     }
 
-    // ---- guns, both sides: the upper tier run out through the bulwarks, and under it a shorter tier
-    // for each gun deck, firing through ports in the hull's side ----
-    const muzzles: Point[] = [];
-    for (let tier = 0; tier <= decks; tier++) {
-        const n = tier ? Math.ceil(spec.guns / 2) : spec.guns;
-        for (let i = 0; i < n; i++) {
-            const t = 0.24 + ((i + 0.5) / n) * 0.46,
-                x = wAt(t) * (tier ? 1.02 : 0.97),
-                y = dAt(t) + 0.42 - tier * DECK_RISE,
-                z = zAt(t);
-            muzzles.push([x + 0.65, y, z]);
-            for (const s of [-1, 1]) {
-                // a point of the gun: `u` outboard along it from the breech face, `w` along the ship from its middle
-                const at = (u: number, v: number, w = 0): Point => [s * (x - GUN_IN + u), v, z + w];
-                const iron = () => g.mat(0.36, 0.9, 0, MATERIAL.METAL).col(GUNMETAL[0], GUNMETAL[1], GUNMETAL[2]);
-                // the barrel, turned, and the dark of its bore
-                g.pushM(m4aim(m4(), s * (x - GUN_IN), y, z, s, 0, 0));
-                iron().lathe(tier ? CHASE : BARREL, 10);
-                g.mat(1, 0, 0, MATERIAL.WOOD).col(0.012, 0.012, 0.014).lathe(BORE, 10);
-                g.pop();
-                // below, a gun's port lid is triced up over it, and the hull hides the rest
-                if (tier) wood(WALE, 0.7).push(s * (x + 0.1), y + 0.36, z).box(0.12, 0.04, 0.34, 0.01).pop();
-                else {
-                    // on deck it sits in a truck carriage: two stepped cheeks on a bed, on axletrees and four
-                    // trucks, the barrel hung between the cheeks by its trunnions and laid by a quoin under the breech
-                    const floor = y - 0.4,
-                        block = (u0: number, u1: number, v0: number, v1: number, w: number, hw: number) =>
-                            g.push(...(at((u0 + u1) / 2, (v0 + v1) / 2, w) as [number, number, number])).box((u1 - u0) / 2, (v1 - v0) / 2, hw, 0).pop();
-                    wood(SPAR, 0.75);
-                    for (const w of [-0.2, 0.2]) {
-                        block(0.62, 1.14, y - 0.25, y - 0.035, w, 0.035);
-                        block(0.3, 0.62, y - 0.25, y - 0.12, w, 0.035);
-                        block(-0.04, 0.3, y - 0.25, y - 0.2, w, 0.035);
-                    }
-                    block(0, 1.12, y - 0.275, y - 0.235, 0, 0.17);
-                    wood(WALE, 0.8);
-                    for (const [u, r] of [[0.2, 0.1], [0.95, 0.125]]) {
-                        block(u - 0.055, u + 0.055, floor + r - 0.045, floor + r + 0.045, 0, 0.25);
-                        for (const w of [-0.325, 0.255]) g.push(...(at(u, floor + r, w) as [number, number, number]), 0, PI / 2).cyl(r, 0.07, 8, 0).pop();
-                    }
-                    // the quoin, with the handle it is drawn out by
-                    block(0.04, 0.34, y - 0.235, y - 0.17, 0, 0.08);
-                    g.strut(at(-0.12, y - 0.2), at(0.05, y - 0.2), 0.022, 0.022, 4);
-                    // trunnions, and the capsquares that hold them down
-                    iron().strut(at(0.85, y - 0.02, -0.26), at(0.85, y - 0.02, 0.26), 0.05, 0.05, 5);
-                    for (const w of [-0.2, 0.2]) block(0.75, 0.95, y + 0.025, y + 0.045, w, 0.042);
-                    // the breeching: a rope from a ringbolt in the bulwark either side, hanging slack to the
-                    // deck and up round her cascabel, to take the recoil
-                    g.mat(1, 0, 0, MATERIAL.WOOD).col(HEMP[0], HEMP[1], HEMP[2]);
-                    for (const w of [-1, 1]) {
-                        const line = [at(1.14, y - 0.08, w * 0.44), at(0.7, floor + 0.07, w * 0.42), at(0.2, floor + 0.09, w * 0.38), at(-0.06, y - 0.08, w * 0.16), at(-0.1, y, 0)];
-                        for (let k = 0; k + 1 < line.length; k++) g.strut(line[k], line[k + 1], 0.021, 0.021, 4);
-                    }
-                }
-                // every port on the grandest hulls is wreathed in gold; on the rest it is framed in timber
-                if (grand > 1) gilt().strut([s * (x + 0.01), y, z], [s * (x + 0.09), y, z], 0.33, 0.3, 8);
-                else if (!tier) {
-                    wood(WALE, 0.7);
-                    for (const d of [-0.27, 0.27]) {
-                        g.push(s * (x + 0.02), y + d, z).box(0.05, 0.03, 0.31, 0.01).pop();
-                        g.push(s * (x + 0.02), y, z + d).box(0.05, 0.27, 0.03, 0.01).pop();
-                    }
-                }
-                // and a finished hull has a lid to every upper port, swung up and out over the gun
-                if (grand && !tier) {
-                    if (grand > 1) paint();
-                    else wood(WALE, 0.7);
-                    g.push(s * (x + 0.24), y + 0.5, z, 0, 0, s * -0.95).box(0.025, 0.24, 0.27, 0.01).pop();
-                    if (grand > 1) gilt().push(s * (x + 0.3), y + 0.56, z).sphere(0.06, 6, 4).pop();
-                }
+    // ---- guns: each battery as its mount builds it (hull/mounts.ts), and under it a shorter tier for
+    // each gun deck, firing through ports in her side ----
+    const kit: HullKit = {
+        g,
+        L,
+        grand,
+        spar: SPAR,
+        wale: WALE,
+        deck: DECK,
+        wood,
+        gilt,
+        paint,
+        iron: () => g.mat(0.36, 0.9, 0, MATERIAL.METAL).col(GUNMETAL[0], GUNMETAL[1], GUNMETAL[2]),
+        dark: () => g.mat(1, 0, 0, MATERIAL.WOOD).col(0.012, 0.012, 0.014),
+        hemp: () => g.mat(1, 0, 0, MATERIAL.WOOD).col(HEMP[0], HEMP[1], HEMP[2]),
+        on,
+    };
+    const muzzles: [Point[], Point[]] = [[], []];
+    for (const s of [-1, 1]) {
+        const si = sideOf(s),
+            mount = mounts[si],
+            upper = stations[si];
+        for (let tier = 0; tier <= decks; tier++) {
+            const n = tier ? Math.ceil(upper.length / 2) : upper.length;
+            for (let i = 0; i < n; i++) {
+                const t = tier ? 0.24 + ((i + 0.5) / n) * 0.46 : upper[i],
+                    x = wAt(t) * (tier ? 1.02 : 0.97),
+                    z = zAt(t),
+                    cut = tier ? undefined : railCut(t, s),
+                    at = (u: number, v: number, w = 0): Point => [s * (x + u), v, z + w];
+                const site: GunSite = {
+                    t,
+                    s,
+                    x,
+                    y: dAt(t) + 0.42 - tier * DECK_RISE,
+                    z,
+                    deck: dAt(t),
+                    rail: gAt(t),
+                    half: cut ? ((cut.t1 - cut.t0) * L) / 2 : ((0.46 / n) * L) / 2,
+                    at,
+                    block: (u0, u1, v0, v1, w, hw) => g.push(...(at((u0 + u1) / 2, (v0 + v1) / 2, w) as [number, number, number])).box((u1 - u0) / 2, (v1 - v0) / 2, hw, 0).pop(),
+                };
+                muzzles[si].push(tier ? lowerGun(kit, site, mount.calibre) : mount.gun(kit, site));
             }
         }
     }
 
-    return { mesh: registerMesh(g), len: L, beam: B, draft: D, deck: dAt(0.5), sails, jibs, pennants, guns: muzzles.length, muzzles, flag: top, lantern };
+    return { mesh: registerMesh(g), len: L, beam: B, draft: D, deck: dAt(0.5), sails, jibs, pennants, guns: [muzzles[0].length, muzzles[1].length], muzzles, flag: top, lantern };
 }
 
 /** Points across and down the unit sail's grid. */
@@ -1211,4 +1217,10 @@ export function buildModels() {
     g = new Geo();
     g.mat(0.9, 0, 0, MATERIAL.WOOD).col(SKINS[0].plank[0], SKINS[0].plank[1], SKINS[0].plank[2]).box(0.16, 0.05, 1, 0.02);
     M.plank = registerMesh(g);
+
+    // ---- unit rope: a round of radius one standing one unit up +Y, painted, so that an instance draws
+    // it out along any line in whatever colour it is given: a harpoon's line, and the iron on the end of it ----
+    g = new Geo();
+    g.mat(0.9, 0, 0, MATERIAL.PAINT).col(1, 1, 1).cyl(1, 1, 5, 0);
+    M.rope = registerMesh(g);
 }

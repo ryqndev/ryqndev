@@ -1,6 +1,6 @@
 // What the shipyard's parts share: the player's build and purse, a way to try another build on,
 // and how a fitting's numbers are put into words.
-import { type Build, type Fitting, type Sailor, SLOTS } from '@ryqndev/brinewake-game';
+import { type Build, type Fitting, type Sailor, SHOT, SLOTS } from '@ryqndev/brinewake-game';
 import { createContext, useContext, useEffect, useId, useRef } from 'react';
 
 export interface Yard {
@@ -68,19 +68,34 @@ export interface Effect {
     good: boolean;
 }
 
+/** What each kind of shot is for, by SHOT. */
+export const SHOT_NAMES = ['Round', 'Grape', 'Chain', 'Harpoon', 'Shell'];
+const PURPOSE: Record<number, string> = {
+    [SHOT.GRAPE]: 'clears decks · takes prizes whole',
+    [SHOT.CHAIN]: 'tears sails · slows her',
+    [SHOT.HARPOON]: 'holds what it hits',
+    [SHOT.SHELL]: 'bursts · breaks forts',
+};
+
 const percent = (m: number) => (m > 1 ? '+' : '−') + Math.round(Math.abs(m - 1) * 100) + '%';
 
 /**
  * A fitting's figures, as the list of changes it makes. Empty for the stock ones. `guns` is how
- * many more guns a side it would have her mount (fewer, if negative), for the fittings that change that.
+ * many more guns it would have her mount (fewer, if negative): a side for a build, in its own
+ * battery for a gun that is mounted differently.
  */
 export function effectsOf(f: Fitting, guns = 0): Effect[] {
     const out: Effect[] = [];
-    if (guns) out.push({ text: (guns > 0 ? '+' : '−') + Math.abs(guns) + (Math.abs(guns) > 1 ? ' guns a side' : ' gun a side'), good: guns > 0 });
+    if (guns) out.push({ text: (guns > 0 ? '+' : '−') + Math.abs(guns) + (Math.abs(guns) > 1 ? ' guns' : ' gun') + (f.kind === 'guns' ? ' in the battery' : ' a side'), good: guns > 0 });
+    if (f.stone !== undefined && f.throws === undefined) out.push({ text: 'cracks stone', good: true });
+    // what its shot is for, where that is not holing a hull
+    const purpose = f.throws === undefined ? undefined : PURPOSE[f.throws];
+    if (purpose) out.push({ text: purpose, good: true });
+    if (f.pellets) out.push({ text: f.pellets + ' balls a gun', good: true });
     const add = (m: number | undefined, what: string, moreIsBetter = true) => {
         if (m !== undefined && m !== 1) out.push({ text: percent(m) + ' ' + what, good: m > 1 === moreIsBetter });
     };
-    add(f.dmg, 'shot weight');
+    add(f.dmg, f.throws ? 'hull damage' : 'shot weight');
     add(f.reload, 'reload time', false);
     // range goes with the square of the muzzle speed
     add(f.shot && f.shot * f.shot, 'range');
