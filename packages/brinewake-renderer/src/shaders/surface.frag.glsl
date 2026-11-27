@@ -11,7 +11,7 @@ out vec4 o;
 float hash(vec2 p){return fract(sin(dot(p,vec2(12.9898,78.233)))*43758.5453);}
 void main(){
   vec3 N=normalize(vN),V=normalize(uCam-vP);
-  // material: 0 paint, 1 terrain, 2 wood, 3 cloth, 4 emissive, 5 metal, 6 leaf, 7 stone, 8 tile, 9 plaster
+  // material: 0 paint, 1 terrain, 2 wood, 3 cloth, 4 emissive, 5 metal, 6 leaf, 7 stone, 8 tile, 9 plaster, 10 painted planking
   float kind=floor(vC.a*255.+.5);
   vec3 alb=vC.rgb*vC.rgb;
   float rough=vM.x,metal=vM.y,emis=vM.z,ao=vM.w;
@@ -63,7 +63,13 @@ void main(){
     float seam=smoothstep(0.,.08,pl)*smoothstep(1.,.92,pl);
     float grain=texture(uNoise,vec2(vO.z*.07,across*.83)).r;
     float board=fract(sin(floor(across+tz.r*.1)*12.9898)*43758.5453);
-    alb*=(.6+.55*grain)*(.8+.4*board)*(.42+.58*seam);
+    // each strake is laid in lengths, butted end to end and staggered from the next, a pair of treenails at every butt
+    float bf=fract(vO.z*.29+board*7.3);
+    float butt=smoothstep(0.,.011,bf)*smoothstep(1.,.989,bf);
+    vec2 tn=vec2(min(bf,1.-bf)*3.45-.1,(abs(pl-.5)-.24)*.38);
+    float nail=smoothstep(.011,.019,length(tn));
+    seam*=.3+.7*butt;
+    alb*=(.6+.55*grain)*(.8+.4*board)*(.42+.58*seam)*(.62+.38*nail);
     rough=clamp(rough+(grain-.5)*.3,.3,1.);
     ao*=.65+.35*seam;
     N=normalize(N-(g-N*dot(g,N))*.6);
@@ -82,6 +88,19 @@ void main(){
     alb*=.65+.7*n1;
     wrap=.6;
     thru=max(dot(-N,uSunDir),0.)*.25;
+  }else if(kind>9.5){
+    // painted planking: a hull's strakes under her paint, each board taking it a little differently
+    float across=vO.y*2.6;
+    float pl=fract(across+tz.r*.1);
+    float seam=smoothstep(0.,.07,pl)*smoothstep(1.,.93,pl);
+    float board=fract(sin(floor(across+tz.r*.1)*12.9898)*43758.5453);
+    float grain=texture(uNoise,vec2(vO.z*.07,across*.83)).r;
+    float bf=fract(vO.z*.29+board*7.3);
+    seam*=.55+.45*smoothstep(0.,.011,bf)*smoothstep(1.,.989,bf);
+    alb*=tint*(.72+.34*grain)*(.9+.2*board)*(.62+.38*seam);
+    rough=clamp(rough+(grain-.5)*.3,.2,1.);
+    ao*=.7+.3*seam;
+    N=normalize(N-(g-N*dot(g,N))*.45);
   }else{
     // masonry: laid out along the wall and up it, whichever way the wall faces. `metal` marks a
     // round tower, whose courses wrap it by angle at the radius carried in `emis`.

@@ -100,7 +100,7 @@ export function director(dt: number, p: Ship) {
         if (hunters < (level >= 4 ? 2 : 1)) {
             launchHunter(level >= 3 && Math.random() < 0.5 ? FOES.frigate : FOES.cutter, p, level);
             if (level >= 4) launchHunter(FOES.cutter, p, level);
-            hud.toast('Navy hunters have picked up your wake');
+            hud.news('Navy hunters have picked up your wake');
         }
     }
     // at the top of the list the admiral comes out himself, once

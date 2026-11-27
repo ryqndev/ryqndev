@@ -28,6 +28,8 @@ export const MATERIAL = {
     TILE: 8,
     /** limewashed plaster: blotched, rain-streaked, grimy at the foot and fallen away to brick in places */
     PLASTER: 9,
+    /** painted planking: the seams and the grain of WOOD showing through paint, which takes the instance tint */
+    PAINTED: 10,
 } as const;
 
 /** Radius in metres that `emis` = 1 stands for on a round STONE, TILE or PLASTER surface. */

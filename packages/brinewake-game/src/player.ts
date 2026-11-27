@@ -3,7 +3,9 @@ import { cam, seaHeight, setCamera } from '@ryqndev/brinewake-renderer';
 import { keys, mouse, opts } from '@ryqndev/kiln-core';
 import { clamp, damp, vnoise } from '@ryqndev/kiln-math';
 
+import { spawnCaptain } from './afoot';
 import { shake, sprite } from './fx';
+import { NET } from './net/role';
 import { bearing, CLASSES, fireBroadside, gunsReady, makeShip, maxRange, TEAM } from './ships';
 import { refit } from './shipyard';
 import { PL, S } from './state';
@@ -12,11 +14,13 @@ import { height, W } from './world';
 const FOV = 1,
     SPYGLASS_FOV = 0.36;
 
-/** Puts a freshly fitted ship at anchor off the pier, bows to sea, and the camera on her quarter. */
+/** Lays a freshly fitted ship alongside the wharf with her gangway down, and stands her captain on the wharf beside her. */
 export function spawnPlayer() {
     const s = makeShip('player', TEAM.PIRATE, CLASSES[S.prog.cls], W.port.x, W.port.z, W.port.yaw);
     refit(s);
-    Object.assign(PL, { ship: s, camYaw: s.yaw + 0.5, camPitch: -0.2, dist: 1, zoom: 0, side: -1, canDock: false });
+    Object.assign(PL, { ship: s, berthed: true, zoom: 0, side: -1, canDock: false });
+    moor();
+    spawnCaptain();
     return s;
 }
 
@@ -52,7 +56,14 @@ export function playerKey(code: string) {
     }
 }
 
-/** Reads the controls: helm, look, the lay of the guns and the order to fire. Then places the camera. */
+/** Whether she lies close enough to the pier, and is going slowly enough, to drop anchor. */
+export const offPier = (s = PL.ship) => Math.hypot(s.x - W.port.x, s.z - W.port.z) < W.port.r && Math.abs(s.v) < 7;
+
+/**
+ * Reads the controls: helm, look, the lay of the guns and the order to fire. Then places the camera.
+ * In a crew whoever has the wheel only sails her: her guns are served one by one (gunner.ts) and by
+ * her hired hands (ships/gunners.ts).
+ */
 export function updatePlayer(dt: number) {
     const s = PL.ship;
     // ---- look: the spyglass steadies the hand ----
@@ -64,6 +75,11 @@ export function updatePlayer(dt: number) {
     PL.zoom = damp(PL.zoom, mouse.r ? 1 : 0, 9, dt);
     s.rudder = (keys.KeyA || keys.ArrowLeft ? 1 : 0) - (keys.KeyD || keys.ArrowRight ? 1 : 0);
     placeCamera(dt);
+    PL.canDock = offPier(s);
+    if (NET.on) {
+        PL.side = -1;
+        return;
+    }
 
     // ---- guns: laid where the line of sight meets the sea, held inside their reach ----
     let ax = s.x + cam.fx * 1e4,
@@ -94,7 +110,6 @@ export function updatePlayer(dt: number) {
             shake(0.22);
         }
     }
-    PL.canDock = Math.hypot(s.x - W.port.x, s.z - W.port.z) < W.port.r && Math.abs(s.v) < 7;
 }
 
 /** Orbit camera on the player's ship, steered by PL.camYaw / camPitch. */

@@ -1,6 +1,9 @@
 export { beginGame, dock, type GameOptions, leaveDrydock, mountGame, openDrydock, resetProgress } from './game';
-export { BLIP, BLIP_STRIDE, type Hint, type HudMode, hudSignals, type HudState, hudStore, MAX_TARGETS, onHudFrame, RELOAD_STEPS, TARGET_STRIDE } from './hud';
+export { BLIP, BLIP_STRIDE, type Hint, type HudMode, hudSignals, type HudState, hudStore, MAX_TARGETS, onHudFrame, RELOAD_STEPS, TAG_STRIDE, TARGET_STRIDE } from './hud';
 export { gunsASide, sigilShape } from './models';
+export { MAX_CREW, type NetView, type Shipmate } from './net/role';
+export { hostCrew, joinCrew, leaveCrew } from './net/session';
+export { COAT_CSS, POST } from './posts';
 export { maxRange } from './ships/cannons';
 export { aboard, MAX_SKILL, postEffects, type Sailor, type Skill, SKILLS, type Station, type StationDef, STATIONS, withPost } from './ships/crew';
 export { BERTHS, CLASS_COST, CLASSES, ESCORT_COST, HOLDS, INFAMY, MAX_ESCORTS, MAX_LEVEL, maxLevel, UP, type Upgrade, upgradeCost, UPGRADES } from './ships/defs';

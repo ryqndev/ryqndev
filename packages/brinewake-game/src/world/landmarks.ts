@@ -17,6 +17,7 @@ export function warehouse(S: Site, x: number, y: number, z: number, hw: number, 
         shut = SHUTTERS[1];
     G.push(x, y, z);
     M.floor = y;
+    M.block(-hw - 0.15, hw + 0.15, -hd - 0.15, hd + 0.15, H + 6);
     M.stone().slab(-hw - 0.15, hw + 0.15, -2.5, 3.3, -hd - 0.15, hd + 0.15, 0.04);
     M.plaster(wall).slab(-hw, hw, 3.3, H, -hd, hd, 0.03);
     M.stone(C.PALE).slab(-hw - 0.12, hw + 0.12, H - 0.2, H, -hd - 0.12, hd + 0.12, 0.03);
@@ -69,6 +70,7 @@ export function tavern(S: Site, x: number, y: number, z: number) {
         gd = 2.5;
     G.push(x, y, z);
     M.floor = y;
+    M.block(-hw - 0.12, hw + 0.12, -hd - 0.12, hd + 0.12, H + 6);
     M.stone().slab(-hw - 0.12, hw + 0.12, -2.5, 0.5, -hd - 0.12, hd + 0.12, 0.04);
     M.plaster(wall).slab(-hw, hw, 0.5, H, -hd, hd, 0.03);
     M.stone(C.PALE).slab(-hw - 0.07, hw + 0.07, gy - 0.08, gy + 0.08, -hd - 0.07, hd + 0.07).slab(-hw - 0.14, hw + 0.14, H - 0.22, H, -hd - 0.14, hd + 0.14, 0.03);
@@ -127,6 +129,7 @@ export function customsHouse(S: Site, x: number, y: number, z: number) {
         gy = 0.5 + FH;
     G.push(x, y, z);
     M.floor = y;
+    M.block(-hw - 0.15, hw + 0.15, -hd - 0.15, hd + 0.15, H + 6);
     M.stone().slab(-hw - 0.15, hw + 0.15, -2.5, 0.5, -hd - 0.15, hd + 0.15, 0.04);
     M.plaster(wall).slab(-hw, hw, 0.5, H, -hd, hd, 0.03);
     M.stone(C.PALE).slab(-hw - 0.07, hw + 0.07, gy - 0.08, gy + 0.1, -hd - 0.07, hd + 0.07).slab(-hw - 0.18, hw + 0.18, H - 0.3, H, -hd - 0.18, hd + 0.18, 0.03);
@@ -179,6 +182,8 @@ export function church(S: Site, x: number, y: number, z: number) {
         wall = PLASTERS[1];
     G.push(x, y, z);
     M.floor = y;
+    // the nave, out to the faces of its buttresses
+    M.block(-hw - 1.1, hw + 1.1, -hd - 0.25, hd + 0.25, HN + 20);
     M.stone().slab(-hw - 0.25, hw + 0.25, -2.5, 0.9, -hd - 0.25, hd + 0.25, 0.05);
     M.plaster(wall).slab(-hw, hw, 0.9, HN, -hd, hd, 0.03);
     M.stone(C.PALE).slab(-hw - 0.16, hw + 0.16, HN - 0.26, HN, -hd - 0.16, hd + 0.16, 0.03);
@@ -261,6 +266,7 @@ export function mansion(S: Site, x: number, y: number, z: number) {
         pd = 3.4;
     G.push(x, y, z);
     M.floor = y;
+    M.block(-hw - 0.3, hw + 0.3, -hd - 0.3, hd + 0.3, H + 8);
     M.stone(C.PALE).slab(-hw - 0.3, hw + 0.3, -2.5, F0, -hd - 0.3, hd + 0.3, 0.05);
     M.plaster(wall).slab(-hw, hw, F0, H, -hd, hd, 0.03);
     M.stone(C.PALE).slab(-hw - 0.08, hw + 0.08, F0 + FH - 0.1, F0 + FH + 0.1, -hd - 0.08, hd + 0.08).slab(-hw - 0.3, hw + 0.3, H - 0.36, H, -hd - 0.3, hd + 0.3, 0.04);
@@ -321,6 +327,8 @@ export function fort(S: Site, f: { x: number; z: number; y: number } = P.fort, c
         Tp = scale(0.9);
     G.push(f.x, 0, f.z);
     M.floor = null;
+    // its walls, as near as two boxes come to their five sides, and the gatehouse on the landward one
+    M.block(-15.5, 15.5, -8, 13, WY + 2).block(-8.5, 8.5, -18.5, -8, WY + 2).block(1, 7, 11.2, 15.6, 14);
     M.stone().prism(B, Tp, -2.5, WY);
     M.stone(C.PALE).prism(scale(0.928), scale(0.925), 8.5, 8.9, false);
     M.floor = WY;
@@ -394,7 +402,13 @@ export function fort(S: Site, f: { x: number; z: number; y: number } = P.fort, c
     M.wood(C.DARK).slab(2.6, 5.4, f.y - 0.2, f.y + 3.5, 15.6, 15.74).beam([4, f.y + 3.5, 15.6], [4, f.y + 3.5, 15.74], 1.4, 1.4, 14);
     M.iron().slab(3.97, 4.03, f.y, f.y + 4.9, 15.74, 15.77);
     M.lantern(1.9, f.y + 3.4, 15.95).lantern(6.1, f.y + 3.4, 15.95);
-    if (!outpost) M.stone(C.DARKSTONE).prism([[2.2, 15.6], [5.8, 15.6], [26, 21], [23, 26]], [[2.5, 15.6], [5.5, 15.6], [25, 21.6], [23.2, 25]], -3, f.y - 0.25);
+    if (!outpost) {
+        M.stone(C.DARKSTONE).prism([[2.2, 15.6], [5.8, 15.6], [26, 21], [23, 26]], [[2.5, 15.6], [5.5, 15.6], [25, 21.6], [23.2, 25]], -3, f.y - 0.25);
+        // the causeway is walked along: a deck from the gate to the town's edge
+        G.push(14.2, 0, 19.6, Math.atan2(20.5, 7.9));
+        M.block(-1.7, 1.7, -11, 11, f.y - 0.25, true);
+        G.pop();
+    }
     G.pop();
     if (outpost) return;
     // sentries pacing the wall walk, and a watch on the causeway
@@ -414,6 +428,9 @@ export function lighthouse(S: Site) {
     M.floor = null;
     M.stone().prism([[mx - 4.6, -0.6], [mx + 4.6, -0.6], [mx + 4.6, -len], [mx - 4.6, -len]], [[mx - 3.4, -0.6], [mx + 3.4, -0.6], [mx + 3.4, -len], [mx - 3.4, -len]], -4.5, top);
     M.floor = top;
+    // the mole is walked along, under its parapet, out to the round head the light stands on
+    M.block(mx - 3.4, mx + 3.4, -len, -0.6, top, true).block(mx + 2.75, mx + 3.4, -len, -0.6, top + 1.05, true).block(mx - 5.4, mx + 5.4, -len - 7.4, -len, top, true);
+    M.mark(mx, top, -len - 2, 3.9, 20);
     M.stone().slab(mx + 2.75, mx + 3.4, top, top + 1.05, -len, -0.6);
     M.stone(C.PALE).slab(mx + 2.68, mx + 3.47, top + 1.05, top + 1.18, -len, -0.6, 0.03);
     for (let z = -6; z > -len + 4; z -= 9) M.bollard(mx - 2.9, top, z);
@@ -497,6 +514,7 @@ export function windmill(S: Site) {
         }
     G.push(bx, by - 0.7, bz);
     M.floor = null;
+    M.mark(0, 0, 0, 3.5, 20);
     M.stone(C.PALE, 3);
     G.lathe([[3.6, 0, 1, 0.09], [2.6, 10.6, 1, 0.09]], 14);
     M.wood([0.36, 0.3, 0.25], 0.9);

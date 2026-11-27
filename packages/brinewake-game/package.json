@@ -13,6 +13,7 @@
         "@ryqndev/brinewake-audio": "workspace:*",
         "@ryqndev/brinewake-renderer": "workspace:*",
         "@ryqndev/kiln-core": "workspace:*",
-        "@ryqndev/kiln-math": "workspace:*"
+        "@ryqndev/kiln-math": "workspace:*",
+        "@ryqndev/kiln-net": "workspace:*"
     }
 }

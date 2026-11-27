@@ -9,7 +9,11 @@ import cn from './Reticle.module.scss';
 /** Centre-screen feedback: the gun sight, the hit marker and the arc showing where fire is coming from. */
 export const Reticle = memo(function Reticle() {
     const side = useHud((s) => s.side);
-    const ready = useHud((s) => (s.side === 0 ? s.port : s.starboard) >= RELOAD_STEPS);
+    // a captain alone has the sight while he has the wheel: it lays his broadsides. In a crew it belongs
+    // to whoever is serving a gun, and shows that one gun.
+    const gunner = useHud((s) => s.gunner);
+    const sighted = useHud((s) => s.gunner || (!s.afoot && s.net.role === 'off'));
+    const ready = useHud((s) => (s.gunner ? s.gun : s.side === 0 ? s.port : s.starboard) >= RELOAD_STEPS);
     const hit = useRef<HTMLDivElement>(null);
     const damage = useRef<HTMLDivElement>(null);
     // last values written to the DOM, so a frame with nothing new touches no styles
@@ -29,11 +33,13 @@ export const Reticle = memo(function Reticle() {
 
     return (
         <>
-            <div className={clsx(cn.sight, side < 0 ? cn.masked : ready ? cn.ready : cn.loading)}>
-                <i className={cn.dot} />
-                <div className={cn.ring} />
-                <div className={cn.note}>{side < 0 ? 'guns will not bear' : side ? 'starboard' : 'port'}</div>
-            </div>
+            {sighted && (
+                <div className={clsx(cn.sight, side < 0 ? cn.masked : ready ? cn.ready : cn.loading)}>
+                    <i className={cn.dot} />
+                    <div className={cn.ring} />
+                    <div className={cn.note}>{side < 0 ? 'guns will not bear' : (side ? 'starboard' : 'port') + (gunner ? (ready ? ' gun' : ' gun · loading') : '')}</div>
+                </div>
+            )}
             <div className={cn.hit} ref={hit}>
                 <i />
                 <i />

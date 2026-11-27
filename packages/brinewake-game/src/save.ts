@@ -1,5 +1,6 @@
 import { clamp } from '@ryqndev/kiln-math';
 
+import { NET } from './net/role';
 import { aboard, isStation, MAX_SKILL, type Sailor, type Skill, SKILLS, type Station, TAVERN_SIZE, tavernful } from './ships/crew';
 import { CLASSES, infamyOf, MAX_ESCORTS, maxLevel, UPGRADES } from './ships/defs';
 import { berthsOf, fitting, KIND, SLOTS } from './ships/fittings';
@@ -37,11 +38,24 @@ function sailors(v: unknown, taken: Set<number>): Sailor[] {
 
 /** Reads the saved game, falling back to a fresh one if there is none or it does not parse. */
 export function loadProgress(): Progress {
-    const fresh = newProgress();
     try {
         const raw = localStorage.getItem(KEY);
-        if (!raw) return fresh;
-        const p = JSON.parse(raw) as Partial<Progress>;
+        return raw ? reviveProgress(JSON.parse(raw)) : newProgress();
+    } catch {
+        return newProgress();
+    }
+}
+
+/**
+ * A career out of whatever was kept of one, with every field put back in range: a save read from
+ * storage, or the host's career as it was sent to a hand in their crew. Anything that is not a
+ * career at all comes back as a fresh one.
+ */
+export function reviveProgress(kept: unknown): Progress {
+    const fresh = newProgress();
+    try {
+        if (!kept || typeof kept !== 'object') return fresh;
+        const p = kept as Partial<Progress>;
         const cls = count(p.cls, CLASSES.length - 1);
         // only fittings the yard still sells are kept, and a slot only holds one that is owned
         const owned = [...fresh.owned];
@@ -88,8 +102,9 @@ export function loadProgress(): Progress {
 
 /** Writes the game to local storage. Storage can be unavailable (private windows); the game then simply does not persist. */
 export function saveProgress() {
-    // the drydock's career is a throwaway: the real one stays as it was left
-    if (S.drydock) return;
+    // the drydock's career is a throwaway: the real one stays as it was left. So is the career a hand
+    // in someone else's crew is shown: it is the host's, and theirs to keep.
+    if (S.drydock || NET.client) return;
     try {
         localStorage.setItem(KEY, JSON.stringify(S.prog));
     } catch {

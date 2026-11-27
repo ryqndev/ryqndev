@@ -4,8 +4,24 @@ in float vCalm;
 uniform vec4 uWave[4];
 uniform sampler2D uTerrain,uFoam;
 uniform float uWorld;
+// The hull the sea is not drawn inside: world to her own frame, then (z0, z1, half her beam, her
+// length), and her draught (0: there is none). Her side is the one models.ts lofts: see wAt and kAt there.
+uniform mat4 uDryM;
+uniform vec4 uDry;
+uniform float uDryD;
 out vec4 o;
 void main(){
+  if(uDryD>0.){
+    vec3 h=(uDryM*vec4(vP,1.)).xyz;
+    if(h.z>uDry.x&&h.z<uDry.y){
+      float t=.5-h.z/uDry.w;
+      float w=uDry.z*min(1.,.72+1.3*t)*(1.-pow(max(0.,(t-.4)/.6),2.4));
+      float k=-uDryD*(1.-.6*t*t*t-.2*pow(1.-t,4.));
+      // how far out her planking stands at this height, as a part of that: bilge, waterline, wale
+      float f=h.y<k*.3?mix(.55,.9,clamp((h.y-k*.82)/(k*-.52),0.,1.)):mix(.9,1.,clamp((h.y-k*.3)/(.3-k*.3),0.,1.));
+      if(abs(h.x)<w*f-.1)discard;
+    }
+  }
   // slope of the swell: all four waves, however few of them the mesh itself displaces out here
   vec2 g=vec2(0.);
   float crest=0.;

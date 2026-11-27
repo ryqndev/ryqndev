@@ -4,8 +4,9 @@ import { sfx } from '@ryqndev/brinewake-audio';
 import { cam } from '@ryqndev/brinewake-renderer';
 import { rnd, rnds } from '@ryqndev/kiln-math';
 
-import { fxBurn, fxDust, fxExplosion, fxHit, fxMuzzle, shake } from '../fx';
+import { fxBurn, fxDust, fxExplosion, fxHit, shake } from '../fx';
 import { hud } from '../hud';
+import { NET } from '../net/role';
 import { saveProgress } from '../save';
 import { S } from '../state';
 import { W } from '../world';
@@ -43,33 +44,40 @@ export function hitFort(f: Fort, dmg: number, x: number, y: number, z: number, m
     if (f.down > 0) return;
     fxDust(x, y, z);
     fxHit(x, y, z);
+    if (NET.client) return;
     f.hp -= dmg;
     if (mine) hud.hit(f.hp <= 0);
     if (f.hp <= 0) sack(f);
 }
 
 // the walls are breached: the garrison runs, and what was in the treasury is thrown onto the water
-function sack(f: Fort) {
-    f.hp = 0;
-    f.down = REBUILD;
+/** A fort's walls coming down, as it looks and sounds. */
+export function sackFx(f: Fort) {
     for (let i = 0; i < 4; i++) fxExplosion(f.x + rnds(f.r * 0.7), f.top - rnd(0, 5), f.z + rnds(f.r * 0.7), 1.2);
     sfx.sink(f.x, f.top, f.z);
     shake(Math.max(0.15, 0.7 - Math.hypot(f.x - cam.x, f.z - cam.z) / 500));
+}
+
+function sack(f: Fort) {
+    f.hp = 0;
+    f.down = REBUILD;
+    sackFx(f);
     const chests = 10;
     for (let i = 0; i < chests; i++) loot.push({ x: f.spill[0] + rnds(16), z: f.spill[1] + rnds(16), vx: rnds(2), vz: rnds(2), value: TREASURY / chests, life: 260, seed: rnd(100), kind: i % 2 });
     S.prog.renown += RENOWN;
     hud.banner(f.name.toUpperCase() + ' HAS FALLEN', 'her treasury is on the water');
     // the banner may be taken at once by what the navy now calls the player: this stays
-    hud.toast(f.name + ' has fallen · her treasury is on the water');
+    hud.news(f.name + ' has fallen · her treasury is on the water');
     sfx.horn();
     saveProgress();
 }
 
 /**
  * Runs the forts: a standing one fires on the player inside its reach, laying off for her way; a
- * sacked one burns until its garrison comes back. `fire` throws one ball (see throwShot in cannons.ts).
+ * sacked one burns until its garrison comes back. `fire` throws one ball and `blast` is the gun
+ * going off (see throwShot and muzzleBlast in cannons.ts).
  */
-export function updateForts(dt: number, war: boolean, p: Ship, fire: (gun: GunStats, x: number, y: number, z: number, tx: number, tz: number, team: number, mine: boolean) => unknown) {
+export function updateForts(dt: number, war: boolean, p: Ship, blast: (x: number, y: number, z: number, dx: number, dz: number, heft: number, loud: boolean) => void, fire: (gun: GunStats, x: number, y: number, z: number, tx: number, tz: number, team: number, credit: number) => unknown) {
     if (dt <= 0) return;
     for (const f of forts) {
         if (f.down > 0) {
@@ -95,9 +103,9 @@ export function updateForts(dt: number, war: boolean, p: Ship, fire: (gun: GunSt
             const along = (n - (SALVO - 1) / 2) * 4.5,
                 x = f.x + (dx / d) * (f.r - 4) - (dz / d) * along,
                 z = f.z + (dz / d) * (f.r - 4) + (dx / d) * along;
-            fire(GUN, x, f.top, z, ax, az, TEAM.NAVY, false);
-            fxMuzzle(x, f.top, z, dx / d, dz / d);
+            fire(GUN, x, f.top, z, ax, az, TEAM.NAVY, 0);
+            // one report for the salvo, from the first of its guns
+            blast(x, f.top, z, dx / d, dz / d, GUN.heft, n === 0);
         }
-        sfx.cannon(f.x, f.top, f.z, GUN.heft);
     }
 }

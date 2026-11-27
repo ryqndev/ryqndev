@@ -1,7 +1,7 @@
 import { type Geo, gridNormals, MATERIAL, type Point, ROUND_SCALE } from '@ryqndev/brinewake-renderer';
 import { clamp, PI, TAU } from '@ryqndev/kiln-math';
 
-import type { WorldLight } from './types';
+import type { Block, WorldLight } from './types';
 
 export type Rgb = number[];
 
@@ -71,6 +71,9 @@ export class Mason {
     floor: number | null = null;
     /** lamps hung so far, in world space */
     lights: WorldLight[] = [];
+    /** what has been built so far that a person on foot cannot walk through, in world space: boxes, and round things as [x, z, radius, top] */
+    blocks: Block[] = [];
+    posts: number[][] = [];
 
     constructor(
         readonly G: Geo,
@@ -90,6 +93,27 @@ export class Mason {
     world(x: number, y: number, z: number): Point {
         const m = this.G.st[this.G.st.length - 1].m;
         return [m[0] * x + m[4] * y + m[8] * z + m[12], m[1] * x + m[5] * y + m[9] * z + m[13], m[2] * x + m[6] * y + m[10] * z + m[14]];
+    }
+
+    /**
+     * Marks a box of the current frame as built: from x0 to x1 and z0 to z1, its top at `top`. A
+     * `deck` can be stood on (a terrace, a wall's cope); anything else is solid however high. With
+     * `top1` its top slopes from `top` at z0 to `top1` at z1, as a flight of steps does.
+     */
+    block(x0: number, x1: number, z0: number, z1: number, top: number, deck = false, top1 = top) {
+        const mat = this.G.st[this.G.st.length - 1].m,
+            across = Math.hypot(mat[0], mat[2]) || 1,
+            cx = (x0 + x1) / 2,
+            a = this.world(cx, top, z0),
+            b = this.world(cx, top1, z1);
+        this.blocks.push({ x: (a[0] + b[0]) / 2, z: (a[2] + b[2]) / 2, c: mat[0] / across, s: -mat[2] / across, hw: (Math.abs(x1 - x0) / 2) * across, hd: Math.hypot(b[0] - a[0], b[2] - a[2]) / 2, y0: a[1], y1: b[1], deck });
+        return this;
+    }
+    /** Marks something round standing at a point of the current frame as in the way: `r` across, `h` high. */
+    mark(x: number, y: number, z: number, r: number, h: number) {
+        const p = this.world(x, y + h, z);
+        this.posts.push([p[0], p[2], r, p[1]]);
+        return this;
     }
 
     // ---- materials: `round` is the radius of a tower, so courses wrap it ----
@@ -219,6 +243,7 @@ export class Mason {
     }
     /** An iron lamp standard with its lantern on a bracket. */
     lampPost(x: number, y: number, z: number, h = 3.4, arm = 0.5) {
+        this.mark(x, y, z, 0.2, h);
         this.iron().post(x, y, z, 0.07, h, 5, 0.05).beam([x, y + h - 0.15, z], [x + arm, y + h + 0.1, z], 0.035);
         this.stone(C.DARKSTONE).slab(x - 0.16, x + 0.16, y, y + 0.3, z - 0.16, z + 0.16, 0.03);
         return this.lantern(x + arm, y + h - 0.25, z);
@@ -255,12 +280,41 @@ export class Mason {
         }
         return this;
     }
-    /** A plank door standing on y, in a stone surround, with a step down to the street. */
+    /**
+     * A door standing on y, in a stone surround, with a step down to the street. Its leaf is upright
+     * planks ledged across, hung on iron straps with a ring to pull it by; one wide enough is a pair
+     * of leaves meeting in the middle. Over a tall one there is a light above the lintel.
+     */
     door(x: number, y: number, w: number, h: number, c: Rgb = C.DARK) {
-        const a = w / 2;
+        const a = w / 2,
+            pair = w >= 1.4,
+            // a tall doorway keeps its door to a man's height and glazes what is left over it
+            top = h > 2.45 ? h - 0.5 : h,
+            pale: Rgb = [c[0] * 1.3 + 0.02, c[1] * 1.3 + 0.02, c[2] * 1.3 + 0.02],
+            n = Math.max(3, Math.round(w / 0.23));
         this.stone(C.PALE).slab(x - a - 0.18, x + a + 0.18, y, y + h + 0.2, -0.07, 0.02);
-        this.wood(c, 0.8).slab(x - a, x + a, y, y + h, -0.11, 0);
-        this.iron().slab(x + a - 0.26, x + a - 0.16, y + h * 0.45, y + h * 0.45 + 0.1, -0.16, -0.1);
+        // the reveal it is set back in, and the planks of it
+        this.wood(C.DARK, 0.85).slab(x - a, x + a, y, y + h, -0.075, 0);
+        for (let i = 0; i < n; i++) this.wood(i % 2 ? c : pale, 0.8).slab(x - a + (i * w) / n + 0.008, x - a + ((i + 1) * w) / n - 0.008, y + 0.02, y + top - 0.01, -0.105, -0.07);
+        if (top < h) {
+            // the lintel, and the light over it
+            this.stone(C.PALE).slab(x - a, x + a, y + top, y + top + 0.1, -0.11, -0.05);
+            this.glow(C.LAMP, 0.3).slab(x - a + 0.06, x + a - 0.06, y + top + 0.14, y + h - 0.06, -0.09, -0.07);
+            this.wood(C.DARK, 0.7);
+            for (let i = 1; i < 3; i++) this.slab(x - a + (i * w) / 3 - 0.02, x - a + (i * w) / 3 + 0.02, y + top + 0.1, y + h - 0.04, -0.105, -0.07);
+        }
+        // each leaf: three ledges, two straps from its hanging edge, and a ring at its meeting one
+        for (const [x0, x1, hung] of pair ? [[x - a, x - 0.012, -1], [x + 0.012, x + a, 1]] : [[x - a, x + a, -1]]) {
+            this.wood(C.DARK, 0.8);
+            for (const f of [0.14, 0.5, 0.86]) this.slab(x0 + 0.04, x1 - 0.04, y + top * f - 0.055, y + top * f + 0.055, -0.135, -0.1);
+            this.iron();
+            const edge = hung < 0 ? x0 : x1,
+                meet = hung < 0 ? x1 : x0;
+            for (const f of [0.14, 0.86]) this.slab(Math.min(edge, edge - hung * (x1 - x0) * 0.55), Math.max(edge, edge - hung * (x1 - x0) * 0.55), y + top * f - 0.025, y + top * f + 0.025, -0.15, -0.13);
+            this.slab(meet + hung * 0.2 - 0.045, meet + hung * 0.2 + 0.045, y + top * 0.47, y + top * 0.47 + 0.09, -0.16, -0.13);
+            this.G.push(meet + hung * 0.2, y + top * 0.47 - 0.03, -0.165, 0, PI / 2).cyl(0.06, 0.02, 8, 0.004).pop();
+        }
+        if (pair) this.wood(C.DARK, 0.85).slab(x - 0.012, x + 0.012, y + 0.02, y + top - 0.01, -0.1, -0.07);
         this.stone().slab(x - a - 0.35, x + a + 0.35, y - 0.6, y, -0.75, 0, 0.03);
         return this;
     }
@@ -375,6 +429,9 @@ export class Mason {
             a = w / 2;
         this.stone(C.PALE);
         for (let i = 0; i < n; i++) this.slab(x - a, x + a, y0 - 0.5, y0 + (i + 1) * dy, z0 + i * dz, z1 + 0.2);
+        // a flight is walked up as a slope; its side walls are walls
+        this.block(x - a, x + a, z0, z1 + 0.2, y0, true, y1);
+        if (walls) for (const s of [-1, 1]) this.block(x + s * a, x + s * (a + 0.5), z0 - 0.3, z1 + 0.2, y0 + 0.95, true, y1 + 0.95);
         if (walls) {
             this.stone();
             for (const s of [-1, 1]) {
@@ -409,6 +466,7 @@ export class Mason {
 
     // ---- the furniture of a port ----
     crate(x: number, y: number, z: number, s = 0.5, yaw = 0) {
+        this.mark(x, y, z, s * 1.15, s * 2);
         this.G.push(x, y + s, z, yaw);
         this.wood(C.PLANK, 0.9).G.box(s, s, s, 0.04);
         this.wood(C.DARK);
@@ -417,6 +475,7 @@ export class Mason {
         return this;
     }
     barrel(x: number, y: number, z: number, s = 1, lying = 0) {
+        this.mark(x, y, z, 0.5 * s, s);
         const G = this.G;
         G.push(x, y + (lying ? 0.5 * s : 0), z, lying, lying ? PI / 2 : 0, 0, s);
         this.wood([0.46, 0.31, 0.18], 0.9);
@@ -455,11 +514,13 @@ export class Mason {
         return this;
     }
     bollard(x: number, y: number, z: number) {
+        this.mark(x, y, z, 0.28, 0.75);
         this.iron().post(x, y, z, 0.2, 0.62, 7, 0.17).post(x, y + 0.6, z, 0.27, 0.14, 7, 0.2);
         return this;
     }
     /** A gun on its carriage, laid along -Z. */
     cannon(x: number, y: number, z: number, yaw: number, s = 1) {
+        this.mark(x, y, z, 0.75 * s, 1.1 * s);
         const G = this.G;
         G.push(x, y, z, yaw, 0, 0, s);
         this.wood(C.DARK).slab(-0.42, 0.42, 0.22, 0.5, -0.5, 0.95, 0.03).slab(-0.42, 0.42, 0.5, 0.72, 0.2, 0.95, 0.03);
@@ -477,6 +538,7 @@ export class Mason {
     }
     /** A hand cart, its shafts toward -Z. */
     cart(x: number, y: number, z: number, yaw: number) {
+        this.mark(x, y, z, 1.25, 1.5);
         const G = this.G;
         G.push(x, y, z, yaw);
         this.wood(C.PLANK).slab(-0.7, 0.7, 0.62, 0.72, -1.1, 1.1).slab(-0.7, -0.62, 0.72, 1.1, -1.1, 1.1).slab(0.62, 0.7, 0.72, 1.1, -1.1, 1.1).slab(-0.7, 0.7, 0.72, 1.1, 1.02, 1.1);
@@ -490,6 +552,7 @@ export class Mason {
     }
     /** A market stall: a trestle of goods under a striped awning. */
     stall(x: number, y: number, z: number, yaw: number, c: Rgb) {
+        this.mark(x, y, z, 1.3, 2.4);
         const G = this.G;
         G.push(x, y, z, yaw);
         this.wood(C.PLANK).slab(-1.5, 1.5, 0.85, 0.93, -0.75, 0.75);
@@ -541,6 +604,7 @@ export class Mason {
     }
     /** A coconut palm rooted at (x, y, z); `s` scales it. Its fronds move in the wind. */
     palm(x: number, y: number, z: number, s: number) {
+        this.mark(x, y, z, 0.3 * s, 5);
         const G = this.G,
             lean = this.rr(0, TAU),
             bend = this.rr(0.5, 2.4) * s,

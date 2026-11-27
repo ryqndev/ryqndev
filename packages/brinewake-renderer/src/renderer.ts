@@ -2,7 +2,7 @@ import { allocBloom, bloom, caps, createFramebuffer, createNoiseTexture, createP
 import { m4, m4mul, m4ortho } from '@ryqndev/kiln-math';
 
 import { cam } from './camera';
-import { FAR, FOAM_CAPACITY, FOAM_STRIDE, INSTANCE_STRIDE, NEAR, PARTICLE_CAPACITY, post, R, SHADOW_RANGE, WORLD } from './config';
+import { dry, FAR, FOAM_CAPACITY, FOAM_STRIDE, INSTANCE_STRIDE, NEAR, PARTICLE_CAPACITY, post, R, SHADOW_RANGE, WORLD } from './config';
 import { env } from './environment';
 import type { Frame } from './frame';
 import type { Mesh } from './geometry/mesh';
@@ -354,6 +354,10 @@ export function render(frame: Frame) {
     gl.uniform1f(P.water.u.uWorld, 0.5 / WORLD);
     gl.uniform1i(P.water.u.uTerrain, UNIT_TERRAIN);
     gl.uniform1i(P.water.u.uFoam, UNIT_FOAM);
+    // the one hull the sea is kept out of (see `dry`): with none, a draught of zero says so
+    gl.uniformMatrix4fv(P.water.u.uDryM, false, dry.m);
+    gl.uniform4f(P.water.u.uDry, dry.z0, dry.z1, dry.half, dry.len);
+    gl.uniform1f(P.water.u.uDryD, dry.on ? dry.draft : 0);
     gl.bindVertexArray(ocean.vao);
     gl.drawElements(gl.TRIANGLES, ocean.count, gl.UNSIGNED_INT, 0);
     gl.disable(gl.DEPTH_TEST);

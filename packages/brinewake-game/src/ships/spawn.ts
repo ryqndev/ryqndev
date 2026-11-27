@@ -3,14 +3,20 @@ import { gunOf, newBattery } from './battery';
 import { ships } from './state';
 import { AI, type Role, type Ship, type ShipType } from './types';
 
+// the next ship's id: never reused, so that a ship launched as another goes down is not taken for her
+let launched = 1;
+
+/** The ship afloat with an id, if there is one. */
+export const shipById = (id: number) => ships.find((s) => s.id === id) ?? null;
+
 /** Launches a ship and adds it to the world. */
 export function makeShip(role: Role, team: number, type: ShipType, x: number, z: number, yaw: number): Ship {
     const s: Ship = {
-        role, team, type, hull: HULLS[type.hull], scale: type.scale, x, z, yaw, v: 0, w: 0, y: 0, pitch: 0, roll: 0, sail: 0, canvas: 0, rudder: 0,
+        id: launched++, role, team, type, hull: HULLS[type.hull], scale: type.scale, x, z, yaw, v: 0, w: 0, y: 0, pitch: 0, roll: 0, sail: 0, canvas: 0, rudder: 0,
         hp: type.hp, max: type.hp, crew: 1, rig: 1, struck: false, snare: 0, holder: null, speed: type.speed, turn: type.turn, mend: 0, paint: type.paint, cloth: type.canvas, sigil: null, ink: [1, 1, 1],
         bat: [newBattery(gunOf(type)), newBattery(gunOf(type))], flash: 0, sink: 0, dead: false, hl: 0, hb: 0, br2: 0, loot: type.loot,
         st: AI.CRUISE, think: Math.random() * 0.3, tgt: null, wp: 0, goal: yaw, want: 2, orbit: Math.random() < 0.5 ? 1 : -1, aggro: 0, slot: 0,
-        seed: Math.random() * 100, wake: 0, ground: 0,
+        seed: Math.random() * 100, wake: 0, ground: 0, gx: x, gz: z, gyaw: yaw,
     };
     measure(s);
     ships.push(s);

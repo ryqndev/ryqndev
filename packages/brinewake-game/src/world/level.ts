@@ -54,12 +54,14 @@ export function buildWorld() {
     // ---- the king's fort on its outer island, flying navy colours ----
     {
         const K = KEEP,
-            lit = M.lights.length;
+            lit = M.lights.length,
+            built = M.blocks.length;
         G.push(K.x, 0, K.z, K.yaw);
         fort({ M, G, T: { ...W.town, smokes: [] }, at: () => [0, 0, 0], solid: () => {}, walk: () => {}, idler: () => {} }, { x: 0, z: 0, y: K.y }, [[0.12, 0.24, 0.6], [0.92, 0.9, 0.84]], true);
         G.pop();
         M.floor = null;
         W.lights.push(...M.lights.slice(lit));
+        W.blocks.push(...M.blocks.slice(built));
         // its treasure lands on the nearest open water in front of it
         let spill = [K.x + K.dx * 60, K.z + K.dz * 60];
         for (let d = K.r + 14; d < 160; d += 6)
@@ -69,6 +71,8 @@ export function buildWorld() {
             }
         W.strongholds = [{ name: K.name, x: K.x, z: K.z, yaw: K.yaw, r: 18, top: 12.2, spill }];
     }
+    // every palm on every island is in the way of someone walking it
+    W.posts.push(...M.posts);
     W.mesh = { terrain, props: G.build() };
 
     // ---- the roads off the harbour mouth, where a ship anchors; and the sea lanes around the archipelago ----

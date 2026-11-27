@@ -5,7 +5,7 @@
 import type { Point } from '@ryqndev/brinewake-renderer';
 import { m4, m4aim } from '@ryqndev/kiln-math';
 
-import type { GunSite, HullKit } from './kit';
+import { type GunSite, type HullKit, round } from './kit';
 
 export interface Mount {
     /** guns it puts in a battery, on a hull drawn with `ports` gun ports a side */
@@ -54,8 +54,8 @@ const GUN_IN = 1.35;
 // a barrel lying athwartships with its breech face `u` metres outboard of her side, `scale` times a long gun's size
 function barrel(k: HullKit, p: GunSite, u: number, v: number, scale: number, profile: number[][], seg: number, sr = scale) {
     k.g.pushM(m4aim(m4(), p.s * (p.x + u), v, p.z, p.s, 0, 0, sr, scale, sr));
-    k.iron().lathe(profile, seg);
-    if (profile !== MORTAR) k.dark().lathe(BORE, seg);
+    k.iron().lathe(profile, round(k.q, seg));
+    if (profile !== MORTAR) k.dark().lathe(BORE, round(k.q, seg));
     k.g.pop();
 }
 
@@ -72,64 +72,110 @@ function dressPort(k: HullKit, p: GunSite) {
             g.push(s * (x + 0.02), y, z + d).box(0.05, 0.27, 0.03, 0.01).pop();
         }
     }
-    if (!grand) return;
+    // the lid, swung up over it: on a working hull only when she is looked at closely
+    if (!grand && k.q < 1) return;
+    g.push(s * (x + 0.24), y + 0.5, z, 0, 0, s * -0.95);
     if (grand > 1) k.paint();
     else k.wood(k.wale, 0.7);
-    g.push(s * (x + 0.24), y + 0.5, z, 0, 0, s * -0.95).box(0.025, 0.24, 0.27, 0.01).pop();
+    g.box(0.025, 0.24, 0.27, 0.01);
+    if (k.q > 1) {
+        // strap hinges down it, and a ringbolt to haul it up by
+        k.ironwork();
+        for (const w of [-0.16, 0.16]) g.push(s * 0.02, 0.03, w).box(0.02, 0.2, 0.025, 0.004).pop();
+        g.push(s * 0.04, -0.14, 0).sphere(0.035, 5, 3).pop();
+    }
+    g.pop();
     if (grand > 1) k.gilt().push(s * (x + 0.3), y + 0.56, z).sphere(0.06, 6, 4).pop();
+    // and the lanyard it is triced up with, led in over her rail
+    if (k.q > 1) k.hemp().strut([s * (x + 0.4), y + 0.64, z], [s * (x + 0.02), Math.max(p.rail - 0.06, y + 0.7), z], 0.012, 0.012, 3);
 }
 
+/** How far inboard of her planking the lining of a deck below stands: what a port there is framed on. */
+export const LINING = 0.2;
+
 /**
- * A gun of a lower tier, on a ship with a gun deck: all that shows of it is its chase run out
- * through a port in her side, the lid triced up over it. `calibre` is its size against a long gun's.
+ * A gun of a lower tier, on a ship with a gun deck: its chase run out through a port in her side,
+ * the lid triced up over it. `calibre` is its size against a long gun's. With `inside`, the deck it
+ * stands on is built too: then the whole gun is there on its carriage, at a port framed in her lining.
  */
-export function lowerGun(k: HullKit, p: GunSite, calibre: number): Point {
-    barrel(k, p, -GUN_IN * calibre, p.y, calibre, CHASE, 10);
+export function lowerGun(k: HullKit, p: GunSite, calibre: number, inside: boolean): Point {
+    if (inside) {
+        carriageGun(k, p, calibre);
+        // the port from within: a frame on her lining, and daylight in it round the gun
+        const { g } = k,
+            hw = 0.3 * calibre;
+        k.wood(k.wale, 0.75);
+        for (const d of [-hw, hw]) {
+            g.push(...(p.at(-LINING - 0.02, p.y + d, 0) as [number, number, number])).box(0.03, 0.035, hw + 0.035, 0.008).pop();
+            g.push(...(p.at(-LINING - 0.02, p.y, d) as [number, number, number])).box(0.03, hw + 0.035, 0.035, 0.008).pop();
+        }
+        k.lamp(0.72, 0.84, 1, 0.02)
+            .push(...(p.at(-LINING - 0.012, p.y, 0) as [number, number, number]))
+            .box(0.01, hw, hw, 0)
+            .pop();
+    } else barrel(k, p, -GUN_IN * calibre, p.y, calibre, CHASE, 10);
     k.wood(k.wale, 0.7)
         .push(p.s * (p.x + 0.1), p.y + 0.36 * calibre, p.z)
         .box(0.12, 0.04, 0.34 * calibre, 0.01)
         .pop();
-    if (k.grand > 1) k.gilt().strut([p.s * (p.x + 0.01), p.y, p.z], [p.s * (p.x + 0.09), p.y, p.z], 0.33 * calibre, 0.3 * calibre, 8);
+    if (k.grand > 1) k.gilt().strut([p.s * (p.x + 0.01), p.y, p.z], [p.s * (p.x + 0.09), p.y, p.z], 0.33 * calibre, 0.3 * calibre, round(k.q, 8));
     return [p.x + 0.65, p.y, p.z];
 }
 
-// A long gun on a truck carriage at a port: two stepped cheeks on a bed, on axletrees and four trucks,
-// the barrel hung between the cheeks by its trunnions and laid by a quoin under the breech.
-function longGun(k: HullKit, p: GunSite): Point {
-    const { g } = k,
-        y = p.y,
-        floor = y - 0.4,
-        // these are laid out from the breech face, as a gun is
-        at = (u: number, v: number, w = 0) => p.at(u - GUN_IN, v, w),
-        block = (u0: number, u1: number, v0: number, v1: number, w: number, hw: number) => p.block(u0 - GUN_IN, u1 - GUN_IN, v0, v1, w, hw);
-    barrel(k, p, -GUN_IN, y, 1, BARREL, 10);
+// A gun on a truck carriage, `c` times a long gun's size: two stepped cheeks on a bed, on axletrees
+// and four trucks, the barrel hung between the cheeks by its trunnions and laid by a quoin under the
+// breech. Its bore is at the site's height and its trucks on the deck that is 0.4 c under that.
+function carriageGun(k: HullKit, p: GunSite, c = 1) {
+    const { g, q } = k,
+        // these are laid out from the breech face, as a gun is; heights are from the bore
+        at = (u: number, v: number, w = 0) => p.at((u - GUN_IN) * c, p.y + v * c, w * c),
+        block = (u0: number, u1: number, v0: number, v1: number, w: number, hw: number) => p.block((u0 - GUN_IN) * c, (u1 - GUN_IN) * c, p.y + v0 * c, p.y + v1 * c, w * c, hw * c);
+    barrel(k, p, -GUN_IN * c, p.y, c, BARREL, 10);
     k.wood(k.spar, 0.75);
     for (const w of [-0.2, 0.2]) {
-        block(0.62, 1.14, y - 0.25, y - 0.035, w, 0.035);
-        block(0.3, 0.62, y - 0.25, y - 0.12, w, 0.035);
-        block(-0.04, 0.3, y - 0.25, y - 0.2, w, 0.035);
+        block(0.62, 1.14, -0.25, -0.035, w, 0.035);
+        block(0.3, 0.62, -0.25, -0.12, w, 0.035);
+        block(-0.04, 0.3, -0.25, -0.2, w, 0.035);
     }
-    block(0, 1.12, y - 0.275, y - 0.235, 0, 0.17);
+    block(0, 1.12, -0.275, -0.235, 0, 0.17);
     k.wood(k.wale, 0.8);
     for (const [u, r] of [[0.2, 0.1], [0.95, 0.125]]) {
-        block(u - 0.055, u + 0.055, floor + r - 0.045, floor + r + 0.045, 0, 0.25);
-        for (const w of [-0.325, 0.255]) g.push(...(at(u, floor + r, w) as [number, number, number]), 0, Math.PI / 2).cyl(r, 0.07, 8, 0).pop();
+        block(u - 0.055, u + 0.055, -0.4 + r - 0.045, -0.4 + r + 0.045, 0, 0.25);
+        for (const w of [-0.325, 0.255]) g.push(...(at(u, -0.4 + r, w) as [number, number, number]), 0, Math.PI / 2, 0, c).cyl(r, 0.07, round(q, 8), 0).pop();
     }
     // the quoin, with the handle it is drawn out by
-    block(0.04, 0.34, y - 0.235, y - 0.17, 0, 0.08);
-    g.strut(at(-0.12, y - 0.2), at(0.05, y - 0.2), 0.022, 0.022, 4);
+    block(0.04, 0.34, -0.235, -0.17, 0, 0.08);
+    g.strut(at(-0.12, -0.2), at(0.05, -0.2), 0.022 * c, 0.022 * c, 4);
     // trunnions, and the capsquares that hold them down
-    k.iron().strut(at(0.85, y - 0.02, -0.26), at(0.85, y - 0.02, 0.26), 0.05, 0.05, 5);
-    for (const w of [-0.2, 0.2]) block(0.75, 0.95, y + 0.025, y + 0.045, w, 0.042);
+    k.iron().strut(at(0.85, -0.02, -0.26), at(0.85, -0.02, 0.26), 0.05 * c, 0.05 * c, round(q, 5));
+    for (const w of [-0.2, 0.2]) block(0.75, 0.95, 0.025, 0.045, w, 0.042);
+    if (q > 0) {
+        // ringbolts in her side, and eyebolts in the cheeks for the tackles
+        for (const w of [-0.44, 0.44]) g.push(...(at(1.2, -0.08, w) as [number, number, number])).sphere(0.035 * c, 5, 3).pop();
+    }
     // the breeching: a rope from a ringbolt in the bulwark either side, hanging slack to the deck and
     // up round her cascabel, to take the recoil
     k.hemp();
     for (const w of [-1, 1]) {
-        const line = [at(1.14, y - 0.08, w * 0.44), at(0.7, floor + 0.07, w * 0.42), at(0.2, floor + 0.09, w * 0.38), at(-0.06, y - 0.08, w * 0.16), at(-0.1, y, 0)];
-        for (let i = 0; i + 1 < line.length; i++) g.strut(line[i], line[i + 1], 0.021, 0.021, 4);
+        const line = [at(1.14, -0.08, w * 0.44), at(0.7, -0.33, w * 0.42), at(0.2, -0.31, w * 0.38), at(-0.06, -0.08, w * 0.16), at(-0.1, 0, 0)];
+        for (let i = 0; i + 1 < line.length; i++) g.strut(line[i], line[i + 1], 0.021 * c, 0.021 * c, round(q, 4));
+        if (q > 1) {
+            // and a side tackle each side to run her out by: two blocks with the fall rove between them
+            const a = at(1.16, -0.16, w * 0.52),
+                b = at(0.45, -0.2, w * 0.3);
+            g.strut(a, b, 0.011 * c, 0.011 * c, 3);
+            k.wood(k.wale, 0.8);
+            for (const f of [0.14, 0.86]) g.push(a[0] + (b[0] - a[0]) * f, a[1] + (b[1] - a[1]) * f, a[2] + (b[2] - a[2]) * f).box(0.045 * c, 0.03 * c, 0.03 * c, 0.01).pop();
+            k.hemp();
+        }
     }
+}
+
+// A long gun at a port on her upper deck.
+function longGun(k: HullKit, p: GunSite): Point {
+    carriageGun(k, p);
     dressPort(k, p);
-    return [p.x + 0.65, y, p.z];
+    return [p.x + 0.65, p.y, p.z];
 }
 
 // A swivel: a small gun in an iron yoke on a timber stock stepped inside the bulwark, standing over

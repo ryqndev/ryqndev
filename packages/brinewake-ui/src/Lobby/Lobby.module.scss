@@ -1,0 +1,162 @@
+@use '../styles/tokens' as *;
+
+// a panel at the right edge of a menu screen, below the title: the one part of it that is not "click to play"
+.lobby {
+    position: absolute;
+    top: 50%;
+    right: 24px;
+    transform: translateY(-50%);
+    width: 232px;
+    padding: 14px 16px 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    text-align: left;
+    background: $panel;
+    border: 1px solid rgb(201 162 90 / 40%);
+    cursor: default;
+}
+
+.heading {
+    @include label;
+
+    color: $gold;
+    opacity: 1;
+}
+
+.field {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 7px 9px;
+    font: inherit;
+    font-size: 12px;
+    letter-spacing: 0.06em;
+    color: $text;
+    background: rgb(0 0 0 / 35%);
+    border: 1px solid rgb(255 255 255 / 22%);
+    outline: none;
+    user-select: text;
+
+    &:focus {
+        border-color: $gold;
+    }
+
+    &::placeholder {
+        color: $text;
+        opacity: 0.4;
+    }
+}
+
+.code {
+    @include mono;
+
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+}
+
+.join {
+    display: flex;
+    gap: 6px;
+
+    .action {
+        flex: none;
+        width: 72px;
+    }
+}
+
+.action {
+    padding: 7px 10px;
+    font: inherit;
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: $text;
+    background: rgb(201 162 90 / 16%);
+    border: 1px solid rgb(201 162 90 / 55%);
+    cursor: pointer;
+    transition:
+        background 0.16s,
+        border-color 0.16s;
+
+    &:hover:not(:disabled) {
+        background: rgb(201 162 90 / 30%);
+        border-color: $gold;
+    }
+
+    &:disabled {
+        opacity: 0.4;
+        cursor: default;
+    }
+}
+
+.leave {
+    @extend .action;
+
+    background: none;
+    border-color: rgb(255 255 255 / 22%);
+    opacity: 0.7;
+
+    &:hover:not(:disabled) {
+        background: none;
+        border-color: $danger;
+        color: $danger;
+        opacity: 1;
+    }
+}
+
+.note {
+    font-size: 10px;
+    letter-spacing: 0.08em;
+    line-height: 1.5;
+    opacity: 0.6;
+}
+
+.error {
+    font-size: 11px;
+    letter-spacing: 0.04em;
+    line-height: 1.4;
+    color: $danger;
+}
+
+// the room's code, big enough to read out across a room
+.badge {
+    @include mono;
+
+    font-size: 30px;
+    font-weight: 300;
+    letter-spacing: 0.24em;
+    line-height: 1.1;
+    color: $gold;
+    user-select: text;
+}
+
+.roster {
+    margin: 2px 0;
+    padding: 0;
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    font-size: 12px;
+    letter-spacing: 0.04em;
+
+    li {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    i {
+        flex: none;
+        width: 9px;
+        height: 9px;
+        border-radius: 50%;
+    }
+
+    span {
+        @include label;
+
+        margin-left: auto;
+        font-size: 9px;
+    }
+}

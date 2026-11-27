@@ -1,7 +1,9 @@
 import { project } from '@ryqndev/brinewake-renderer';
 import { createHud, type HudCore } from '@ryqndev/kiln-core';
 
-import { reloadProgress } from './ships/battery';
+import { NET, net, type NetView, type Shipmate } from './net/role';
+import { mates } from './posts';
+import { gunProgress, reloadProgress } from './ships/battery';
 import type { Sailor } from './ships/crew';
 import { INFAMY, infamyOf, UPGRADES } from './ships/defs';
 import { type Slot, SLOTS, STOCK } from './ships/fittings';
@@ -13,7 +15,7 @@ import { W } from './world';
 
 export type HudMode = Mode | 'unsupported';
 /** Onboarding hints, by name. */
-export type Hint = 'sail' | 'aim' | 'plunder' | 'bank' | 'dock' | 'full';
+export type Hint = 'sail' | 'aim' | 'plunder' | 'bank' | 'dock' | 'full' | 'board' | 'helm' | 'climb' | 'gun' | 'line';
 
 /** Steps a broadside's reload gauge is published in. */
 export const RELOAD_STEPS = 12;
@@ -52,6 +54,14 @@ export interface HudState extends HudCore<HudMode, Stats, Hint> {
     won: boolean;
     /** in the drydock: the shipyard on its own, on a career that is not kept */
     drydock: boolean;
+    /** the captain is on foot: nobody is at the wheel, so there is no gun sight */
+    afoot: boolean;
+    /** where this browser stands in a crew of players, and everyone in it: this player first */
+    net: NetView;
+    shipmates: Shipmate[];
+    /** in a crew, this player is serving a gun, and how far through its reload it is, 0..RELOAD_STEPS */
+    gunner: boolean;
+    gun: number;
 }
 
 /** Floats per marker in `hudSignals.targets` (a ship, or a fort): x, y in normalised screen space, hull 0..1, team, crew 0..1. */
@@ -62,7 +72,12 @@ export const BLIP_STRIDE = 3;
 export const MAX_BLIPS = 64;
 export const BLIP = { NAVY: 0, TRADE: 1, FRIEND: 2, LOOT: 3, FLAGSHIP: 4, FORT: 5 } as const;
 
-const core = createHud<HudState, { targets: Float32Array; targetCount: number; blips: Float32Array; blipCount: number; self: Float32Array; home: Float32Array }>(
+/** Floats per name in `hudSignals.tags`, one for each of `shipmates` after this player: x, y in normalised screen space, 1 when it is in view. */
+export const TAG_STRIDE = 3;
+/** How far off a mate's name is still shown over their head, metres. */
+const TAG_RANGE = 140;
+
+const core = createHud<HudState, { targets: Float32Array; targetCount: number; blips: Float32Array; blipCount: number; self: Float32Array; home: Float32Array; tags: Float32Array }>(
     {
         mode: 'title',
         stats: { sunk: 0, plunder: 0, time: 0 },
@@ -87,6 +102,11 @@ const core = createHud<HudState, { targets: Float32Array; targetCount: number; b
         escorts: 0,
         won: false,
         drydock: false,
+        afoot: true,
+        net: net.view,
+        shipmates: net.mates,
+        gunner: false,
+        gun: RELOAD_STEPS,
         banner: { title: '', sub: '' },
         bannerOn: false,
         tip: { kind: 'sail', text: '' },
@@ -103,6 +123,8 @@ const core = createHud<HudState, { targets: Float32Array; targetCount: number; b
         self: new Float32Array(3),
         /** the home port's waypoint: x, y in normalised screen space, 1 when in front of the camera, metres away */
         home: new Float32Array(4),
+        /** where each mate's name goes: see TAG_STRIDE */
+        tags: new Float32Array(8 * TAG_STRIDE),
     },
     { banner: 4, toast: 2.2, kill: 0.5 }
 );
@@ -126,12 +148,28 @@ export const hud = {
     mode(mode: HudMode) {
         core.mode(mode, { ...S.prog.stats });
     },
-    hit: core.hit,
+    /** A shot told. In a crew it shows on the sight of whoever fired it, which may be another browser's. */
+    hit(kill: boolean) {
+        if (NET.shooter > 0) NET.onHit?.(NET.shooter, kill);
+        else core.hit(kill);
+    },
     /** `a` is the world-space heading the shot was travelling */
     dmgDir: core.dmgDir,
-    banner: core.banner,
+    /** Something the whole crew is told. */
+    banner(title: string, sub = '') {
+        core.banner(title, sub);
+        NET.onNews?.(title, sub);
+    },
     tip: core.tip,
+    /** A line of text for this player alone. */
     toast: core.toast,
+    /** A line of text for the whole crew. */
+    news(text: string) {
+        core.toast(text);
+        NET.onNews?.('', text);
+    },
+    /** What the host had to say, shown here as it was there: its banners, its news, and this player's own hits. */
+    heard: { banner: core.banner, news: core.toast, hit: core.hit },
     fps: core.fps,
     /** Runs once per frame: publishes changed values, advances timers, refreshes the per-frame signals. */
     update(dt: number) {
@@ -155,6 +193,11 @@ export const hud = {
         put('escorts', prog.escorts);
         put('won', prog.won);
         put('drydock', S.drydock);
+        put('afoot', PL.afoot);
+        put('net', net.view);
+        put('shipmates', net.mates);
+        put('gunner', PL.gun >= 0);
+        put('gun', PL.gun >= 0 ? Math.round(gunProgress(p.bat[PL.gunSide], PL.gun) * RELOAD_STEPS) : RELOAD_STEPS);
         if (prog.levels.some((l, i) => l !== cur.levels[i])) put('levels', [...prog.levels]);
         if (prog.hulls.some((o, i) => o !== cur.hulls[i])) put('hulls', [...prog.hulls]);
         if (SLOTS.some((slot) => prog.fit[slot] !== cur.fit[slot])) put('fit', { ...prog.fit });
@@ -211,6 +254,15 @@ export const hud = {
         sig.self[0] = p.x;
         sig.self[1] = p.z;
         sig.self[2] = p.yaw;
+        // a name over the head of each mate near enough to want one
+        for (let i = 0; i < mates.length && (i + 1) * TAG_STRIDE <= sig.tags.length; i++) {
+            const m = mates[i],
+                o = i * TAG_STRIDE,
+                near = m.seen && (m.wx - PL.me.x) ** 2 + (m.wz - PL.me.z) ** 2 < TAG_RANGE * TAG_RANGE;
+            sig.tags[o + 2] = near && project(m.wx, m.wy + 2.25, m.wz, pj) && pj.x > 0 && pj.x < 1 && pj.y > 0 && pj.y < 1 ? 1 : 0;
+            sig.tags[o] = pj.x;
+            sig.tags[o + 1] = pj.y;
+        }
         const front = project(W.port.x, 14, W.port.z, pj);
         sig.home[0] = pj.x;
         sig.home[1] = pj.y;

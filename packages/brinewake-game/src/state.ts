@@ -1,3 +1,4 @@
+import { NET } from './net/role';
 import { type Sailor, TAVERN_SIZE, tavernful } from './ships/crew';
 import { UPGRADES } from './ships/defs';
 import { type Build, type Slot, STOCK } from './ships/fittings';
@@ -66,9 +67,53 @@ export interface GameState {
     prog: Progress;
 }
 
-/** The player's ship and how they are looking at it. */
+/** Where the captain's feet are: on a deck of his ship, on land (or a wharf), in the sea, or on the gangway. */
+export const ON = { DECK: 0, LAND: 1, SEA: 2, PLANK: 3 } as const;
+
+/** The captain on his own two feet. Run by afoot.ts. */
+export interface Walker {
+    /** his feet, in the world, and the way he faces */
+    x: number;
+    y: number;
+    z: number;
+    yaw: number;
+    /** which of ON he stands on, and while that is his ship's deck, where on it (in her own frame) and the heading she had */
+    on: number;
+    /** on his ship's deck, but under it: in the cabin below her quarterdeck, on its floor */
+    below: boolean;
+    /** which of her decks he is on: 0 her weather decks (and her cabin), 1 the first deck under them, and so on down */
+    tier: number;
+    /** the flight of her steps he is on, as its place in her hull's `flights`; -1 while he is on none */
+    flight: number;
+    lx: number;
+    lz: number;
+    heading: number;
+    /** off the ground (jumping or falling) and how fast he is rising */
+    air: boolean;
+    vy: number;
+    /** how fast he is going over the ground, m/s, and the way he is going: he gathers speed and loses it, he does not start and stop */
+    speed: number;
+    mx: number;
+    mz: number;
+    /** where in his stride (or his stroke) he is, radians */
+    phase: number;
+}
+
+/** The player: the captain, his ship, and how they are looking at whichever they have charge of. */
 export interface PlayerState {
     ship: Ship;
+    /** true while the captain is on foot; false while he has the wheel, and the player sails the ship */
+    afoot: boolean;
+    me: Walker;
+    /**
+     * In a crew: the gun he is serving (-1 while he serves none), its battery (0 port, 1 starboard),
+     * and how far off the beam he has trained it, radians.
+     */
+    gun: number;
+    gunSide: number;
+    train: number;
+    /** she lies alongside the wharf with her gangway down, until someone at her wheel makes sail */
+    berthed: boolean;
     /** orbit camera: heading and pitch of the line of sight, and a zoom factor on its distance */
     camYaw: number;
     camPitch: number;
@@ -90,7 +135,15 @@ export interface PlayerState {
     god: boolean;
 }
 
-export const PL: PlayerState = { ship: null!, camYaw: 0, camPitch: -0.2, dist: 1, zoom: 0, side: -1, aimX: 0, aimZ: 0, canDock: false, fired: 0, dress: 0, god: false };
+export const PL: PlayerState = {
+    ship: null!,
+    afoot: true,
+    me: { x: 0, y: 0, z: 0, yaw: 0, on: ON.LAND, below: false, tier: 0, flight: -1, lx: 0, lz: 0, heading: 0, air: false, vy: 0, speed: 0, mx: 0, mz: 0, phase: 0 },
+    gun: -1,
+    gunSide: 0,
+    train: 0,
+    berthed: false,
+    camYaw: 0, camPitch: -0.2, dist: 1, zoom: 0, side: -1, aimX: 0, aimZ: 0, canDock: false, fired: 0, dress: 0, god: false };
 
 export const newProgress = (): Progress => ({
     gold: 0,
@@ -107,6 +160,12 @@ export const newProgress = (): Progress => ({
     won: false,
     stats: { sunk: 0, plunder: 0, time: 0 },
 });
+
+/**
+ * True while the world is running under the player: in play, and in a crew behind the pause menu
+ * too, since a sea shared with others does not stop because one of them has looked away.
+ */
+export const live = () => S.mode === 'play' || (NET.on && S.mode === 'pause');
 
 /** Shared mutable game state. One game runs per page, so this is a module singleton. */
 export const S: GameState = {

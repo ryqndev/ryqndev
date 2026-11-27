@@ -73,6 +73,26 @@ export interface Stronghold {
     spill: number[];
 }
 
+/**
+ * Something built that stands in the way of a person on foot, as a box in the world: a building, a
+ * wall, a terrace, a flight of steps. Its top may slope from one end to the other (steps do). One
+ * that is a `deck` can be stood on by anyone who gets up to it; the rest are solid whatever their height.
+ */
+export interface Block {
+    /** its middle, and the cosine and sine of the way it is turned */
+    x: number;
+    z: number;
+    c: number;
+    s: number;
+    /** half its width, and half its length */
+    hw: number;
+    hd: number;
+    /** the height of its top at the near end of its length, and at the far end */
+    y0: number;
+    y1: number;
+    deck: boolean;
+}
+
 export interface World {
     mesh: { props: Mesh; terrain: Mesh };
     lights: WorldLight[];
@@ -80,6 +100,9 @@ export interface World {
     town: Town;
     /** the king's forts on the outer islands */
     strongholds: Stronghold[];
+    /** what is built ashore that a person on foot cannot walk through: boxes, and round things as [x, z, radius, top] */
+    blocks: Block[];
+    posts: number[][];
     /** things afloat or standing in the sea that a hull cannot pass through, as [x, z, radius] */
     solids: number[][];
     /** open-water waypoints ringing the archipelago, as [x, z]: trade routes and patrol beats */

@@ -3,15 +3,22 @@ import { cam, clearFoam, env, type Frame, initGL, initRenderer, post, R, render,
 import { attachInput, createFpsMeter, createResolutionGovernor, type Input, keys, listen, mouse, opts } from '@ryqndev/kiln-core';
 import { clamp, damp, smooth, TAU } from '@ryqndev/kiln-math';
 
+import { atWheel, buildCaptain, captainCamera, captainRig, drawCaptain, interact, jump, leaveHelm, stand, updateCaptain } from './afoot';
 import { clearParticles, debris, foam, gpu, light, lightU, pcount, sprite, updateDebris, updateLights, updateParticles } from './fx';
+import { gunNear, gunnerCamera, gunSpot, leaveGun, manGun, updateGunner } from './gunner';
+import { drawHands, handsAboard } from './hands';
 import { hud } from './hud';
-import { buildModels } from './models';
-import { moor, orbitCamera, placeCamera, playerKey, spawnPlayer, updatePlayer } from './player';
+import { drawMates } from './mates';
+import { buildModels, hullModel, HULLS } from './models';
+import { NET,net } from './net/role';
+import { askDock, askFire, helmOrders, hostCrew, joinCrew, leaveCrew, netHooks, netTick, useLocalNetwork } from './net/session';
+import { moor, offPier, orbitCamera, placeCamera, playerKey, spawnPlayer, updatePlayer } from './player';
+import { helmed, mates } from './posts';
 import { clearProgress, loadProgress, saveProgress } from './save';
 import { balls, D, fireBroadside, FOES, forts,hurtShip, INFAMY, infamyOf, loot, makeShip, resetDirector, resetShips, ships, TEAM, updateShips } from './ships';
 import { shipStats } from './ships/fittings';
-import { launchEscort, previewBuild, restock } from './shipyard';
-import { type Mode, newProgress, PL, S } from './state';
+import { launchEscort, previewBuild, refit, restock } from './shipyard';
+import { live, type Mode, newProgress, PL, S } from './state';
 import { buildTownLife, updateTown } from './town';
 import { buildWorld, height, hmap, HN, W } from './world';
 
@@ -20,6 +27,8 @@ export interface GameOptions {
     debug?: boolean;
     /** Opens straight into the drydock instead of the title screen. */
     drydock?: boolean;
+    /** Crews are made up between tabs of this browser instead of over the internet: for working on the game. */
+    localCrews?: boolean;
 }
 
 /** What the drydock's yard will stand a build: enough for everything it sells, many times over. */
@@ -146,10 +155,14 @@ const frameInput: Frame = { time: 0, dt: 0, lights: lightU, particles: gpu, part
  * Mounts the game on a canvas and starts its loop. Returns a function that stops the loop and
  * removes every listener; mounting again on the same canvas resumes where it left off.
  */
-export function mountGame(canvas: HTMLCanvasElement, { debug = false, drydock = false }: GameOptions = {}): () => void {
+export function mountGame(canvas: HTMLCanvasElement, { debug = false, drydock = false, localCrews = false }: GameOptions = {}): () => void {
     if (bound && bound !== canvas) throw new Error('brinewake: the game can only be mounted on one canvas per page');
     if (!bound) {
         bound = canvas;
+        if (localCrews) useLocalNetwork();
+        netHooks.joined = joinedCrew;
+        netHooks.left = leftCrew;
+        netHooks.dock = () => dropAnchor(true);
         if (initGL(canvas)) {
             S.prog = loadProgress();
             buildWorld();
@@ -158,6 +171,7 @@ export function mountGame(canvas: HTMLCanvasElement, { debug = false, drydock = 
             initRenderer(canvas);
             buildModels();
             buildTownLife();
+            buildCaptain();
             resetVoyage();
             setMode('title');
             if (drydock) enterDrydock();
@@ -176,9 +190,9 @@ export function mountGame(canvas: HTMLCanvasElement, { debug = false, drydock = 
         onRelease: () => setMode('pause'),
         onKey,
     });
-    const off = [listen(window, 'resize', resize), listen(document, 'visibilitychange', () => suspendAudio(document.hidden)), ...attachLook(canvas)];
+    const off = [listen(window, 'resize', resize), listen(document, 'visibilitychange', () => suspendAudio(document.hidden)), ...attachLook(canvas), keepTime()];
     if (debug) {
-        (window as unknown as Record<string, unknown>).BW = { S, PL, W, R, D, cam, post, env, ships, loot, balls, keys, mouse, opts, FOES, TEAM, makeShip, hurtShip, fireBroadside, setMode, dock, resetVoyage, height, spy, forts };
+        (window as unknown as Record<string, unknown>).BW = { S, PL, W, R, D, cam, post, env, ships, loot, balls, keys, mouse, opts, FOES, TEAM, makeShip, hurtShip, fireBroadside, setMode, dock, resetVoyage, height, spy, forts, captainRig, NET, net, mates, hostCrew, joinCrew, leaveCrew, gunSpot, manGun, leaveGun, stand, handsAboard, refit, HULLS, hullModel };
     }
     last = performance.now();
     rafId = requestAnimationFrame(frame);
@@ -191,20 +205,57 @@ export function mountGame(canvas: HTMLCanvasElement, { debug = false, drydock = 
     };
 }
 
+/**
+ * A browser gives a page it cannot see no frames, and a host's page is where a crew's whole sea
+ * runs: put behind another tab it would stop for everyone. So while this page is hidden and hosting,
+ * a worker's clock (which is not held back the way a hidden page's own timers are) runs the frames instead.
+ */
+function keepTime(): () => void {
+    let worker: Worker | null = null;
+    try {
+        const tick = URL.createObjectURL(new Blob(['setInterval(() => postMessage(0), 33)'], { type: 'text/javascript' }));
+        worker = new Worker(tick);
+        URL.revokeObjectURL(tick);
+        worker.onmessage = () => {
+            if (document.hidden && NET.host) step(performance.now());
+        };
+    } catch {
+        /* no workers here: a hidden host simply stops, as a captain alone does */
+    }
+    return () => worker?.terminate();
+}
+
 /** Starts or resumes play, or puts back to sea from port. Call from a click handler: it needs a user gesture for audio and pointer lock. */
 export function beginGame() {
     if (!input) return;
     initAudio();
     sfx.ui();
-    if (S.mode === 'dead') relaunch();
-    previewBuild(null);
-    if (S.mode === 'port' || S.mode === 'title') atSea = 0;
+    // a hand in someone else's crew has only to step back into it: the ship and the voyage are the host's
+    if (!NET.client) {
+        if (S.mode === 'dead') relaunch();
+        previewBuild(null);
+        if (S.mode === 'port' || S.mode === 'title') atSea = 0;
+        // out of the yard he is at her wheel, ready to cast off; on a new voyage he starts on the wharf.
+        // In a crew he is left where he was: the wheel may be somebody else's.
+        if (S.mode === 'port' && !NET.on) PL.afoot = false;
+    }
     input.engage();
 }
 
 /** Drops anchor at the home port: banks the hold, repairs the hull and opens the shipyard. */
 export function dock() {
-    if (S.mode !== 'play' || !PL.canDock) return;
+    dropAnchor(false);
+}
+
+// `asked` when it is a hand at the wheel who wants the anchor down, not this player
+function dropAnchor(asked: boolean) {
+    // a hand's anchor is the host's to drop
+    if (NET.client) {
+        if (S.mode === 'play' && !PL.afoot && PL.canDock) askDock();
+        return;
+    }
+    if (!(asked ? live() : S.mode === 'play' && !PL.afoot) || PL.ship.dead || !offPier()) return;
+    PL.berthed = true;
     // the purser makes the most of the hold, and the crew take their shares before the captain sees any
     const s = PL.ship,
         { bank, share } = shipStats(S.prog),
@@ -225,6 +276,23 @@ export function dock() {
     if (document.pointerLockElement) document.exitPointerLock();
 }
 
+// this browser has joined someone else's crew: what is its own is put by, and the title screen waits for a click to go aboard
+function joinedCrew() {
+    S.hold = S.trauma = S.dmgFx = S.flashFx = S.deadT = 0;
+    tipStage = 4;
+    winT = -1;
+    look.held = false;
+    setMode('title');
+}
+
+// and it is out of that crew again: its own career, and a sea of its own
+function leftCrew() {
+    S.prog = loadProgress();
+    resetVoyage();
+    setMode('title');
+    if (document.pointerLockElement) document.exitPointerLock();
+}
+
 // swaps the career for a throwaway one with a bare sloop and a bottomless purse, and opens the yard
 function enterDrydock() {
     S.drydock = true;
@@ -239,7 +307,7 @@ function enterDrydock() {
  * Call from a click handler, so the yard has its sounds.
  */
 export function openDrydock() {
-    if (!supported || !bound || S.mode !== 'title') return;
+    if (!supported || !bound || S.mode !== 'title' || NET.on) return;
     initAudio();
     sfx.ui();
     enterDrydock();
@@ -257,8 +325,9 @@ export function leaveDrydock() {
 
 /** Throws the save away and starts over from a bare sloop. */
 export function resetProgress() {
-    // the drydock has no save of its own to throw away, and must not reach the real one
-    if (!supported || !bound || S.drydock) return;
+    // the drydock has no save of its own to throw away, and must not reach the real one; nor is a
+    // career thrown away from under a crew
+    if (!supported || !bound || S.drydock || NET.on) return;
     clearProgress();
     S.prog = newProgress();
     S.day = 0.07;
@@ -302,7 +371,21 @@ function relaunch() {
 }
 
 function onKey(code: string) {
-    if (code === 'KeyF') dock();
+    if (code === 'KeyE') {
+        if (S.mode !== 'play') return;
+        if (PL.gun >= 0) {
+            leaveGun();
+            sfx.ui();
+        }
+        // a captain alone does not give up the wheel with the navy near enough to take advantage of it;
+        // in a crew there are other hands to take it
+        else if (!PL.afoot && !NET.on && threat() > 0) hud.toast('No leaving the wheel with the navy in sight');
+        // in a crew, E beside a gun that nobody has takes it
+        else if (PL.afoot && !atWheel() && manGun()) sfx.ui();
+        else interact();
+    } else if (code === 'Space') {
+        if (S.mode === 'play') jump();
+    } else if (code === 'KeyF') dock();
     else if (code === 'KeyG') {
         R.quality = (R.quality + 1) % QUALITY_NAMES.length;
         R.dyn = 1;
@@ -313,7 +396,7 @@ function onKey(code: string) {
     else if (code === 'BracketLeft' || code === 'BracketRight') {
         opts.sens = clamp(opts.sens * (code === 'BracketLeft' ? 0.87 : 1.15), 0.0006, 0.008);
         hud.toast('SENSITIVITY · ' + Math.round((opts.sens / DEFAULT_SENS) * 100) + '%');
-    } else playerKey(code);
+    } else if (!PL.afoot) playerKey(code);
 }
 
 function setMode(m: Mode) {
@@ -323,6 +406,8 @@ function setMode(m: Mode) {
     look.held = false;
     if (bound) bound.style.cursor = m === 'port' ? 'grab' : '';
     if (m !== 'play') mouse.l = mouse.r = false;
+    // behind a menu in a crew the world goes on, and nothing is left held down in it
+    if (m !== 'play') for (const k in keys) keys[k] = false;
     // in port she lies alongside the wharf, wherever in the roads she dropped anchor
     if (m === 'port') moor();
 }
@@ -361,8 +446,37 @@ function threat(): number {
     return Math.min(1.2, n);
 }
 
+// the ends a voyage can come to: the admiral beaten, or the ship lost
+function endings(dt: number) {
+    if (D.flagship?.dead && !S.prog.won) {
+        S.prog.won = true;
+        S.flashFx = 1;
+        winT = 0;
+        saveProgress();
+    }
+    if (PL.ship.dead) {
+        S.deadT = 0;
+        // the menus are this player's alone: the rest of a crew are told
+        if (NET.on) hud.banner('LOST WITH ALL HANDS', 'the hold went down with her');
+        setMode('dead');
+        if (document.pointerLockElement) document.exitPointerLock();
+    } else if (winT >= 0 && (winT += dt) > 6) {
+        winT = -1;
+        D.flagship = null;
+        sfx.win();
+        if (NET.on) hud.banner('THE ADMIRAL IS SUNK', 'these waters are yours');
+        setMode('win');
+        if (document.pointerLockElement) document.exitPointerLock();
+    }
+}
+
 function frame(now: number) {
     rafId = requestAnimationFrame(frame);
+    step(now);
+}
+
+// one frame of everything: the simulation, the session, the HUD and the picture
+function step(now: number) {
     const rdt = Math.min(0.05, Math.max(0.001, (now - last) / 1000));
     last = now;
 
@@ -375,38 +489,53 @@ function frame(now: number) {
     const m = S.mode,
         p = PL.ship;
     PL.dress = damp(PL.dress, m === 'port' ? 1 : 0, 2.5, rdt);
-    const dt = m === 'pause' ? 0 : m === 'dead' ? rdt * 0.5 : rdt;
+    // a sea shared with a crew does not stop for one of them, or slow down
+    const dt = NET.on ? rdt : m === 'pause' ? 0 : m === 'dead' ? rdt * 0.5 : rdt;
     S.t += dt;
     // night passes quicker than day: it is a mood, not a place to get lost in
     S.day = (S.day + dt / (Math.sin(S.day * TAU) >= 0 ? 2 * DAYLIGHT : 2 * NIGHT)) % 1;
     setDayPhase(S.day);
 
-    if (m === 'play') {
+    if (live()) {
+        // behind the pause menu in a crew, the controls are let go of and the world carries on
+        if (m === 'pause') {
+            for (const k in keys) keys[k] = false;
+            mouse.dx = mouse.dy = mouse.wheel = 0;
+        }
         atSea += dt;
         S.prog.stats.time += dt;
-        updatePlayer(dt);
-        updateShips(dt, true);
-        tips(dt);
-        if (D.flagship?.dead && !S.prog.won) {
-            S.prog.won = true;
-            S.flashFx = 1;
-            winT = 0;
-            saveProgress();
+        helmOrders();
+        // alongside, she is held to the wharf until someone at her wheel makes sail: for a hand in
+        // someone else's crew that, like everything about her, is the host's to say
+        if (PL.berthed && !NET.client) {
+            if (helmed() && p.sail > 0) PL.berthed = false;
+            else moor(rdt);
         }
-        if (p.dead) {
-            S.deadT = 0;
-            setMode('dead');
-            if (document.pointerLockElement) document.exitPointerLock();
-        } else if (winT >= 0 && (winT += dt) > 6) {
-            winT = -1;
-            D.flagship = null;
-            sfx.win();
-            setMode('win');
-            if (document.pointerLockElement) document.exitPointerLock();
+        // a hand at the wheel of a ship that is lost has no wheel left to hold: they go into the water
+        // with everyone else (the host has the lost-ship screen instead)
+        if (NET.client && p.dead && !PL.afoot) leaveHelm();
+        // the player has the captain on foot, or the ship from her wheel; or, in a crew, one of her guns
+        if (PL.gun >= 0) updateGunner(dt, askFire);
+        else if (PL.afoot) {
+            updateCaptain(dt);
+            if (gunNear()) hud.tip('gun', 0.25);
+        } else {
+            updatePlayer(dt);
+            if (!NET.on) tips(dt);
+            else if (PL.canDock && atSea > 15) hud.tip('dock', 0.6);
         }
+        // A captain alone with nobody at the wheel has the sea at peace: no captain hunts her, and
+        // nothing new puts out. A crew is at war from the moment she leaves the wharf until she is
+        // back alongside it, whoever is or is not at her wheel.
+        updateShips(dt, NET.on ? !PL.berthed : !PL.afoot);
+        // who has won and who is lost is the host's to say: a hand plays on, in the water if need be,
+        // until the host fits out again
+        if (!NET.client) endings(dt);
     } else if (m === 'pause') {
         // re-submit the frozen scene so it keeps drawing
-        placeCamera(0);
+        if (PL.gun >= 0) gunnerCamera(0);
+        else if (PL.afoot) captainCamera();
+        else placeCamera(0);
         updateShips(0, false);
     } else {
         // nobody is at the helm: the world carries on, and the camera circles the ship
@@ -432,6 +561,9 @@ function frame(now: number) {
         orbitCamera(p.x, 5, p.z, orbit.r, orbit.h, S.t * 0.05 + W.port.yaw + 2.4 + look.yaw, orbit.r * orbit.aside);
         updateShips(dt, false);
     }
+    drawCaptain(dt);
+    drawMates(dt);
+    drawHands(dt);
     orbit.on = m !== 'play' && m !== 'pause';
 
     // lanterns ashore, lit from dusk to dawn
@@ -452,6 +584,7 @@ function frame(now: number) {
     post.dmg = S.dmgFx * 0.8 + low * (0.22 + 0.08 * Math.sin(now * 0.006));
     post.desat = m === 'dead' ? 0.7 : 0;
     post.flash = S.flashFx * S.flashFx;
+    netTick(rdt);
     hud.update(rdt);
     audioTick(rdt, m === 'pause' ? 0 : clamp(Math.abs(p.v) / p.speed, 0, 1), m === 'pause' ? 0 : S.fire, m === 'play' ? threat() : 0);
 
@@ -462,6 +595,11 @@ function frame(now: number) {
     const ashore = 0.5 * smooth(420, 190, Math.hypot(p.x - W.port.tx, p.z - W.port.tz));
     frameInput.focusX = p.x + (W.port.tx - p.x) * ashore;
     frameInput.focusZ = p.z + (W.port.tz - p.z) * ashore;
+    // in a crew the ship may have sailed without this player: the shadows stay with whoever is watching
+    if (NET.on && PL.afoot && live() && Math.hypot(PL.me.x - p.x, PL.me.z - p.z) > 60) {
+        frameInput.focusX = PL.me.x;
+        frameInput.focusZ = PL.me.z;
+    }
     if (spy.view) {
         const [x, y, z, yaw, pitch, fov = 1] = spy.view;
         setCamera(x, y, z, yaw, pitch, 0, fov);

@@ -4,9 +4,10 @@ import { m4aim, m4trs, rnds } from '@ryqndev/kiln-math';
 
 import { fxDust, fxExplosion, fxMuzzle, fxSplash, shake, sprite } from '../fx';
 import { M } from '../models';
+import { NET } from '../net/role';
 import { PL, S } from '../state';
 import { height } from '../world';
-import { gunFires, tickBattery } from './battery';
+import { gunFires, gunLoaded, spendGun, tickBattery } from './battery';
 import { hitShip, hurtShip, snare } from './damage';
 import { fortAt, hitFort } from './forts';
 import { B, BALL_CAPACITY, BALL_STRIDE, balls, ships } from './state';
@@ -18,6 +19,8 @@ const GRAV = 22;
 const TRAVERSE = Math.tan(0.84);
 /** The angle a mortar is bedded at: its range is set by the charge, not by laying the piece. */
 const MORTAR = 0.87;
+/** How far either side of the beam a player can train the gun he serves, radians. */
+export const TRAIN = 0.72;
 /** How far from where it bursts a shell does harm, metres. */
 const BLAST = 11;
 /** Hemp, tarred iron: what a harpoon's line and its shaft are tinted. */
@@ -26,6 +29,20 @@ const LINE = [0.3, 0.25, 0.17],
 
 /** The furthest a gun with this muzzle speed is laid, a little inside its true reach. */
 export const maxRange = (shot: number) => ((shot * shot) / GRAV) * 0.94;
+
+/**
+ * Who a ball is credited to, as it is kept with the ball: nobody the crew need hear about; the crew's
+ * ship (her broadsides, and her hired hands); or, from PLAYER up, the player of that number who laid
+ * and fired the gun himself.
+ */
+export const CREDIT = { NONE: 0, SHIP: 1, PLAYER: 2 } as const;
+
+/** How far a ball from a gun at height `y`, laid `el` radians above the level, carries before it is back at the sea. */
+export function carry(shot: number, el: number, y: number) {
+    const vy = Math.sin(el) * shot;
+    return (Math.cos(el) * shot * (vy + Math.sqrt(vy * vy + 2 * GRAV * Math.max(0, y)))) / GRAV;
+}
+
 
 // elevation that lands a ball `d` metres off and `dy` higher (the flatter of the two arcs); NaN out of reach
 function elevation(d: number, dy: number, v: number) {
@@ -50,8 +67,8 @@ export function bearing(s: Ship, x: number, z: number): number {
  * Throws one ball of a gun's shot from a point at a mark on the sea, with the gun's own error.
  * Everything that fires goes through here: a ship's batteries and a fort's embrasures alike.
  */
-export function throwShot(gun: GunStats, x: number, y: number, z: number, tx: number, tz: number, team: number, mine: boolean) {
-    const err = Math.hypot(tx - x, tz - z) * gun.spread;
+export function throwShot(gun: GunStats, x: number, y: number, z: number, tx: number, tz: number, team: number, credit: number, wild = 1) {
+    const err = Math.hypot(tx - x, tz - z) * gun.spread * wild;
     tx += rnds(err);
     tz += rnds(err);
     const dx = tx - x,
@@ -68,32 +85,63 @@ export function throwShot(gun: GunStats, x: number, y: number, z: number, tx: nu
         if (el !== el) el = 0.72;
     }
     const h = (Math.cos(el) * v) / d;
-    launchBall(x, y, z, dx * h, Math.sin(el) * v, dz * h, gun, team, mine);
+    const vx = dx * h,
+        vy = Math.sin(el) * v,
+        vz = dz * h;
+    putBall(x, y, z, vx, vy, vz, gun.dmg, team, credit, gun.kind, gun.crew, gun.rig, gun.stone);
+    NET.onBall?.(x, y, z, vx, vy, vz, gun.kind, team, credit);
     return d;
+}
+
+/** Where the muzzle of gun `i` of a battery is in the world just now. The same object is handed back every time. */
+export function muzzleOf(s: Ship, side: number, i: number) {
+    const m = s.hull.muzzles[side][i],
+        c = Math.cos(s.yaw),
+        sn = Math.sin(s.yaw),
+        lx = m[0] * (side ? 1 : -1) * s.scale,
+        lz = m[2] * s.scale;
+    mouth.x = s.x + c * lx + sn * lz;
+    mouth.y = s.y + m[1] * s.scale;
+    mouth.z = s.z - sn * lx + c * lz;
+    return mouth;
+}
+const mouth = { x: 0, y: 0, z: 0 };
+
+/** A gun going off: its flash and smoke, and its report. Everyone in a crew sees and hears it. */
+export function muzzleBlast(x: number, y: number, z: number, dx: number, dz: number, heft: number, loud = true) {
+    fxMuzzle(x, y, z, dx, dz);
+    if (loud) sfx.cannon(x, y, z, heft);
+    NET.onMuzzle?.(x, y, z, dx, dz, heft, loud);
+}
+
+// Fires gun `i` of a battery at a point on the sea.
+function discharge(s: Ship, side: number, i: number, tx: number, tz: number, credit: number, wild: number) {
+    const gun = s.bat[side].gun,
+        { x, y, z } = muzzleOf(s, side, i);
+    for (let n = 0; n < gun.pellets; n++) throwShot(gun, x, y, z, tx, tz, s.team, credit, wild);
+    const d = Math.hypot(tx - x, tz - z) || 1;
+    muzzleBlast(x, y, z, (tx - x) / d, (tz - z) / d, gun.heft);
+    // recoil rocks her away from the guns
+    s.roll += (side ? 1 : -1) * 0.012 * Math.min(2, gun.heft);
 }
 
 // Lays gun `i` of a battery on the point its broadside was ordered onto, and fires it.
 function fireGun(s: Ship, side: number, i: number) {
     const aim = s.bat[side],
-        gun = aim.gun,
-        m = s.hull.muzzles[side][i],
-        sg = side ? 1 : -1,
-        c = Math.cos(s.yaw),
-        sn = Math.sin(s.yaw),
-        lx = m[0] * sg * s.scale,
-        lz = m[2] * s.scale;
-    const x = s.x + c * lx + sn * lz,
-        z = s.z - sn * lx + c * lz,
-        y = s.y + m[1] * s.scale;
+        lz = s.hull.muzzles[side][i][2] * s.scale;
     // each gun lays a little along the line from its neighbours, so a broadside straddles its mark
-    const tx = aim.tx + sn * lz * 0.5,
-        tz = aim.tz + c * lz * 0.5;
-    for (let n = 0; n < gun.pellets; n++) throwShot(gun, x, y, z, tx, tz, s.team, s.role === 'player');
-    const d = Math.hypot(tx - x, tz - z) || 1;
-    fxMuzzle(x, y, z, (tx - x) / d, (tz - z) / d);
-    sfx.cannon(x, y, z, gun.heft);
-    // recoil rocks her away from the guns
-    s.roll += sg * 0.012 * Math.min(2, gun.heft);
+    discharge(s, side, i, aim.tx + Math.sin(s.yaw) * lz * 0.5, aim.tz + Math.cos(s.yaw) * lz * 0.5, s.role === 'player' ? CREDIT.SHIP : CREDIT.NONE, aim.wild);
+}
+
+/**
+ * One gun, laid and fired by the player who serves it, at a point on the sea. False if it is not
+ * loaded. `player` is that player's number in the crew.
+ */
+export function serveGun(s: Ship, side: number, i: number, tx: number, tz: number, player: number): boolean {
+    if (s.dead || s.struck || !(side === 0 || side === 1) || !(i >= 0 && i < s.hull.guns[side]) || !gunLoaded(s.bat[side], i)) return false;
+    spendGun(s, side, i);
+    discharge(s, side, i, tx, tz, CREDIT.PLAYER + player, 1);
+    return true;
 }
 
 /** Runs a ship's reloads, and fires the guns of any broadside as their moments come. */
@@ -105,8 +153,11 @@ export function updateGuns(s: Ship, dt: number) {
     }
 }
 
-// Puts a ball in flight. The pool is fixed: when it is full the shot is simply not seen.
-function launchBall(x: number, y: number, z: number, vx: number, vy: number, vz: number, gun: GunStats, team: number, mine: boolean) {
+/**
+ * Puts a ball in flight. The pool is fixed: when it is full the shot is simply not seen. `credit`
+ * is who it is fired for (see CREDIT); the rest is what it does where it lands (see GunStats).
+ */
+export function putBall(x: number, y: number, z: number, vx: number, vy: number, vz: number, dmg: number, team: number, credit: number, kind: number, crew = 0, rig = 0, stone = 0) {
     if (balls.n >= BALL_CAPACITY) return;
     const o = balls.n++ * BALL_STRIDE,
         b = balls.d;
@@ -116,14 +167,14 @@ function launchBall(x: number, y: number, z: number, vx: number, vy: number, vz:
     b[o + 3] = vx;
     b[o + 4] = vy;
     b[o + 5] = vz;
-    b[o + 6] = gun.dmg;
+    b[o + 6] = dmg;
     b[o + 7] = team;
     b[o + 8] = 0;
-    b[o + 9] = mine ? 1 : 0;
-    b[o + 10] = gun.kind;
-    b[o + 11] = gun.crew;
-    b[o + 12] = gun.rig;
-    b[o + 13] = gun.stone;
+    b[o + 9] = credit;
+    b[o + 10] = kind;
+    b[o + 11] = crew;
+    b[o + 12] = rig;
+    b[o + 13] = stone;
 }
 
 // whether shot fired by `team` harms a ship: it passes over its own side, and the navy and the merchantmen do not fire on each other
@@ -181,6 +232,8 @@ export function updateBalls(dt: number) {
             team = b[o + 7],
             kind = b[o + 10],
             mine = b[o + 9] > 0;
+        // a player's own shot is scored to that player: see scored() in damage.ts
+        NET.shooter = b[o + 9] >= CREDIT.PLAYER ? b[o + 9] - CREDIT.PLAYER : -1;
         let gone = (b[o + 8] += dt) > 14,
             landed = false,
             struck: Ship | null = null;
@@ -259,4 +312,5 @@ export function updateBalls(dt: number) {
         if (kind === SHOT.SHELL) sprite(2, x, y, z, 0.5, 1.6, 0.8, 0.3, 0.7, b[o + 3], b[o + 4], b[o + 5], 0.05);
         else sprite(2, x, y, z, 0.16 * Math.max(0.6, size), 0.55, 0.5, 0.45, 0.5, b[o + 3], b[o + 4], b[o + 5], 0.03);
     }
+    NET.shooter = -1;
 }

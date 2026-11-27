@@ -15,6 +15,7 @@
         { "path": "./packages/kiln-core" },
         { "path": "./packages/kiln-gl" },
         { "path": "./packages/kiln-math" },
+        { "path": "./packages/kiln-net" },
         { "path": "./packages/kiln-ui" },
         { "path": "./packages/loading" },
         { "path": "./packages/rimefire-audio" },

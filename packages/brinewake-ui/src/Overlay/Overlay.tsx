@@ -4,15 +4,19 @@ import clsx from 'clsx';
 import { memo, type MouseEvent, type ReactNode, useState } from 'react';
 
 import { HUD, useHud } from '../hooks/useHud';
+import { Lobby } from '../Lobby/Lobby';
 import cn from './Overlay.module.scss';
 
 const BINDINGS: Binding[] = [
-    ['W / S', 'set or take in sail'],
+    ['W A S D', 'walk · shift to run · space to jump'],
+    ['E', 'take the wheel, or leave it · climb aboard'],
+    ['W / S', 'at the wheel: set or take in sail'],
     ['A / D', 'helm to port, starboard'],
     ['MOUSE', 'look · lay the guns on that side'],
     ['LMB', 'fire the broadside'],
     ['RMB', 'spyglass'],
     ['F', 'drop anchor at port'],
+    ['CREW', 'E by a gun mans it · LMB fires it'],
     ['G', 'graphics quality'],
     ['ESC', 'pause'],
 ];
@@ -76,8 +80,10 @@ const DrydockExit = () => (
 export const Overlay = memo(function Overlay() {
     const veteran = useHud((s) => s.gold > 0 || s.stats.sunk > 0 || s.cls > 0);
     const drydock = useHud((s) => s.drydock);
-    // the drydock has no save to scuttle: its menus offer the way out instead
-    const corner = drydock ? <DrydockExit /> : veteran && <StartOver />;
+    const crew = useHud((s) => s.net.role);
+    // the drydock has no save to scuttle: its menus offer the way out instead. Nor is a career scuttled
+    // from under a crew.
+    const corner = drydock ? <DrydockExit /> : veteran && crew === 'off' && <StartOver />;
 
     // play and port have no screen: the overlay fades out over the game
     const screens: Partial<Record<HudMode, ReactNode>> = {
@@ -86,18 +92,21 @@ export const Overlay = memo(function Overlay() {
                 <h1>BRINEWAKE</h1>
                 <p>Take what floats. Bank what you can carry.</p>
                 <Controls bindings={BINDINGS} />
-                <OverlayPrompt>{veteran ? 'CLICK TO PUT BACK TO SEA' : 'CLICK TO WEIGH ANCHOR'}</OverlayPrompt>
+                <OverlayPrompt>{crew === 'client' ? 'CLICK TO GO ABOARD' : veteran ? 'CLICK TO PUT BACK TO SEA' : 'CLICK TO WEIGH ANCHOR'}</OverlayPrompt>
                 <OverlayFootnote>Everything here is generated in code · desktop · mouse + keyboard</OverlayFootnote>
-                <DrydockDoor />
+                {crew === 'off' && <DrydockDoor />}
                 {corner}
+                <Lobby />
             </>
         ),
         pause: (
             <>
-                <h2>HOVE TO</h2>
+                <h2>{crew === 'off' ? 'HOVE TO' : 'STOOD DOWN'}</h2>
+                {crew !== 'off' && <p>The crew sails on without you</p>}
                 <Controls bindings={BINDINGS} />
                 <OverlayPrompt>CLICK TO RESUME</OverlayPrompt>
                 {corner}
+                <Lobby />
             </>
         ),
         dead: (

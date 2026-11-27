@@ -1,5 +1,5 @@
 export { cam, project, type ScreenPoint, setCamera } from './camera';
-export { FOAM_CAPACITY, FOAM_STRIDE, MAX_LIGHTS, PARTICLE_CAPACITY, post, R, WORLD } from './config';
+export { dry, FOAM_CAPACITY, FOAM_STRIDE, MAX_LIGHTS, PARTICLE_CAPACITY, post, R, WORLD } from './config';
 export { env, setDayPhase } from './environment';
 export type { FoamStamps, Frame, LightUniforms } from './frame';
 export { Geo, gridNormals, MATERIAL, type Point, ROUND_SCALE } from './geometry/Geo';

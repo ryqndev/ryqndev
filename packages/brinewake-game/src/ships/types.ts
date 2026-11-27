@@ -89,9 +89,15 @@ export interface Battery {
     /** the point on the sea it was laid on */
     tx: number;
     tz: number;
+    /** how much wider than the gun's own scatter the broadside under way is thrown: 1 unless it is fired by hired hands left to themselves */
+    wild: number;
+    /** seconds until each gun can be fired again by a player serving it; a gun with no entry is loaded */
+    load: number[];
 }
 
 export interface Ship {
+    /** what she is known by between the browsers of a crew: hers for as long as she is afloat */
+    id: number;
     role: Role;
     team: number;
     type: ShipType;
@@ -166,4 +172,8 @@ export interface Ship {
     wake: number;
     /** seconds aground, to space out the damage */
     ground: number;
+    /** in a crew, anywhere but the host: where the host last said she was, carried on from there. She is eased toward it */
+    gx: number;
+    gz: number;
+    gyaw: number;
 }

@@ -3,8 +3,9 @@ import { m4 } from '@ryqndev/kiln-math';
 import type { Ship } from './types';
 
 /**
- * Floats per ball in flight: position, velocity, hull damage, team, age, 1 when the player's own guns
- * fired it, which of SHOT it is, what it does to a crew and to sails, and how much of it stone takes.
+ * Floats per ball in flight: position, velocity, hull damage, team, age, who it is credited to (see
+ * CREDIT in cannons.ts: 0 unless the player's ship fired it), which of SHOT it is, what it does to a
+ * crew and to sails, and how much of it stone takes.
  */
 export const BALL_STRIDE = 14;
 export const BALL_CAPACITY = 480;

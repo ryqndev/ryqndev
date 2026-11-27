@@ -1,6 +1,7 @@
 import { sfx } from '@ryqndev/brinewake-audio';
 
 import { hullModel, sigilMesh } from './models';
+import { NET } from './net/role';
 import { saveProgress } from './save';
 import { reloadGuns } from './ships/battery';
 import { aboard, type Station, TAVERN_SIZE, tavernful, withPost } from './ships/crew';
@@ -37,10 +38,11 @@ export function refit(s: Ship, build: Build = S.prog) {
     s.ink = st.ink;
     reloadGuns(s);
     for (const e of ships) if (e.role === 'escort') fly(e, s);
+    NET.onRefit?.();
 }
 
-// a consort sails under the colours and the sigil of the ship she follows
-function fly(e: Ship, lead: Ship) {
+/** A consort sails under the colours and the sigil of the ship she follows. */
+export function fly(e: Ship, lead: Ship) {
     e.paint = lead.paint;
     e.cloth = lead.cloth;
     e.sigil = lead.sigil;

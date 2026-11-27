@@ -1,8 +1,9 @@
-import { addInstance, cam, env, Geo, MATERIAL, type Mesh, registerMesh, seaHeight, shoreCalm } from '@ryqndev/brinewake-renderer';
+import { addInstance, cam, env, Geo, MATERIAL, type Mesh, R, registerMesh, seaHeight, shoreCalm } from '@ryqndev/brinewake-renderer';
 import { angDiff, damp, m4, m4mul, m4trs, PI, rnd, rnds, TAU } from '@ryqndev/kiln-math';
 
+import { cadence, drawFigure, gaitPose, mixPose, newPose, type Parts, RIG, solvePose, standPose } from './figure';
 import { light, spawn, sprite } from './fx';
-import { HULLS, M as MODELS } from './models';
+import { HULLS, M as MODELS, sailMesh } from './models';
 import { S } from './state';
 import { height, W } from './world';
 import { boatHull } from './world/mason';
@@ -80,13 +81,16 @@ interface Gull {
     seed: number;
 }
 
-const T = {} as { body: Mesh[]; leg: Mesh; arm: Mesh; gull: Mesh; wing: Mesh; rowboat: Mesh; smack: Mesh; rotor: Mesh };
+const T = {} as { parts: Parts[]; gull: Mesh; wing: Mesh; rowboat: Mesh; smack: Mesh; rotor: Mesh };
 const people: Person[] = [],
     gulls: Gull[] = [];
 const Bm = m4(),
     Lm = m4(),
     Tm = m4();
 let millA = 0;
+
+/** The meshes a working man of the port is drawn with: the hands a captain hires out of its tavern are the same sort (hands.ts). */
+export const townsman = () => T.parts[MAN];
 
 /** Builds the meshes the town's life is drawn with, and casts its people. Call once, after buildWorld() and buildModels(). */
 export function buildTownLife() {
@@ -96,40 +100,89 @@ export function buildTownLife() {
         BREECHES = [0.26, 0.22, 0.19],
         HAT = [0.2, 0.15, 0.11];
 
-    // ---- people: a body per kind, and the limbs that swing from it. Feet at the origin, facing -Z ----
-    T.body = [];
+    // ---- people: for each kind a pelvis, a chest and a head, and the limbs they share, all built to
+    // the skeleton in figure.ts: each part round its own joint, the figure facing -Z ----
+    const EYE = [0.05, 0.04, 0.04],
+        HAIR = [0.17, 0.12, 0.08],
+        SHOE = [0.12, 0.1, 0.09],
+        HOSE = [0.82, 0.79, 0.7],
+        BELT = [0.16, 0.12, 0.09];
+    // a head on its neck, with a face to it: eyes, a nose, and hair behind; whatever is worn on it is added by `hat`
+    const head = (hair: number[] | null, hat: (g: Geo) => void) => {
+        const g = new Geo();
+        plain(g, SKIN).push(0, -0.03, 0).cyl(0.052, 0.1, 7, 0.01).pop();
+        g.push(0, 0.12, 0, 0, 0, 0, 0.95, 1.06, 1).sphere(0.118, 10, 7).pop();
+        g.push(0, 0.1, -0.118).box(0.016, 0.022, 0.018, 0.008).pop();
+        plain(g, EYE);
+        for (const s of [-1, 1]) g.push(s * 0.043, 0.14, -0.103).sphere(0.017, 5, 4).pop();
+        if (hair) plain(g, hair).push(0, 0.14, 0.03, 0, 0, 0, 1, 0.98, 0.95).sphere(0.122, 9, 6).pop();
+        hat(g);
+        return registerMesh(g);
+    };
+    // a chest standing up from the waist: broad at the shoulders, which are rounded over the tops of the arms
+    const chest = (g: Geo, hw: number, hd: number) => {
+        g.push(0, 0.31, 0).box(hw, 0.16, hd, 0.05).pop().push(0, 0.08, 0).box(hw * 0.88, 0.12, hd * 0.92, 0.04).pop();
+        for (const s of [-1, 1]) g.push(s * (hw + 0.01), 0.42, 0).sphere(0.064, 7, 5).pop();
+        return g;
+    };
+
+    // legs: breeches to the knee, a stockinged shin, and a buckled shoe
     let g = new Geo();
-    tinted(g).push(0, 1.2, 0).box(0.19, 0.28, 0.11, 0.05).pop();
-    plain(g, BREECHES).push(0, 0.9, 0).box(0.185, 0.09, 0.115, 0.03).pop();
-    plain(g, SKIN).push(0, 1.62, 0).sphere(0.115, 8, 6).pop();
-    plain(g, HAT).push(0, 1.69, 0).cyl(0.23, 0.025, 9, 0).pop().push(0, 1.7, 0).cyl(0.12, 0.11, 8, 0.02, 0.1).pop();
-    T.body[MAN] = registerMesh(g);
+    plain(g, BREECHES).push(0, -RIG.thigh / 2, 0).box(0.08, RIG.thigh / 2 + 0.02, 0.09, 0.035).pop();
+    const thigh = registerMesh(g);
+    g = new Geo();
+    plain(g, BREECHES).push(0, -0.03, 0).sphere(0.078, 7, 5).pop();
+    plain(g, HOSE).push(0, -RIG.shin / 2 - 0.02, 0).box(0.058, RIG.shin / 2, 0.064, 0.03).pop();
+    const shin = registerMesh(g);
+    g = new Geo();
+    plain(g, SHOE).push(0, -RIG.ankle + 0.045, -0.045).box(0.064, 0.045, 0.125, 0.025).pop().push(0, -0.005, 0).sphere(0.058, 6, 4).pop();
+    const foot = registerMesh(g);
+    // arms: a sleeve to the elbow; then the forearm, and a hand
+    g = new Geo();
+    tinted(g).push(0, -RIG.upper / 2, 0).box(0.056, RIG.upper / 2 + 0.02, 0.06, 0.028).pop();
+    const upper = registerMesh(g);
+    g = new Geo();
+    tinted(g).push(0, -0.02, 0).sphere(0.056, 6, 4).pop().push(0, -0.12, 0).box(0.05, 0.12, 0.054, 0.024).pop();
+    plain(g, SKIN).push(0, -RIG.fore + 0.03, 0).sphere(0.056, 7, 5).pop();
+    const fore = registerMesh(g);
+    const limbs = { thigh, shin, foot, upper, fore };
 
+    T.parts = [];
+    // a man: breeches and a belt; a shirt; a low-crowned hat
     g = new Geo();
-    tinted(g).push(0, 0.06, 0).lathe([[0.34, 0, 1, 0.2], [0.15, 0.92, 1, 0.3], [0, 0.92, 0, 1]], 9).pop();
-    plain(g, [0.88, 0.85, 0.78]).push(0, 1.22, 0).box(0.165, 0.26, 0.1, 0.05).pop();
-    plain(g, SKIN).push(0, 1.6, 0).sphere(0.11, 8, 6).pop();
-    plain(g, [0.9, 0.88, 0.82]).push(0, 1.63, 0.02, 0, 0, 0, 1, 0.8, 1).sphere(0.125, 8, 5).pop();
-    T.body[WOMAN] = registerMesh(g);
-
+    plain(g, BREECHES).push(0, -0.01, 0).box(0.178, 0.085, 0.108, 0.03).pop();
+    plain(g, BELT).push(0, 0.085, 0).box(0.18, 0.028, 0.11, 0.01).pop();
+    const manHips = registerMesh(g);
+    T.parts[MAN] = {
+        ...limbs,
+        pelvis: manHips,
+        chest: registerMesh(chest(tinted(new Geo()), 0.2, 0.115)),
+        head: head(HAIR, (h) => plain(h, HAT).push(0, 0.195, 0).cyl(0.235, 0.025, 10, 0).pop().push(0, 0.205, 0).cyl(0.125, 0.11, 9, 0.02, 0.105).pop()),
+    };
+    // a woman: a skirt to the ground; a pale bodice; a kerchief over her hair
     g = new Geo();
-    tinted(g).push(0, 1.2, 0).box(0.2, 0.29, 0.115, 0.05).pop().push(0, 0.86, 0).box(0.205, 0.1, 0.12, 0.03).pop();
-    plain(g, [0.9, 0.88, 0.8]).push(0, 1.22, -0.118, 0, 0, 0.6).box(0.03, 0.3, 0.008, 0).pop().push(0, 1.22, -0.118, 0, 0, -0.6).box(0.03, 0.3, 0.008, 0).pop();
-    plain(g, SKIN).push(0, 1.63, 0).sphere(0.115, 8, 6).pop();
-    // a cocked hat, and a musket sloped on the right shoulder
-    plain(g, [0.06, 0.06, 0.07]).push(0, 1.7, 0).cyl(0.25, 0.05, 3, 0, 0.21).pop().push(0, 1.72, 0).cyl(0.12, 0.09, 7, 0.02, 0.1).pop();
-    plain(g, [0.3, 0.2, 0.13]).strut([0.24, 1.0, -0.12], [0.2, 2.05, 0.2], 0.03, 0.022, 5);
-    g.mat(0.4, 0.9, 0, MATERIAL.METAL).col(0.3, 0.3, 0.32).strut([0.2, 2.05, 0.2], [0.19, 2.32, 0.28], 0.012, 0.004, 4);
-    T.body[GUARD] = registerMesh(g);
-
+    tinted(g).push(0, -RIG.hipY + 0.04, 0).lathe([[0.35, 0, 1, 0.2], [0.27, 0.5, 1, 0.22], [0.15, 0.97, 1, 0.3], [0, 0.97, 0, 1]], 11).pop();
+    const skirt = registerMesh(g);
+    T.parts[WOMAN] = {
+        ...limbs,
+        pelvis: skirt,
+        chest: registerMesh(chest(plain(new Geo(), [0.88, 0.85, 0.78]), 0.172, 0.105)),
+        head: head(null, (h) => plain(h, [0.9, 0.88, 0.82]).push(0, 0.15, 0.025, 0, 0, 0, 1, 0.85, 1).sphere(0.128, 9, 6).pop()),
+    };
+    // a soldier: his coat to the hip; white cross-belts and a musket sloped on the right shoulder; a cocked hat
     g = new Geo();
-    plain(g, BREECHES).push(0, -0.36, 0).box(0.075, 0.36, 0.085, 0.03).pop();
-    plain(g, [0.12, 0.1, 0.09]).push(0, -0.82, -0.03).box(0.08, 0.1, 0.12, 0.03).pop();
-    T.leg = registerMesh(g);
-    g = new Geo();
-    tinted(g).push(0, -0.26, 0).box(0.055, 0.26, 0.06, 0.025).pop();
-    plain(g, SKIN).push(0, -0.57, 0).sphere(0.055, 6, 4).pop();
-    T.arm = registerMesh(g);
+    tinted(g).push(0, -0.02, 0).box(0.195, 0.1, 0.118, 0.03).pop();
+    const coatTail = registerMesh(g);
+    g = chest(tinted(new Geo()), 0.205, 0.118);
+    plain(g, [0.9, 0.88, 0.8]).push(0, 0.2, -0.122, 0, 0, 0.6).box(0.03, 0.3, 0.008, 0).pop().push(0, 0.2, -0.122, 0, 0, -0.6).box(0.03, 0.3, 0.008, 0).pop();
+    plain(g, [0.3, 0.2, 0.13]).strut([0.24, -0.02, -0.12], [0.2, 1.03, 0.2], 0.03, 0.022, 5);
+    g.mat(0.4, 0.9, 0, MATERIAL.METAL).col(0.3, 0.3, 0.32).strut([0.2, 1.03, 0.2], [0.19, 1.3, 0.28], 0.012, 0.004, 4);
+    T.parts[GUARD] = {
+        ...limbs,
+        pelvis: coatTail,
+        chest: registerMesh(g),
+        head: head(HAIR, (h) => plain(h, [0.06, 0.06, 0.07]).push(0, 0.19, 0).cyl(0.25, 0.05, 3, 0, 0.21).pop().push(0, 0.21, 0).cyl(0.125, 0.09, 8, 0.02, 0.105).pop()),
+    };
 
     // ---- gulls: a body, and one wing drawn twice ----
     g = new Geo();
@@ -243,13 +296,11 @@ function follow(p: Person, out: number[]) {
     out[4] = dz * p.dir;
 }
 
-const limb = (mesh: Mesh, x: number, y: number, pitch: number, roll: number, c: number[]) => {
-    m4trs(Lm, x, y, 0, 0, pitch, roll);
-    m4mul(Tm, Bm, Lm);
-    addInstance(mesh, Tm, c[0], c[1], c[2]);
-};
 const WHITE = [1, 1, 1];
 const spot = [0, 0, 0, 0, 0];
+// scratch poses: how someone strides, how they stand, and the mixture of the two they are in
+const striding = newPose(),
+    standing = newPose();
 
 function drawPeople(dt: number) {
     const t = S.t;
@@ -261,7 +312,8 @@ function drawPeople(dt: number) {
             else if (p.kind !== GUARD && Math.random() < dt / 34) p.rest = rnd(2, 7);
             p.stride = damp(p.stride, p.rest > 0 ? 0 : 1, 5, dt);
             p.d += p.speed * p.dir * p.stride * dt;
-            p.phase += p.speed * p.stride * dt * 3.3;
+            // their feet keep the pace they are actually making, so that none of them slides
+            p.phase += TAU * cadence(p.speed * p.stride) * p.stride * dt;
             follow(p, spot);
             p.x = spot[0];
             p.y = spot[1];
@@ -272,17 +324,21 @@ function drawPeople(dt: number) {
             p.yaw = p.home + Math.sin(t * 0.23 + p.seed) * 0.35;
             wave = Math.max(0, Math.sin(t * 0.7 + p.seed * 3)) ** 3 * (0.5 + 0.5 * Math.sin(t * 5 + p.seed));
         }
-        const swing = Math.sin(p.phase) * 0.62 * p.stride,
-            sway = Math.sin(t * 1.1 + p.seed) * 0.03 * (1 - p.stride);
-        m4trs(Bm, p.x, p.y + Math.abs(Math.cos(p.phase)) * 0.035 * p.stride, p.z, p.yaw, 0, sway);
-        addInstance(T.body[p.kind], Bm, p.tint[0], p.tint[1], p.tint[2]);
-        if (p.kind !== WOMAN) {
-            limb(T.leg, -0.095, 0.9, swing, 0, WHITE);
-            limb(T.leg, 0.095, 0.9, -swing, 0, WHITE);
+        // somewhere between standing and their stride, as they slow to a stop or step off again
+        const pose = standPose(standing, t, p.seed);
+        if (p.stride > 0.01) mixPose(pose, gaitPose(striding, p.phase + p.seed, p.speed * p.stride), Math.min(1, p.stride * 1.5));
+        if (p.kind === GUARD) {
+            // a sentry's right hand is under the butt of his musket, and his eyes are front
+            pose.armR = 0.15;
+            pose.elbowR = 1.35;
+            pose.headTurn *= 0.3;
+        } else if (wave > 0) {
+            pose.armR += wave * 0.9;
+            pose.elbowR += wave * 1.3;
         }
-        limb(T.arm, -0.25, 1.46, -swing * 0.8, 0.08, p.tint);
-        // a sentry's right hand is on his musket
-        limb(T.arm, 0.25, 1.46, p.kind === GUARD ? 0.5 : swing * 0.8 + wave * 1.5, -0.08, p.tint);
+        if (p.kind !== WOMAN) solvePose(pose);
+        m4trs(Bm, p.x, p.y, p.z, p.yaw);
+        drawFigure(T.parts[p.kind], Bm, pose, p.tint, WHITE, p.kind !== WOMAN);
     }
 }
 
@@ -335,12 +391,12 @@ function drawMoorings() {
             addInstance(m.kind ? T.smack : T.rowboat, Bm, c[0], c[1], c[2]);
             return;
         }
-        addInstance(hull.mesh, Bm, c[0] * 0.9, c[1] * 0.9, c[2] * 0.9);
+        addInstance(hull.lod(Math.min(R.quality, 1), false), Bm, c[0] * 0.9, c[1] * 0.9, c[2] * 0.9);
         // her canvas is furled to the yards, her colours still fly
         for (const sl of hull.sails) {
             m4trs(Lm, 0, sl.y, sl.z, 0, 0, 0, sl.w, sl.h * 0.09, sl.w);
             m4mul(Tm, Bm, Lm);
-            addInstance(MODELS.sail, Tm, 0.86, 0.8, 0.64);
+            addInstance(sailMesh(Math.min(R.quality, 1)), Tm, 0.86, 0.8, 0.64);
         }
         m4trs(Lm, 0, hull.flag[1], hull.flag[2], 0, 0, 0, 2.4);
         m4mul(Tm, Bm, Lm);

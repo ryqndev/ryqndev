@@ -8,6 +8,7 @@ import { Hold } from './components/Hold/Hold';
 import { Hull } from './components/Hull/Hull';
 import { PortMarker } from './components/PortMarker/PortMarker';
 import { Reticle } from './components/Reticle/Reticle';
+import { Shipmates } from './components/Shipmates/Shipmates';
 import { Targets } from './components/Targets/Targets';
 import { Wanted } from './components/Wanted/Wanted';
 import { HINTS } from './hints';
@@ -22,6 +23,7 @@ export const Hud = memo(function Hud() {
             <PortMarker zoom={zoom} />
             <Reticle />
             <Wanted />
+            <Shipmates zoom={zoom} />
             <Chart />
             <Hull />
             <Hold />

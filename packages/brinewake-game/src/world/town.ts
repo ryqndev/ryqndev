@@ -72,6 +72,8 @@ export function buildTown(G: Geo, R: () => number): Town {
     G.pop();
     M.floor = null;
     W.lights.push(...M.lights);
+    W.blocks.push(...M.blocks);
+    W.posts.push(...M.posts);
 
     const boat = (lx: number, lz: number, yaw: number, kind: number) => {
         const [x, z] = toWorld(lx, lz);
@@ -144,7 +146,7 @@ function waterfront(S: Site) {
     M.floor = Q;
     shed(S, 7.2, Q, hz + 1.2, 0, 2.4, 2, 2.5, [0.36, 0.42, 0.44]);
     crane(S, -7.4, Q, hz - 1.4, 0.5);
-    M.cargo(-5.5, Q, hz + 2.6, 7, 2.2).cargo(2, Q, hz - 3, 5, 1.6).cargo(1.2, Q, -22, 4, 1.1);
+    M.cargo(-5.5, Q, hz + 2.6, 7, 2.2).cargo(5.2, Q, hz - 4.3, 4, 0.9).cargo(1.9, Q, -22, 3, 0.6);
     M.lampPost(10.3, Q, hz - 4.9, 3.4, -0.5).lampPost(-10.3, Q, hz - 4.9, 3.4).lampPost(-2.6, Q, -24, 3.4);
     // a signal mast dressed with flags
     M.wood(C.TIMBER).post(9.6, Q, hz + 4.6, 0.13, 10, 6, 0.07).beam([7.8, Q + 7.6, hz + 4.6], [11.4, Q + 7.6, hz + 4.6], 0.05);
@@ -204,6 +206,7 @@ export function shed(S: Site, x: number, y: number, z: number, yaw: number, hw: 
     const { M, G } = S;
     G.push(x, y, z, yaw);
     M.floor = y;
+    if (!open) M.block(-hw, hw, -hd, hd, h + 2);
     if (open) {
         // only a roof on posts
         M.wood(C.DARK);
@@ -227,6 +230,7 @@ export function shed(S: Site, x: number, y: number, z: number, yaw: number, hw: 
 function crane(S: Site, x: number, y: number, z: number, yaw: number) {
     const { M, G } = S;
     G.push(x, y, z, yaw);
+    M.mark(0, 0, 0, 0.9, 5);
     M.wood(C.DARK).slab(-1, 1, 0, 0.22, -1, 1, 0.03).post(0, 0, 0, 0.24, 5.4, 7, 0.19);
     M.beam([0.9, 0.2, 0.9], [0, 2.6, 0], 0.09).beam([-0.9, 0.2, 0.9], [0, 2.6, 0], 0.09);
     M.beam([0, 3.4, 0.5], [0, 6.9, -4.8], 0.15, 0.1, 6).beam([0, 5.4, 0], [0, 6.9, -4.8], 0.045);
@@ -247,6 +251,8 @@ function shipyard(S: Site) {
     // the slip runs down from the quay into the basin; in its frame the ramp is the plane y = 0
     G.push(58, Q, -0.6, 0, -0.19);
     M.stone(C.DARKSTONE).slab(-5.2, 5.2, -2.5, 0, -28, 0.5);
+    // the slip is walked down as the slope it is; the hull in frame on it is in the way
+    M.block(-5.2, 5.2, -28, 0.5, 0, true).block(-2.9, 2.9, -21.5, -2, 6);
     M.wood(C.DARK);
     for (const s of [-1, 1]) M.slab(s * 1.6 - 0.14, s * 1.6 + 0.14, 0, 0.16, -27.5, 0);
     // the hull: keel on its blocks, the frames up and the first strakes on
@@ -363,6 +369,7 @@ function hut(S: Site, x: number, y: number, z: number, yaw: number, hw: number, 
     const { M, G } = S;
     G.push(x, y, z, yaw);
     M.floor = y;
+    M.block(-hw, hw, -hd, hd, 4);
     M.wood([0.5, 0.42, 0.3], 0.95).slab(-hw, hw, -0.5, 2.3, -hd, hd, 0.03);
     M.face(0, hw, hd);
     M.door(0.5, 0, 0.9, 1.85);
@@ -384,6 +391,7 @@ function plaza(S: Site) {
     M.stone(C.PALE).slab(-18, 18, Q - 0.5, Q + 0.03, 13, 35.4);
     // the fountain: an eight-sided basin, a column and a bowl
     const fz = 24;
+    M.mark(0, Q, fz, 3.3, 0.8);
     M.stone().prism(M.ngon(0, fz, 3.3, 8), M.ngon(0, fz, 3.3, 8), Q, Q + 0.8, false);
     M.prism(M.ngon(0, fz, 2.8, 8), M.ngon(0, fz, 2.8, 8), Q + 0.3, Q + 0.8, false, true);
     const out = M.ngon(0, fz, 3.3, 8),
@@ -438,12 +446,15 @@ function terraces(S: Site) {
     const terrace = (zw: number, y0: number, y1: number, gaps: number[][]) => {
         M.floor = y0;
         M.stone().slab(xa, xb, y0 - 1.5, y1, zw, zw + 13);
+        // from below it is a wall; from its own level it is the ground
+        M.block(xa, xb, zw, zw + 13, y1, true);
         for (let x = xa + 5; x < xb; x += 9.5) if (!gaps.some((g) => x > g[0] - 1.2 && x < g[1] + 1.2)) M.prism([[x - 0.8, zw - 1.1], [x + 0.8, zw - 1.1], [x + 0.8, zw], [x - 0.8, zw]], [[x - 0.6, zw - 0.25], [x + 0.6, zw - 0.25], [x + 0.6, zw], [x - 0.6, zw]], y0 - 0.5, y1 - 0.7);
         // the parapet, broken where a stair comes up
         M.floor = y1;
         let x = xa;
         for (const g of [...gaps, [xb, xb]]) {
             if (g[0] > x) {
+                M.block(x, g[0], zw, zw + 0.45, y1 + 0.9, true);
                 M.stone().slab(x, g[0], y1, y1 + 0.9, zw, zw + 0.45);
                 M.stone(C.PALE).slab(x - 0.05, g[0] + 0.05, y1 + 0.9, y1 + 1.02, zw - 0.07, zw + 0.52, 0.03);
             }
@@ -461,6 +472,7 @@ function terraces(S: Site) {
     M.stairs(-50, 77, MID - 0.1, P.wall2 + 0.05, TOP, 4).stairs(48, 77, MID - 0.1, P.wall2 + 0.05, TOP, 4);
     // the little square at the head of the first stair, with a column to some forgotten admiral
     M.stone(C.PALE).slab(-11, 11, MID - 0.6, MID + 0.03, 58.8, 75.2);
+    M.block(-1.3, 1.3, 65.2, 67.8, MID + 8);
     M.stone().slab(-1.3, 1.3, MID, MID + 0.5, 65.2, 67.8, 0.05).slab(-0.9, 0.9, MID + 0.5, MID + 1.6, 65.6, 67.4, 0.05);
     M.stone(C.PALE, 0.4).post(0, MID + 1.6, 66.5, 0.42, 4.6, 10, 0.34);
     M.stone(C.PALE).slab(-0.6, 0.6, MID + 6.2, MID + 6.45, 65.9, 67.1, 0.04);
@@ -511,6 +523,7 @@ export function house(S: Site, o: House) {
         pitch = M.rr(0.5, 0.68);
     G.push(o.x, o.y, o.z, o.yaw ?? 0);
     M.floor = o.y;
+    M.block(-hw - 0.12, hw + 0.12, -hd - 0.12, hd + 0.12, H + 6);
     M.stone().slab(-hw - 0.12, hw + 0.12, -2.5, 0.5, -hd - 0.12, hd + 0.12, 0.04);
     M.plaster(wall).slab(-hw, hw, 0.5, H, -hd, hd, 0.03);
     M.stone(C.PALE);
@@ -607,6 +620,7 @@ function middleTown(S: Site) {
     M.floor = y;
     // back gardens under the upper wall: walls, a washing line or two
     for (const [x0, x1] of [[-78, -56], [22, 42], [54, 70]]) {
+        M.block(x0, x0 + 0.4, 71.5, 85.6, y + 1.5, true).block(x1, x1 + 0.4, 71.5, 85.6, y + 1.5, true);
         M.stone().slab(x0, x0 + 0.4, y - 0.5, y + 1.5, 71.5, 85.6).slab(x1, x1 + 0.4, y - 0.5, y + 1.5, 71.5, 85.6);
         const mx = (x0 + x1) / 2;
         M.wood(C.DARK).post(x0 + 2, y, 79, 0.05, 2.3, 4).post(x1 - 2, y, 79, 0.05, 2.3, 4);

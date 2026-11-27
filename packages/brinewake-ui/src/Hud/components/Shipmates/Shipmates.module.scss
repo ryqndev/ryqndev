@@ -1,0 +1,90 @@
+@use '../../../styles/tokens' as *;
+
+// under the infamy gauge
+.crew {
+    position: absolute;
+    left: 28px;
+    top: 124px;
+    width: 190px;
+    text-shadow: 0 1px 6px rgb(0 0 0 / 70%);
+}
+
+.label {
+    @include label;
+
+    margin-bottom: 8px;
+
+    b {
+        @include mono;
+
+        margin-left: 6px;
+        font-size: 12px;
+        letter-spacing: 0.16em;
+        color: $gold;
+    }
+}
+
+.mate {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 5px;
+    font-size: 12px;
+    letter-spacing: 0.04em;
+
+    i {
+        flex: none;
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+    }
+
+    span {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    em {
+        @include label;
+
+        margin-left: auto;
+        font-size: 9px;
+        font-style: normal;
+    }
+}
+
+// a name over a mate's head: a zero-size anchor moved every frame
+.tag {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 0;
+    height: 0;
+    opacity: 0;
+    transition: opacity 0.2s;
+
+    span {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        transform: translateX(-50%);
+        display: flex;
+        align-items: center;
+        gap: 5px;
+        font-size: 11px;
+        letter-spacing: 0.08em;
+        white-space: nowrap;
+        text-shadow:
+            0 1px 3px #000,
+            0 0 6px rgb(0 0 0 / 80%);
+    }
+
+    i {
+        flex: none;
+        width: 7px;
+        height: 7px;
+        border-radius: 50%;
+        box-shadow: 0 0 4px rgb(0 0 0 / 70%);
+    }
+}

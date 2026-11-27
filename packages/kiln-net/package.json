@@ -1,0 +1,15 @@
+{
+    "name": "@ryqndev/kiln-net",
+    "private": true,
+    "version": "0.0.0",
+    "main": "src/index.ts",
+    "sideEffects": [
+        "**/*.scss"
+    ],
+    "scripts": {
+        "compile": "tsc -b"
+    },
+    "dependencies": {
+        "peerjs": "catalog:"
+    }
+}

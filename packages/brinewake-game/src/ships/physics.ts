@@ -1,6 +1,6 @@
 import { sfx } from '@ryqndev/brinewake-audio';
 import { cam, seaHeight, shoreCalm } from '@ryqndev/brinewake-renderer';
-import { damp } from '@ryqndev/kiln-math';
+import { angDiff, damp } from '@ryqndev/kiln-math';
 
 import { fxFroth, fxSpray, shake, stampFoam } from '../fx';
 import { S } from '../state';
@@ -122,6 +122,13 @@ export function sailShip(s: Ship, dt: number) {
                 s.v *= Math.max(0, 1 - 4 * dt);
             }
 
+    ride(s, dt);
+}
+
+/** A ship on the swell: her attitude to it, and the wake she leaves. She has already been moved. */
+function ride(s: Ship, dt: number) {
+    const fx = -Math.sin(s.yaw),
+        fz = -Math.cos(s.yaw);
     // ---- attitude: ride the swell sampled at the bow, the stern and either beam ----
     const t = S.t,
         L = s.hl * 0.85,
@@ -149,6 +156,38 @@ export function sailShip(s: Ship, dt: number) {
         const side = Math.random() < 0.5 ? 1 : -1;
         fxSpray(s.x + fx * s.hl * 0.82 + rx * side * s.hb * 0.3, s.y + 0.4, s.z + fz * s.hl * 0.82 + rz * side * s.hb * 0.3, fx * s.v * 0.5 + rx * side * 3, fz * s.v * 0.5 + rz * side * 3, 0.6 + pace * 0.6);
     }
+}
+
+/** Past this far from where the host has her, a ghost is put there at once instead of eased, metres. */
+const ADRIFT = 40;
+
+/**
+ * Moves on a ship that is only a picture of the host's (see Ship.gx): she carries on at the speed
+ * and turn she was last given, and is eased toward where the host said she was, carried on likewise.
+ */
+export function ghostShip(s: Ship, dt: number) {
+    if (s.dead) {
+        founder(s, dt);
+        return;
+    }
+    s.canvas = damp(s.canvas, s.sail / 3, 1.2, dt);
+    s.ground -= dt;
+    s.gyaw += s.w * dt;
+    s.gx -= Math.sin(s.gyaw) * s.v * dt;
+    s.gz -= Math.cos(s.gyaw) * s.v * dt;
+    if ((s.gx - s.x) ** 2 + (s.gz - s.z) ** 2 > ADRIFT * ADRIFT) {
+        s.x = s.gx;
+        s.z = s.gz;
+        s.yaw = s.gyaw;
+    } else {
+        s.yaw += s.w * dt;
+        s.x -= Math.sin(s.yaw) * s.v * dt;
+        s.z -= Math.cos(s.yaw) * s.v * dt;
+        s.x = damp(s.x, s.gx, 9, dt);
+        s.z = damp(s.z, s.gz, 9, dt);
+        s.yaw += angDiff(s.yaw, s.gyaw) * (1 - Math.exp(-9 * dt));
+    }
+    ride(s, dt);
 }
 
 // a lost ship settles by the stern and rolls onto her side as she goes under

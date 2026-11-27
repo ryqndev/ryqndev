@@ -29,4 +29,13 @@ export const NEAR = 0.5,
 /** Half-width in metres of the area around the focus point that receives the sun's shadows. */
 export const SHADOW_RANGE = 150;
 
+/**
+ * The hull the sea is not drawn inside: a ship someone can go below in has decks under the
+ * waterline, and the sea's surface would otherwise lie across them. `m` takes a point of the world
+ * into her own frame (bow at -z, waterline at y = 0, her own metres); she is hollow from `z0` to
+ * `z1` of it, and `half`, `len` and `draft` are half her beam, her length and her draught, from
+ * which the shader knows the shape of her side (the same lines models.ts lofts her to).
+ */
+export const dry = { on: false, m: new Float32Array(16), z0: 0, z1: 0, half: 0, len: 1, draft: 0 };
+
 export const post = { exposure: 1, bloom: 0.045, vig: 0.55, dmg: 0, flash: 0, desat: 0 };
